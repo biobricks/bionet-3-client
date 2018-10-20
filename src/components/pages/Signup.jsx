@@ -67,8 +67,8 @@ class Signup extends Component {
         
         <div className="row mt-3">
           <div className="col col-md-7 col-lg-5 ml-md-auto mr-md-auto text-center">
-            <div className="card">
-              <div className="card-header bg-info text-light">
+            <div className="card rounded-0">
+              <div className="card-header bg-dark text-light rounded-0">
                 <h4 className="card-title mb-0">Sign Up</h4>
               </div>
               <div className="card-body">

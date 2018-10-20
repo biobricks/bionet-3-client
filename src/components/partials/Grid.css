@@ -2,7 +2,7 @@
   display: grid;
   width: 100%;
   border: 1px solid #ccc;
-  min-height: 60vh;
+  min-height: 546px;
 }
 
 .grid-container .grid-item {

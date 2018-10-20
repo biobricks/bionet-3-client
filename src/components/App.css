@@ -5,3 +5,7 @@
 	width: 100%;
 	min-height: calc(100vh);
 }
+
+.card {
+  border-color: rgb(87, 104, 109);
+}

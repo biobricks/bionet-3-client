@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import shortid from 'shortid';
 import axios from "axios";
 import appConfig from '../../configuration.js';
 
@@ -17,7 +19,7 @@ class Landing extends Component {
   getAllLabs() {
     axios.get(`${appConfig.apiBaseUrl}/labs`)
     .then(res => {
-      console.log("response", res.data);
+      //console.log("response", res.data);
       let labArray = res.data.data;
       let labsJoined = [];
       let labs = [];
@@ -66,13 +68,23 @@ class Landing extends Component {
   }
 
   render() {
-    
+    const labsJoined = this.state.labsJoined.map((lab, index) => {
+      return (
+        <Link 
+          key={shortid.generate()}
+          className="list-group-item list-group-item-action bg-info text-light rounded-0"
+          to={`/labs/${lab._id}`}
+        >
+          {lab.name}
+        </Link>
+      )
+    });    
     return (
       <div className="container-fluid">
         <div className="row mt-3">
           <div className="col col-md-7 col-lg-5 ml-md-auto mr-md-auto text-center">
-            <div className="card">
-              <div className="card-header bg-info text-light">
+            <div className="card rounded-0">
+              <div className="card-header bg-dark text-light rounded-0">
                 <h4 className="card-title mb-0">BioNet</h4>
               </div>
               <div className="card-body">
@@ -95,6 +107,9 @@ class Landing extends Component {
                   </p>                  
                 ) : null }
               </div>
+              <ul className="list-group list-group-flush">
+                {labsJoined}
+              </ul>
             </div>
           </div>
         </div>

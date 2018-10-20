@@ -86,8 +86,8 @@ class LabNew extends Component {
           
           <div className="col-12 col-md-7">
             { (this.props.isLoggedIn) ? (
-              <div className="card mt-3">
-                <div className="card-header bg-dark text-light">
+              <div className="card rounded-0 mt-3">
+                <div className="card-header bg-dark text-light rounded-0">
                   <h4 className="card-title mb-0">New Lab</h4>
                 </div>
                 <div className="card-body">

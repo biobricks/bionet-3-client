@@ -63,7 +63,7 @@ class LabList extends Component {
       return (
         <Link 
           key={shortid.generate()}
-          className="list-group-item list-group-item-action"
+          className="list-group-item list-group-item-action bg-info text-light rounded-0"
           to={`/labs/${lab._id}`}
         >
           {lab.name}
@@ -85,19 +85,17 @@ class LabList extends Component {
 
     return (
       <div className="container-fluid">
-        <div className="row mt-3">
+        <div className="row">
           <div className="col col-md-7 col-lg-5 ml-md-auto mr-md-auto text-center">
             {(!this.props.isLoggedIn) ? (
-              <div className="col-12 col-md-7">
-                <AlertCard 
-                  title="Login Required"
-                  message="You must be logged in to view this content."
-                />
-              </div>   
+              <AlertCard 
+                title="Login Required"
+                message="You must be logged in to view this content."
+              /> 
             ) : null }
             {(this.props.isLoggedIn) ? (
-              <div className="card">
-                <div className="card-header bg-dark text-light">
+              <div className="card mt-3 rounded-0">
+                <div className="card-header bg-dark text-light rounded-0">
                   <h4 className="card-title mb-0 text-capitalize">Labs Joined</h4>
                 </div>
                 {(this.state.labsJoined.length > 0) ? (
