@@ -75,8 +75,8 @@ class LabProfile extends Component {
           { (this.props.isLoggedIn) ? (
             <div className="col-12 col-md-7">
 
-              <div className="card mt-3">
-                <div className="card-header bg-dark text-light">
+              <div className="card rounded-0 mt-3">
+                <div className="card-header bg-dark text-light rounded-0">
                   <h4 className="card-title mb-0">
                     <i className="mdi mdi-teach mr-2" />
                     {this.state.lab.name}
@@ -138,8 +138,8 @@ class LabProfile extends Component {
               </div>
               
               {(childContainers.length > 0) ? (
-                <div className="card mt-3">
-                  <div className="card-header bg-dark text-light">
+                <div className="card rounded-0 mt-3">
+                  <div className="card-header bg-dark text-light rounded-0">
                     <h4 className="card-title mb-0">
                       <i className="mdi mdi-teach mr-2" />
                       Containers
@@ -152,8 +152,8 @@ class LabProfile extends Component {
               ) : null }
 
               {(members.length > 0) ? (
-                <div className="card mt-3">
-                  <div className="card-header bg-dark text-light">
+                <div className="card rounded-0 mt-3">
+                  <div className="card-header bg-dark text-light rounded-0">
                     <h5 className="card-title mb-0">
                       <i className="mdi mdi-account-multiple mr-2" />
                       Members
