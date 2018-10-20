@@ -25,10 +25,13 @@ class Navigation extends Component {
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
+            
             <li className="nav-item active">
               <Link className="nav-link" to="/">Home</Link>
             </li>
-            <li className="nav-item dropdown">
+            
+            {(this.props.isLoggedIn) ? (
+              <li className="nav-item dropdown">
               <a 
                 className="nav-link dropdown-toggle" 
                 href="/" 
@@ -47,9 +50,27 @@ class Navigation extends Component {
                 <Link className="dropdown-item" to="/">Something else here</Link>
               </div>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link disabled" to="/">Disabled</Link>
-            </li>
+            ) : null }
+
+            { this.props.isLoggedIn ? (
+              <li className="nav-item">
+                <a 
+                  className="nav-link" 
+                  href="/"
+                  onClick={ this.props.logoutCurrentUser }
+                >Logout</a>
+              </li>
+            ) : (
+              <li className="nav-item">
+                <Link to="/login" className="nav-link" href="#">Login</Link>
+              </li>
+            )}
+
+            { !this.props.isLoggedIn ? (
+              <li className="nav-item">
+                <Link to="/signup" className="nav-link" href="#">Sign Up</Link>
+              </li>
+            ) : null }
           </ul>
           <form className="form-inline my-2 my-lg-0">
             <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
