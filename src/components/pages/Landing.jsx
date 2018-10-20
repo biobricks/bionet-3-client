@@ -34,6 +34,7 @@ class Landing extends Component {
         if (!userExistsInLab) {
           labs.push(lab);
         } else {
+          labs.push(lab);
           labsJoined.push(lab)
         }
       }
