@@ -10,24 +10,13 @@ class Router extends Component {
   
   render() {
 
-    const landing = () => {
-      return ( <Landing {...this.props} /> );
-    };
-
-    const login = () => {
-      return <Login {...this.props} />;
-    };
-    const signup = () => {
-      return <Signup {...this.props} />;
-    };
-
     return (
       <main>
 
         <Switch>
-          <Route exact path='/' render={landing} />
-          <Route exact path="/login" render={login} />
-          <Route exact path="/signup" render={signup} />
+          <Route exact path='/' render={(props) => (<Landing {...props}/>)} />
+          <Route exact path='/login' render={(props) => (<Login {...props}/>)} />
+          <Route exact path='/signup' render={(props) => (<Signup {...props}/>)} />
         </Switch>
 
       </main>

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import logo from '../../images/bionet-logo.png';
 
 class Navigation extends Component {
-  
+
   render() {
-    
+    let pathName = this.props.location.pathname;
     return (
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <Link className="navbar-brand" to="/">
@@ -26,7 +26,7 @@ class Navigation extends Component {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ml-auto">
             
-            <li className="nav-item active">
+            <li className={pathName === '/' ? "nav-item active" : "nav-item"}>
               <Link className="nav-link" to="/">Home</Link>
             </li>
             
@@ -80,4 +80,4 @@ class Navigation extends Component {
   }
 }
 
-export default Navigation;
+export default withRouter(Navigation);
