@@ -7,6 +7,8 @@ import Footer from './partials/Footer';
 import moment from "moment";
 import axios from "axios";
 
+import appConfig from '../configuration.js';
+
 import './App.css';
 
 
@@ -31,7 +33,7 @@ class App extends Component {
     };
     //console.log(config);
     axios
-      .get("https://api.biohacking.services/api/dashboard", config)
+      .get(`${appConfig.apiBaseUrl}/api/dashboard`, config)
       .then(res => {
         let createdDate = new Date(res.data.user.createdAt);
         res.data.user["createdFromNow"] = moment(createdDate).fromNow();

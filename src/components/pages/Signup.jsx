@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import appConfig from '../../configuration.js';
 
 class Signup extends Component {
 
@@ -37,7 +38,7 @@ class Signup extends Component {
     const password = encodeURIComponent(this.state.user.password);
     const formData = `username=${username}&password=${password}&name=${name}&email=${email}`;
     const xhr = new XMLHttpRequest();
-    xhr.open('post', 'https://api.biohacking.services/signup');
+    xhr.open('post', `${appConfig.apiBaseUrl}/signup`);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
