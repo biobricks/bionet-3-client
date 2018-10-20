@@ -33,7 +33,7 @@ class Navigation extends Component {
             {(this.props.isLoggedIn) ? (
               <li className="nav-item dropdown">
               <a 
-                className="nav-link dropdown-toggle" 
+                className="nav-link dropdown-toggle text-capitalize" 
                 href="/" 
                 id="navbarDropdown" 
                 role="button" 
@@ -42,6 +42,28 @@ class Navigation extends Component {
                 aria-expanded="false"
               >
                 {this.props.currentUser.username}
+              </a>
+              <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                <Link className="dropdown-item" to="/">Action</Link>
+                <Link className="dropdown-item" to="/">Another action</Link>
+                <div className="dropdown-divider"></div>
+                <Link className="dropdown-item" to="/">Something else here</Link>
+              </div>
+            </li>
+            ) : null }
+
+            {(this.props.isLoggedIn && this.props.currentUser.isAdmin) ? (
+              <li className="nav-item dropdown">
+              <a 
+                className="nav-link dropdown-toggle" 
+                href="/" 
+                id="navbarDropdown" 
+                role="button" 
+                data-toggle="dropdown" 
+                aria-haspopup="true" 
+                aria-expanded="false"
+              >
+                Admin
               </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <Link className="dropdown-item" to="/">Action</Link>

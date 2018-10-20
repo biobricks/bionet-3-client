@@ -14,9 +14,9 @@ class Router extends Component {
       <main>
 
         <Switch>
-          <Route exact path='/' render={(props) => (<Landing {...props}/>)} />
-          <Route exact path='/login' render={(props) => (<Login {...props}/>)} />
-          <Route exact path='/signup' render={(props) => (<Signup {...props}/>)} />
+          <Route exact path='/' render={(props) => (<Landing {...props} {...this.props}/>)} />
+          <Route exact path='/login' render={(props) => (<Login {...props} {...this.props}/>)} />
+          <Route exact path='/signup' render={(props) => (<Signup {...props} {...this.props}/>)} />
         </Switch>
 
       </main>
