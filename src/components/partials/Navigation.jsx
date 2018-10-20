@@ -24,7 +24,7 @@ class Navigation extends Component {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav mr-auto">
+          <ul className="navbar-nav ml-auto">
             
             <li className="nav-item active">
               <Link className="nav-link" to="/">Home</Link>
@@ -41,7 +41,7 @@ class Navigation extends Component {
                 aria-haspopup="true" 
                 aria-expanded="false"
               >
-                Dropdown
+                {this.props.currentUser.username}
               </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <Link className="dropdown-item" to="/">Action</Link>
@@ -72,10 +72,7 @@ class Navigation extends Component {
               </li>
             ) : null }
           </ul>
-          <form className="form-inline my-2 my-lg-0">
-            <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
-            <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
+
         </div>
       </nav>
     );
