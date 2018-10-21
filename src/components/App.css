@@ -9,3 +9,19 @@
 .card {
   border-color: rgb(87, 104, 109);
 }
+
+.mdi-lg {
+	font-size: 1.2em;
+}
+
+.mdi-xl {
+	position: relative;
+	display: block;
+	float: left;
+	font-size: 1.8em;
+	margin-right: 10px;
+}
+
+.card-title span{
+	font-size: 1.6em;
+}
