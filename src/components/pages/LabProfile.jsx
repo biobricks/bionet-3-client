@@ -19,6 +19,8 @@ class LabProfile extends Component {
     this.getLab = this.getLab.bind(this);
     this.onRequestLabMembership = this.onRequestLabMembership.bind(this);
     this.onCancelRequestLabMembership = this.onCancelRequestLabMembership.bind(this);
+    this.onAcceptRequestLabMembership = this.onAcceptRequestLabMembership.bind(this);
+    this.onDenyRequestLabMembership = this.onDenyRequestLabMembership.bind(this);
     this.updateLab = this.updateLab.bind(this);
   }
 
@@ -74,23 +76,63 @@ class LabProfile extends Component {
     this.updateLab(lab);
   }
 
+  onAcceptRequestLabMembership(e) {
+    let acceptedRequestId = e.target.getAttribute('userid');
+    let lab = this.state.lab;
+    let users = [];
+    let joinRequests = [];
+    for(let i = 0; i < lab.users.length; i++){
+      let user = lab.users[i];
+      users.push(user._id);
+    };
+    users.push(acceptedRequestId);
+    for(let i = 0; i < lab.joinRequests.length; i++){
+      let request = lab.joinRequests[i];
+      if (acceptedRequestId !== request._id){
+        joinRequests.push(request._id);
+      }
+    };
+    lab.users = users;
+    lab.joinRequests = joinRequests;
+    this.updateLab(lab);
+  }
+
+  onDenyRequestLabMembership(e) {
+    let deniedRequestId = e.target.getAttribute('userid');
+    let lab = this.state.lab;
+    let users = [];
+    let joinRequests = [];
+    for(let i = 0; i < lab.users.length; i++){
+      let user = lab.users[i];
+      users.push(user._id);
+    };
+    for(let i = 0; i < lab.joinRequests.length; i++){
+      let request = lab.joinRequests[i];
+      if (deniedRequestId !== request._id){
+        joinRequests.push(request._id);
+      }
+    };
+    lab.users = users;
+    lab.joinRequests = joinRequests;
+    this.updateLab(lab);
+  }
+
   updateLab(lab) {
-      let config = {
-        'headers': {  
-          'authorization': `Bearer ${Auth.getToken()}`
-        },
-        'json': true
-      };
-      let labId = this.props.match.params.labId;
-      axios.post(`${appConfig.apiBaseUrl}/labs/${labId}/membership`, lab, config)
-      .then(res => {     
-        //console.log(res.data.data);
-        this.getLab();
-      })
-      .catch(error => {
-        console.error(error);
-      });      
-   
+    let config = {
+      'headers': {  
+        'authorization': `Bearer ${Auth.getToken()}`
+      },
+      'json': true
+    };
+    let labId = this.props.match.params.labId;
+    axios.post(`${appConfig.apiBaseUrl}/labs/${labId}/membership`, lab, config)
+    .then(res => {     
+      //console.log(res.data.data);
+      this.getLab();
+    })
+    .catch(error => {
+      console.error(error);
+    });
   }
 
   componentDidMount() {
@@ -124,6 +166,33 @@ class LabProfile extends Component {
         >
           {user.username}
         </Link>
+      )
+    });
+
+    const membershipRequests = joinRequests.map((user, index) => {
+      return (
+        <div 
+          key={shortid.generate()}
+          className="card-body"
+        >
+          <p className="card-text">{user.username} is requesting to join {this.state.lab.name}.</p>
+          <div className="btn-group">
+            <button          
+              className="btn btn-success"
+              userid={user._id}
+              onClick={this.onAcceptRequestLabMembership}
+            >
+              Accept
+            </button>
+            <button          
+              className="btn btn-danger"
+              userid={user._id}
+              onClick={this.onDenyRequestLabMembership}
+            >
+              Deny
+            </button>
+          </div>  
+        </div>
       )
     });
 
@@ -286,6 +355,20 @@ class LabProfile extends Component {
                   </div>
                   <ul className="list-group list-group-flush">
                     {members}
+                  </ul>                  
+                </div>
+              ) : null }
+
+              {(membershipRequests.length > 0) ? (
+                <div className="card rounded-0 mt-3">
+                  <div className="card-header bg-dark text-light rounded-0">
+                    <h5 className="card-title mb-0">
+                      <i className="mdi mdi-account-multiple mr-2" />
+                      Incoming Member Requests
+                    </h5>                      
+                  </div>
+                  <ul className="list-group list-group-flush">
+                    {membershipRequests}
                   </ul>                  
                 </div>
               ) : null }
