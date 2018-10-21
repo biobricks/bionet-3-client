@@ -150,8 +150,7 @@ class LabProfile extends Component {
                   <div className="card-title mb-0">
                     <i className="mdi mdi-xl mdi-teach" />
                     <span>{this.state.lab.name}</span>
-                    <div className="float-right btn-toolbar" role="toolbar">
-                      <div className="btn-group border-0" role="group">
+                      <div className="btn-group border-0 float-right" role="group">
                         {(currentUserIsMember) ? (
                           <div className="btn-group" role="group">                           
 
@@ -185,9 +184,12 @@ class LabProfile extends Component {
                                 Physical
                               </Link>
                             </div>
-
+                          </div>
+                        ) : null }
+                        {(currentUserIsMember) ? (  
+                          <div className="btn-group" role="group">  
                             <button 
-                              id="add-button" 
+                              id="settings-button" 
                               type="button" 
                               className="btn btn-primary dropdown-toggle rounded-0"
                               data-toggle="dropdown"
@@ -199,20 +201,20 @@ class LabProfile extends Component {
                             </button>
                             <div
                               className="dropdown-menu"
-                              aria-labelledby="add-button"
+                              aria-labelledby="settings-button"
                             >
                               <Link 
                                 to={`/labs/${this.props.match.params.labId}/edit`}
                                 className="dropdown-item"
                               >
-                                <i className="mdi mdi-grid mr-2"/>
+                                <i className="mdi mdi-pencil mr-2"/>
                                 Edit
                               </Link>
                               <Link 
                                 to={`/labs/${this.props.match.params.labId}/remove`}
                                 className="dropdown-item"
                               >
-                                <i className="mdi mdi-flask mr-2"/>
+                                <i className="mdi mdi-delete mr-2"/>
                                 Delete
                               </Link>
                             </div>
@@ -249,7 +251,7 @@ class LabProfile extends Component {
                           </div> 
                         ) : null }
                       </div>  
-                    </div>
+        
                   </div>
                 </div>
                 <div className="card-body">
