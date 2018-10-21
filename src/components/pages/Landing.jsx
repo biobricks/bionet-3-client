@@ -11,18 +11,22 @@ class Landing extends Component {
     this.state = {
       users: [],
       labs: [],
-      labsJoined: []
+      labsJoined: [],
+      labsNotJoined: [],
+      labsRequestPending: []
     };
     this.getAllLabs = this.getAllLabs.bind(this);
+    this.getAllUsers = this.getAllUsers.bind(this);
   }  
 
   getAllLabs() {
     axios.get(`${appConfig.apiBaseUrl}/labs`)
     .then(res => {
-      //console.log("response", res.data);
       let labArray = res.data.data;
       let labsJoined = [];
-      let labs = [];
+      let labsNotJoined = [];
+      let labsRequestPending = [];
+      let labsAll = [];
       for(let i = 0; i < labArray.length; i++){
         let lab = labArray[i];
         let userId = this.props.currentUser._id;
@@ -33,22 +37,34 @@ class Landing extends Component {
             userExistsInLab = true;
           }
         }
-        if (!userExistsInLab) {
-          labs.push(lab);
+        let userRequestPending = false;
+        for(let k = 0; k < lab.joinRequests.length; k++){
+          let requesterId = lab.joinRequests[k]._id;
+          if (requesterId === userId){
+            userRequestPending = true;
+          }
+        }
+        if (!userExistsInLab && !userRequestPending) {
+          labsNotJoined.push(lab);
+        } else if (!userExistsInLab && userRequestPending) {
+          labsRequestPending.push(lab);
         } else {
-          labs.push(lab);
           labsJoined.push(lab)
         }
+        labsAll.push(lab);         
       }
       this.setState({
-        labs,
-        labsJoined
+        labs: labsAll,
+        labsJoined,
+        labsNotJoined,
+        labsRequestPending
       });        
     })
     .catch(error => {
       console.error(error);        
     });    
   }
+
 
   getAllUsers() {
     axios.get(`${appConfig.apiBaseUrl}/users`)
@@ -68,6 +84,7 @@ class Landing extends Component {
   }
 
   render() {
+
     const labsJoined = this.state.labsJoined.map((lab, index) => {
       return (
         <Link 
@@ -78,12 +95,38 @@ class Landing extends Component {
           {lab.name}
         </Link>
       )
+    });
+    
+    const labsNotJoined = this.state.labsNotJoined.map((lab, index) => {
+      return (
+        <Link 
+          key={shortid.generate()}
+          className="list-group-item list-group-item-action"
+          to={`/labs/${lab._id}`}
+        >
+          {lab.name}
+        </Link>
+      )
     });    
+
+    const labsRequestPending = this.state.labsRequestPending.map((lab, index) => {
+      return (
+        <Link 
+          key={shortid.generate()}
+          className="list-group-item list-group-item-action"
+          to={`/labs/${lab._id}`}
+        >
+          {lab.name}
+        </Link>
+      )
+    });
+
     return (
       <div className="container-fluid">
-        <div className="row mt-3">
-          <div className="col col-md-7 col-lg-5 ml-md-auto mr-md-auto text-center">
-            <div className="card rounded-0">
+        <div className="row">
+
+          <div className="col-12 col-lg-7"> 
+            <div className="card rounded-0 mt-3">
               <div className="card-header bg-dark text-light rounded-0">
                 <h4 className="card-title mb-0">BioNet</h4>
               </div>
@@ -103,15 +146,75 @@ class Landing extends Component {
                 </p>
                 {(this.props.isLoggedIn) ? (
                   <p className="card-text">
-                    You currently belong to {this.state.labsJoined.length} Labs.
-                  </p>                  
+                    You currently belong to {this.state.labsJoined.length} {this.state.labsJoined.length > 1 ? "Labs" : "Lab"}.
+                  </p>
                 ) : null }
               </div>
-              <ul className="list-group list-group-flush">
-                {labsJoined}
-              </ul>
             </div>
           </div>
+
+          <div className="col-12 col-lg-5"> 
+            {(this.props.isLoggedIn) ? (
+              <div className="card mt-3 rounded-0">
+                <div className="card-header bg-dark text-light rounded-0">
+                  <h4 className="card-title mb-0 text-capitalize">Your Labs</h4>
+                </div>
+                {(this.state.labsJoined.length === 0) ? (
+                  <div className="card-body">
+                    <p className="card-text">
+                      You have not joined any Labs.
+                    </p>
+                  </div>                  
+                ) : null }
+                {(this.state.labsJoined.length > 0) ? (
+                  <ul className="list-group list-group-flush">
+                    {labsJoined}
+                  </ul>
+                ) : null }
+
+              </div>
+            ) : null }
+            {(this.props.isLoggedIn) ? (
+              <div className="card mt-3 rounded-0">
+                <div className="card-header bg-dark text-light rounded-0">
+                  <h4 className="card-title mb-0 text-capitalize">Labs To Join</h4>
+                </div>
+                {(this.state.labsNotJoined.length === 0) ? (
+                  <div className="card-body">
+                    <p className="card-text">
+                      There are currently no Labs for you to Join.
+                    </p>
+                  </div>
+                ) : null }
+                {(this.state.labsNotJoined.length > 0) ? (
+                  <ul className="list-group list-group-flush">
+                    {labsNotJoined}
+                  </ul>
+                ) : null }
+              </div>
+            ) : null }
+
+            {(this.props.isLoggedIn) ? (
+              <div className="card mt-3 rounded-0">
+                <div className="card-header bg-dark text-light rounded-0">
+                  <h4 className="card-title mb-0 text-capitalize">Membership Requests Pending</h4>
+                </div>
+                {(this.state.labsRequestPending.length === 0) ? (
+                  <div className="card-body">
+                    <p className="card-text">
+                      You currently have no pending membership requests to join other Labs.
+                    </p>
+                  </div>
+                ) : null }
+                {(this.state.labsRequestPending.length > 0) ? (
+                  <ul className="list-group list-group-flush">
+                    {labsRequestPending}
+                  </ul>
+                ) : null }
+              </div>
+            ) : null }
+          </div>
+
         </div>
 
       </div>

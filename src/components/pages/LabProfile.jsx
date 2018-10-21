@@ -95,6 +95,7 @@ class LabProfile extends Component {
 
   componentDidMount() {
     this.getLab();
+    console.log(this.props.match);
   }  
 
   render() { 
