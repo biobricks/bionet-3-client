@@ -50,7 +50,7 @@ class Grid extends Component {
     let gridContainerChildren = [];
     let positionCounter = 1;
 
-    if (!this.props.selectLocations) {
+    if (this.props.selectLocations === false) {
       for(let rowNo = 1; rowNo <= record.rows; rowNo++){
         for(let colNo = 1; colNo <= record.columns; colNo++){
           let emptyChildStyles = {
