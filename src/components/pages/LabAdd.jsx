@@ -6,6 +6,7 @@ import axios from 'axios';
 import shortid from 'shortid';
 import AlertCard from '../partials/AlertCard';
 import Grid from '../partials/Grid';
+import ContainerNewForm from '../partials/ContainerNewForm';
 
 class LabAdd extends Component {
   
@@ -149,7 +150,7 @@ class LabAdd extends Component {
                   </div>
                 ) : (
                   <div className="card-body">
-                    {(itemType === 'container') ? (<div>Container Form</div>) : null } 
+                    {(itemType === 'container') ? (<ContainerNewForm />) : null } 
                     {(itemType === 'physical') ? (<div>Physical Form</div>) : null }      
                   </div>
                 )}
