@@ -5,6 +5,7 @@ import appConfig from '../../configuration.js';
 import axios from 'axios';
 
 import Grid from '../partials/Grid';
+import AlertCard from '../partials/AlertCard';
 
 class LabNew extends Component {
   
@@ -81,108 +82,119 @@ class LabNew extends Component {
       return ( <Redirect to={`/`}/> )
     }
     return (
-      <div className="container-fluid">
-        <div className="row">
-          
-          <div className="col-12 col-md-7">
-            { (this.props.isLoggedIn) ? (
-              <div className="card rounded-0 mt-3">
-                <div className="card-header bg-dark text-light rounded-0">
-                  <h4 className="card-title mb-0">New Lab</h4>
-                </div>
-                <div className="card-body">
-                  <p className="card-text">
-                    Let's setup a new Lab! Your Lab will need:
-                  </p>  
-                  <form onSubmit={this.handleFormSubmit}>
-                    <input 
-                      name="creator"
-                      type="hidden"
-                      value={this.props.currentUser._id}
-                    />
-                    <div className="form-group">
-                      <label htmlFor="name">Name</label>
-                      <input 
-                        name="name"
-                        className="form-control"
-                        value={this.state.form.name}
-                        onChange={this.updateField}
-                        placeholder="Lab Name"
-                      />
-                      <small className="form-text text-muted">Required - The name of your Lab. This will be public and visible to other Labs.</small>
+      <div className="container-fluid pb-3">
+
+          { (this.props.isLoggedIn) ? (
+            <div className="row">
+              <div className="col-12 col-md-7">
+                { (this.props.isLoggedIn) ? (
+                  <div className="card rounded-0 mt-3">
+                    <div className="card-header bg-dark text-light rounded-0">
+                      <h4 className="card-title mb-0">New Lab</h4>
                     </div>
+                    <div className="card-body">
+                      <p className="card-text">
+                        Let's setup a new Lab! Your Lab will need:
+                      </p>  
+                      <form onSubmit={this.handleFormSubmit}>
+                        <input 
+                          name="creator"
+                          type="hidden"
+                          value={this.props.currentUser._id}
+                        />
+                        <div className="form-group">
+                          <label htmlFor="name">Name</label>
+                          <input 
+                            name="name"
+                            className="form-control"
+                            value={this.state.form.name}
+                            onChange={this.updateField}
+                            placeholder="Lab Name"
+                          />
+                          <small className="form-text text-muted">Required - The name of your Lab. This will be public and visible to other Labs.</small>
+                        </div>
 
-                    <div className="form-group">
-                      <label htmlFor="name">Description</label>
-                      <input 
-                        name="description"
-                        type="text"
-                        className="form-control"
-                        value={this.state.form.description}
-                        onChange={this.updateField}
-                        placeholder="A short description of the Lab."
-                      />
-                      <small className="form-text text-muted">Optional - Share a bit more detail on your Lab. Visible to the public and other Labs.</small>
+                        <div className="form-group">
+                          <label htmlFor="name">Description</label>
+                          <input 
+                            name="description"
+                            type="text"
+                            className="form-control"
+                            value={this.state.form.description}
+                            onChange={this.updateField}
+                            placeholder="A short description of the Lab."
+                          />
+                          <small className="form-text text-muted">Optional - Share a bit more detail on your Lab. Visible to the public and other Labs.</small>
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="name">Columns</label>
+                          <input 
+                            name="columns"
+                            type="number"
+                            className="form-control"
+                            value={this.state.form.columns}
+                            onChange={this.updateField}
+                            min="1"
+                            max="50"
+                            step="1"
+                          />
+                          <small className="form-text text-muted">
+                            Required - The number of columns in the grid representing your Lab area from a top-down view. Change to a value greater than 1.
+                          </small>
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="name">Rows</label>
+                          <input 
+                            name="rows"
+                            type="number"
+                            className="form-control"
+                            value={this.state.form.rows}
+                            onChange={this.updateField}
+                            min="1"
+                            max="50"
+                            step="1"
+                          />
+                          <small className="form-text text-muted">Required - The number of rows in the grid representing your Lab area from a top-down view. Change to a value greater than 1.</small>
+                        </div>
+
+                        <div className="form-group text-center">
+                          <div className="btn-group" role="group" aria-label="Basic example">
+                            <Link to="/" className="btn btn-secondary mt-3">Back</Link>
+                            <button 
+                              type="submit" 
+                              className="btn btn-success mt-3"
+                              disabled={!formValid}
+                            >Submit</button>
+                          </div>  
+                        </div>                    
+
+                      </form>
                     </div>
-
-                    <div className="form-group">
-                      <label htmlFor="name">Columns</label>
-                      <input 
-                        name="columns"
-                        type="number"
-                        className="form-control"
-                        value={this.state.form.columns}
-                        onChange={this.updateField}
-                        min="1"
-                        max="50"
-                        step="1"
-                      />
-                      <small className="form-text text-muted">
-                        Required - The number of columns in the grid representing your Lab area from a top-down view. Change to a value greater than 1.
-                      </small>
-                    </div>
-
-                    <div className="form-group">
-                      <label htmlFor="name">Rows</label>
-                      <input 
-                        name="rows"
-                        type="number"
-                        className="form-control"
-                        value={this.state.form.rows}
-                        onChange={this.updateField}
-                        min="1"
-                        max="50"
-                        step="1"
-                      />
-                      <small className="form-text text-muted">Required - The number of rows in the grid representing your Lab area from a top-down view. Change to a value greater than 1.</small>
-                    </div>
-
-                    <div className="form-group text-center">
-                      <div className="btn-group" role="group" aria-label="Basic example">
-                        <Link to="/" className="btn btn-secondary mt-3">Back</Link>
-                        <button 
-                          type="submit" 
-                          className="btn btn-success mt-3"
-                          disabled={!formValid}
-                        >Submit</button>
-                      </div>  
-                    </div>                    
-
-                  </form>
-                </div>
+                  </div>
+                ) : null }  
               </div>
-            ) : null }  
-          </div>
 
-          <div className="col-12 col-md-5">
-            <Grid 
-              demo={true}
-              recordType="Lab"
-              record={this.state.form}
-            />
-          </div>
-          
-        </div>
+              <div className="col-12 col-md-5">
+                <Grid 
+                  demo={true}
+                  selectLocations={true}
+                  recordType="Lab"
+                  record={this.state.form}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="row">
+              <div className="col-12 col-md-7 ml-auto mr-auto text-center">
+                <AlertCard 
+                  title="Login Required"
+                  message="You must be logged to view this content."
+                />
+              </div>
+            </div>
+          )}
       </div>
     );
   }

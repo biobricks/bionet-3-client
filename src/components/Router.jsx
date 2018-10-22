@@ -9,6 +9,7 @@ import Signup from "./pages/Signup";
 import LabNew from "./pages/LabNew";
 import LabProfile from "./pages/LabProfile";
 import LabList from "./pages/LabList";
+import LabAdd from "./pages/LabAdd";
 
 class Router extends Component {
   
@@ -25,6 +26,7 @@ class Router extends Component {
 
         <Switch>
           <Route exact path='/labs/new' render={(props) => (<LabNew {...props} {...this.props}/>)} />
+          <Route path='/labs/:labId/add/:itemType' render={(props) => (<LabAdd {...props} {...this.props}/>)} />
           <Route path='/labs/:labId' render={(props) => (<LabProfile {...props} {...this.props}/>)} />
           <Route exact path='/labs' render={(props) => (<LabList {...props} {...this.props}/>)} />
         </Switch>

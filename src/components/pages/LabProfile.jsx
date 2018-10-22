@@ -388,6 +388,7 @@ class LabProfile extends Component {
             {(Object.keys(this.state.lab).length > 0) ? (
               <Grid 
                 demo={false}
+                selectLocations={true}
                 recordType="Lab"
                 record={this.state.lab}
               />

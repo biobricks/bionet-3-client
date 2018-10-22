@@ -16,3 +16,8 @@
   background-color: rgb(0,210,250);
   border: 1px solid rgb(0,160,200);
 }
+
+.grid-container .selected.empty.grid-item {
+  background-color: rgb(0,210,250);
+  border: 1px solid rgb(0,160,200);
+}
