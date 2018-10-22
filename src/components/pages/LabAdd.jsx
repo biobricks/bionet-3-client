@@ -101,7 +101,6 @@ class LabAdd extends Component {
     let users = this.state.lab.users || [];
     let currentUserIsMember = false;
     let itemType = this.props.match.params.itemType || "container";
-    let newItemLocations = this.state.newItemLocations;
     for(let i = 0; i < users.length; i++) {
       let userId = users[i]._id || null;
       if (userId === this.props.currentUser._id) {

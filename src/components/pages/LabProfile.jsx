@@ -210,7 +210,7 @@ class LabProfile extends Component {
     }); 
 
     return (
-      <div className="container-fluid">
+      <div className="container-fluid pb-3">
         <div className="row">  
           { (this.props.isLoggedIn) ? (
             <div className="col-12 col-md-7">

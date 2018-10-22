@@ -122,7 +122,7 @@ class Landing extends Component {
     });
 
     return (
-      <div className="container-fluid">
+      <div className="container-fluid pb-3">
         <div className="row">
 
           <div className="col-12 col-lg-7"> 
