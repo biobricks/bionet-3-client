@@ -7,6 +7,8 @@ import shortid from 'shortid';
 import AlertCard from '../partials/AlertCard';
 import Grid from '../partials/Grid';
 
+import './LabProfile.css';
+
 class LabProfile extends Component {
   
   constructor(props) {
@@ -213,14 +215,14 @@ class LabProfile extends Component {
       <div className="container-fluid pb-3">
         <div className="row">  
           { (this.props.isLoggedIn) ? (
-            <div className="col-12 col-md-7">
+            <div className="col-12 col-lg-7">
 
               <div className="card rounded-0 mt-3">
                 <div className="card-header bg-dark text-light rounded-0">
-                  <div className="card-title mb-0">
-                    <i className="mdi mdi-xl mdi-teach" />
-                    <span>{this.state.lab.name}</span>
-                      <div className="btn-group border-0 float-right" role="group">
+                  <div className="card-title mb-0 text-center text-lg-left">
+                    
+                    <span><i className="mdi mdi-xl mdi-teach" /> {this.state.lab.name}</span>
+                      <div id="heading-toolbar" className="btn-group" role="group">
                         {(currentUserIsMember) ? (
                           <div className="btn-group" role="group">                           
 
@@ -324,7 +326,7 @@ class LabProfile extends Component {
         
                   </div>
                 </div>
-                <div className="card-body">
+                <div className="card-body text-center text-lg-left">
                   <p className="card-text">
                     {this.state.lab.description}
                   </p>
@@ -332,7 +334,7 @@ class LabProfile extends Component {
               </div>
               
               {(childContainers.length > 0) ? (
-                <div className="card rounded-0 mt-3">
+                <div className="card rounded-0 mt-3 text-center text-lg-left">
                   <div className="card-header bg-dark text-light rounded-0">
                     <h4 className="card-title mb-0">
                       <i className="mdi mdi-teach mr-2" />
@@ -346,7 +348,7 @@ class LabProfile extends Component {
               ) : null }
 
               {(members.length > 0) ? (
-                <div className="card rounded-0 mt-3">
+                <div className="card rounded-0 mt-3 text-center text-lg-left">
                   <div className="card-header bg-dark text-light rounded-0">
                     <h5 className="card-title mb-0">
                       <i className="mdi mdi-account-multiple mr-2" />
@@ -360,7 +362,7 @@ class LabProfile extends Component {
               ) : null }
 
               {(membershipRequests.length > 0) ? (
-                <div className="card rounded-0 mt-3">
+                <div className="card rounded-0 mt-3 text-center text-lg-left">
                   <div className="card-header bg-dark text-light rounded-0">
                     <h5 className="card-title mb-0">
                       <i className="mdi mdi-account-multiple mr-2" />
@@ -375,7 +377,7 @@ class LabProfile extends Component {
 
             </div>
           ) : (
-            <div className="col-12 col-md-7">
+            <div className="col-12 col-lg-7 text-center text-lg-left">
               <AlertCard 
                 title="Login Required"
                 message="You must be logged in to view this content."
@@ -384,7 +386,7 @@ class LabProfile extends Component {
           ) }  
           
 
-          <div className="col-12 col-md-5">
+          <div className="col-12 col-lg-5 text-center text-lg-left">
             {(Object.keys(this.state.lab).length > 0) ? (
               <Grid 
                 demo={false}

@@ -15,13 +15,11 @@
 }
 
 .mdi-xl {
-	position: relative;
-	display: block;
-	float: left;
-	font-size: 1.7em;
+	font-size: 1.1em;
 	margin-right: 10px;
 }
 
 .card-title span{
 	font-size: 1.75em;
 }
+
