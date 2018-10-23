@@ -196,6 +196,7 @@ class LabAdd extends Component {
                 removeLocation={this.removeLocation}
                 recordType="Lab"
                 record={this.state.lab}
+                containers={this.state.containers}
               />
             ) : null }
           </div>
