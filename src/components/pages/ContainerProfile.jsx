@@ -306,7 +306,7 @@ class ContainerProfile extends Component {
 
             </div>
           ) : (
-            <div className="col-12 col-lg-7 text-center text-lg-left">
+            <div className="col-12 col-lg-7 text-center">
               <AlertCard 
                 title="Login Required"
                 message="You must be logged in to view this content."
@@ -314,18 +314,19 @@ class ContainerProfile extends Component {
             </div>
           ) }  
           
-
-          <div className="col-12 col-lg-5 text-center text-lg-left">
-            {(Object.keys(this.state.lab).length > 0) ? (
-              <Grid 
-                demo={false}
-                selectLocations={false}
-                recordType="Container"
-                record={this.state.container}
-                containers={this.state.childContainers}
-              />
-            ) : null }
-          </div>
+          { (this.props.isLoggedIn) ? (
+            <div className="col-12 col-lg-5 text-center text-lg-left">
+              {(Object.keys(this.state.lab).length > 0) ? (
+                <Grid 
+                  demo={false}
+                  selectLocations={false}
+                  recordType="Container"
+                  record={this.state.container}
+                  containers={this.state.childContainers}
+                />
+              ) : null }
+            </div>
+          ) : null }  
           
         </div>
       </div>
