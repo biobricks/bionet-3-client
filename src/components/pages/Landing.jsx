@@ -208,8 +208,13 @@ class Landing extends Component {
                 {(this.state.labsJoined.length > 0) ? (
                   <ul className="list-group list-group-flush">
                     {labsJoined}
+                    <Link to="/labs/new" className="list-group-item list-group-item-action bg-success text-light rounded-0">+ Add New Lab</Link>
                   </ul>
-                ) : null }
+                ) : (
+                  <ul className="list-group list-group-flush">
+                    <Link to="/labs/new" className="list-group-item list-group-item-action bg-success text-light rounded-0">+ Add New Lab</Link>
+                  </ul>                  
+                )}
 
               </div>
             ) : null }
