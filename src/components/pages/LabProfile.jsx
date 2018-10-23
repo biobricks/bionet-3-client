@@ -23,6 +23,7 @@ class LabProfile extends Component {
     this.onCancelRequestLabMembership = this.onCancelRequestLabMembership.bind(this);
     this.onAcceptRequestLabMembership = this.onAcceptRequestLabMembership.bind(this);
     this.onDenyRequestLabMembership = this.onDenyRequestLabMembership.bind(this);
+    this.onRevokeLabMembership = this.onRevokeLabMembership.bind(this);
     this.updateLab = this.updateLab.bind(this);
   }
 
@@ -119,6 +120,25 @@ class LabProfile extends Component {
     this.updateLab(lab);
   }
 
+  onRevokeLabMembership(e) {
+    let lab = this.state.lab;
+    let users = [];
+    let joinRequests = [];
+    for(let i = 0; i < lab.users.length; i++){
+      let user = lab.users[i];
+      if (user._id !== this.props.currentUser._id){
+        users.push(user._id);
+      }  
+    };
+    for(let i = 0; i < lab.joinRequests.length; i++){
+      let request = lab.joinRequests[i];
+      joinRequests.push(request._id);
+    };
+    lab.users = users;
+    lab.joinRequests = joinRequests;
+    this.updateLab(lab);    
+  }
+  
   updateLab(lab) {
     let config = {
       'headers': {  
@@ -289,6 +309,13 @@ class LabProfile extends Component {
                                 <i className="mdi mdi-delete mr-2"/>
                                 Delete
                               </Link>
+                              <button 
+                                className="dropdown-item bg-danger text-light"
+                                onClick={this.onRevokeLabMembership}
+                              >
+                                <i className="mdi mdi-account-minus mr-2"/>
+                                Leave Lab                              
+                              </button>
                             </div>
 
                           </div> 
