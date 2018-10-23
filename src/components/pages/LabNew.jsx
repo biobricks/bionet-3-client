@@ -179,7 +179,7 @@ class LabNew extends Component {
               <div className="col-12 col-md-5">
                 <Grid 
                   demo={true}
-                  selectLocations={true}
+                  selectLocations={false}
                   recordType="Lab"
                   record={this.state.form}
                 />

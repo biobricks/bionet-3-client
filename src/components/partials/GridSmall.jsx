@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import shortid from 'shortid';
 import './Grid.css';
 
@@ -42,7 +42,6 @@ class Grid extends Component {
 
   render() {
     const newItemLocations = this.props.newItemLocations || [];
-    const containers = this.props.containers || [];
     const record = this.props.record || null;
     const gridContainerStyles = {
       'gridTemplateColumns': record ? `repeat(${record.columns}, 1fr)` : '1fr',
@@ -72,7 +71,7 @@ class Grid extends Component {
               pos={positionCounter}
               data-toggle="tooltip"
               data-placement="top"
-              title={`${this.props.recordType} ${colNo}, ${rowNo} (Empty)`}
+              title={`${this.props.recordType} ${rowNo}, ${colNo} (Empty)`}
               //onDragOver={this.props.onCellDragOver}
               //onDrop={!this.props.parentVisible ? this.props.onCellDrop : null}
               //draggable={false}
@@ -119,46 +118,9 @@ class Grid extends Component {
         }  
       }      
     }
-    // replace empty grid cells with child containers
-    for(let i = 0; i < containers.length; i++){
-      //let childIndex =  ((child.parent_y * gridContainerWidth) - gridContainerWidth) + child.parent_x - 1;
-      let container = containers[i];
-      for(let j = 0; j < container.locations.length; j++) {
-        let location = container.locations[j];
-        location['column'] = location[0];
-        location['row'] = location[1];
-        let gridWidth = record.columns;
-        let gridHeight = record.rows;
-        let locationIndex = ((location.row * gridHeight) - gridWidth) + location.column - 1;
-        let containerLink = (
-          <Link
-            key={shortid.generate()}
-            to={`/containers/${container._id}`}
-            style={{
-              'backgroundColor': container.bgColor,
-              'borderColor': container.bgColor
-            }}
-            className="lab-container grid-item"
-            data-toggle="tooltip"
-            data-placement="top"
-            title={`Container - ${container.name} ${location.column}, ${location.row}`}            
-          ></Link>
-        );
-        gridContainerChildren[locationIndex] = containerLink;
-      }
-    }
     return (
-      <div className="card rounded-0 mt-3">
-        <div className="card-header bg-dark text-light rounded-0">
-          <h4 className="card-title mb-0 text-capitalize">
-            {this.props.record.name.length > 0 ? this.props.record.name : (this.props.demo ? `(Select A ${this.props.recordType} Name)` : "Loading...")}
-          </h4>
-        </div>
-        <div className="card-body">
-          <div className="grid-container dropdown" style={gridContainerStyles}>
-            {gridContainerChildren}
-          </div>
-        </div>
+      <div className="grid-container dropdown" style={gridContainerStyles}>
+        {gridContainerChildren}
       </div>
     );
   }

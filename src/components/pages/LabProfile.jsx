@@ -29,7 +29,7 @@ class LabProfile extends Component {
   getLab() {
     axios.get(`${appConfig.apiBaseUrl}/labs/${this.props.match.params.labId}`)
     .then(res => {
-      //console.log("response", res.data);
+      console.log("response", res.data);
       this.setState({
         lab: res.data.data,
         containers: res.data.children
@@ -139,7 +139,7 @@ class LabProfile extends Component {
 
   componentDidMount() {
     this.getLab();
-    console.log(this.props.match);
+    //console.log(this.props.match);
   }  
 
   render() { 
@@ -337,7 +337,7 @@ class LabProfile extends Component {
                 <div className="card rounded-0 mt-3 text-center text-lg-left">
                   <div className="card-header bg-dark text-light rounded-0">
                     <h4 className="card-title mb-0">
-                      <i className="mdi mdi-teach mr-2" />
+                      <i className="mdi mdi-grid mr-2" />
                       Containers
                     </h4>                      
                   </div>
@@ -393,6 +393,7 @@ class LabProfile extends Component {
                 selectLocations={false}
                 recordType="Lab"
                 record={this.state.lab}
+                containers={this.state.containers}
               />
             ) : null }
           </div>

@@ -11,6 +11,11 @@
   overflow: hidden; 
 }
 
+.grid-container .lab-container.grid-item {
+  background-color: #00D1FD;
+  border: 1px solid #009DC9;
+}
+
 .grid-container .empty.grid-item:hover,
 .grid-container .empty.grid-item:active {
   background-color: rgb(0,210,250);

@@ -150,7 +150,12 @@ class LabAdd extends Component {
                   </div>
                 ) : (
                   <div className="card-body">
-                    {(itemType === 'container') ? (<ContainerNewForm />) : null } 
+                    {(itemType === 'container') ? (
+                      <ContainerNewForm 
+                        {...this.props} 
+                        {...this.state}
+                      />
+                    ) : null } 
                     {(itemType === 'physical') ? (<div>Physical Form</div>) : null }      
                   </div>
                 )}
