@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import shortid from 'shortid';
 import axios from "axios";
 import appConfig from '../../configuration.js';
+import TreeGraph from '../partials/TreeGraph';
 
 class Landing extends Component {
 
@@ -85,6 +86,8 @@ class Landing extends Component {
 
   render() {
 
+    const labs = this.state.labs || [];
+
     const labsJoined = this.state.labsJoined.map((lab, index) => {
       return (
         <Link 
@@ -121,6 +124,31 @@ class Landing extends Component {
       )
     });
 
+    let treeDataArray = [];
+
+    let treeData = {
+      name: 'BioNet',
+      children: []      
+    };
+
+    for(let labIndex = 0; labIndex < labs.length; labIndex++){
+      let lab = labs[labIndex];
+      let labNode = {
+        name: lab.name,
+        children: []
+      };
+      for(let labUserIndex = 0; labUserIndex < lab.users.length; labUserIndex++){
+        let labUser = lab.users[labUserIndex];
+        let labUserNode = {
+          name: labUser.username
+        };
+        labNode.children.push(labUserNode);
+      }
+      treeData.children.push(labNode);
+    }
+    treeDataArray.push(treeData);
+  
+
     return (
       <div className="container-fluid pb-3">
         <div className="row">
@@ -149,6 +177,20 @@ class Landing extends Component {
                     You currently belong to {this.state.labsJoined.length} {this.state.labsJoined.length > 1 ? "Labs" : "Lab"}.
                   </p>
                 ) : null }
+              </div>
+              <div className="card-body">
+                <div style={{'border': '1px solid #ccc', 'height': '400px', 'width': '100%', 'overflow': 'hidden'}}>
+                  
+                  <TreeGraph 
+                    data={treeDataArray}
+                    height="400px"
+                    width="100%"
+                  />
+
+                </div>
+              </div>
+              <div className="card-body">
+                nodes
               </div>
             </div>
           </div>
