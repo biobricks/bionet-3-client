@@ -11,6 +11,8 @@ import LabProfile from "./pages/LabProfile";
 import LabList from "./pages/LabList";
 import LabAdd from "./pages/LabAdd";
 
+import ContainerProfile from "./pages/ContainerProfile";
+
 class Router extends Component {
   
   render() {
@@ -29,6 +31,10 @@ class Router extends Component {
           <Route path='/labs/:labId/add/:itemType' render={(props) => (<LabAdd {...props} {...this.props}/>)} />
           <Route path='/labs/:labId' render={(props) => (<LabProfile {...props} {...this.props}/>)} />
           <Route exact path='/labs' render={(props) => (<LabList {...props} {...this.props}/>)} />
+        </Switch>
+
+        <Switch>
+          <Route path='/containers/:containerId' render={(props) => (<ContainerProfile {...props} {...this.props}/>)} />
         </Switch>
 
       </main>
