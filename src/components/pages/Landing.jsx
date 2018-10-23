@@ -189,9 +189,6 @@ class Landing extends Component {
 
                 </div>
               </div>
-              <div className="card-body">
-                nodes
-              </div>
             </div>
           </div>
 
