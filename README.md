@@ -14,6 +14,11 @@ git clone https://github.com/matthewstewart/bionet.git
 cd bionet
 ```
 
+### Install Dependencies
+```
+npm install
+```
+
 ### Start
 ```
 npm start
