@@ -39,6 +39,9 @@ class Grid extends Component {
     window.$('[data-toggle="tooltip"]').tooltip();
   }
 
+  componentWillUnmount() {
+    window.$('[data-toggle="tooltip"]').tooltip('dispose');
+  }
 
   render() {
     const newItemLocations = this.props.newItemLocations || [];
