@@ -4,23 +4,24 @@ import shortid from 'shortid';
 import axios from "axios";
 import appConfig from '../../configuration.js';
 import TreeGraph from '../partials/TreeGraph';
+import Loading from '../partials/Loading/Loading';
 
 class Landing extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      loaded: false,
       users: [],
       labs: [],
       labsJoined: [],
       labsNotJoined: [],
       labsRequestPending: []
     };
-    this.getAllLabs = this.getAllLabs.bind(this);
-    this.getAllUsers = this.getAllUsers.bind(this);
+    this.getData = this.getData.bind(this);
   }  
 
-  getAllLabs() {
+  getData() {
     axios.get(`${appConfig.apiBaseUrl}/labs`)
     .then(res => {
       let labArray = res.data.data;
@@ -54,25 +55,20 @@ class Landing extends Component {
         }
         labsAll.push(lab);         
       }
-      this.setState({
-        labs: labsAll,
-        labsJoined,
-        labsNotJoined,
-        labsRequestPending
-      });        
-    })
-    .catch(error => {
-      console.error(error);        
-    });    
-  }
-
-
-  getAllUsers() {
-    axios.get(`${appConfig.apiBaseUrl}/users`)
-    .then(res => {
-      this.setState({
-        users: res.data.data
-      });        
+      axios.get(`${appConfig.apiBaseUrl}/users`)
+      .then(res => {
+        this.setState({
+          loaded: true,
+          users: res.data.data,
+          labs: labsAll,
+          labsJoined,
+          labsNotJoined,
+          labsRequestPending
+        });        
+      })
+      .catch(error => {
+        console.error(error);        
+      });       
     })
     .catch(error => {
       console.error(error);        
@@ -80,11 +76,12 @@ class Landing extends Component {
   }
 
   componentDidMount() {
-    this.getAllLabs();
-    this.getAllUsers();
+    this.getData();
   }
 
   render() {
+
+    const isLoaded = this.state.loaded;
 
     const labs = this.state.labs || [];
 
@@ -151,8 +148,8 @@ class Landing extends Component {
 
     return (
       <div className="container-fluid pb-3">
+        {(isLoaded) ? (
         <div className="row">
-
           <div className="col-12 col-lg-7"> 
             <div className="card rounded-0 mt-3">
               <div className="card-header bg-dark text-light rounded-0">
@@ -260,7 +257,13 @@ class Landing extends Component {
           </div>
 
         </div>
-
+        ) : (
+          <div className="row justify-content-center">
+            <div className="col-12 col-lg-5">
+              <Loading />
+            </div>
+          </div>    
+        )}
       </div>
     );
 
