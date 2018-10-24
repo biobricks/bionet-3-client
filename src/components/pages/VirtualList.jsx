@@ -5,13 +5,17 @@ import appConfig from '../../configuration.js';
 class VirtualList extends Component {
   constructor() {
     super();
-    this.state = {}
+    this.state = {
+      virtuals: []
+    }
   }
 
   componentDidMount() {
     // let virtualArray = []
     axios.get(`${appConfig.apiBaseUrl}/virtuals`)
-    .then( res => console.log(res))
+    .then( res => {
+      this.setState({virtuals: res.data.data})
+    })
     .catch(e => console.log(e))
   }
   render() { 
