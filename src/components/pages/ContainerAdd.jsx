@@ -116,6 +116,7 @@ class ContainerAdd extends Component {
     let currentUserIsMember = false;
     let itemType = this.props.match.params.itemType || "container";
     const isLoaded = this.state.loaded;
+    const containerId = Object.keys(this.state.container).length > 0 ? this.state.container._id : "";
     for(let i = 0; i < users.length; i++) {
       let userId = users[i]._id || null;
       if (userId === this.props.currentUser._id) {
@@ -169,6 +170,7 @@ class ContainerAdd extends Component {
                     <div className="card-body">
                       {(itemType === 'container') ? (
                         <ContainerNewForm 
+                          parentId={containerId}
                           {...this.props} 
                           {...this.state}
                         />

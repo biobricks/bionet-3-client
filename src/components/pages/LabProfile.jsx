@@ -33,10 +33,18 @@ class LabProfile extends Component {
     axios.get(`${appConfig.apiBaseUrl}/labs/${this.props.match.params.labId}`)
     .then(res => {
       console.log("response", res.data);
+      let allChildContainers = res.data.children;
+      let containers = [];
+      for(let i = 0; i < allChildContainers.length; i++){
+        let childContainer = allChildContainers[i];
+        if (childContainer.parent === null) {
+          containers.push(childContainer);
+        }
+      }
       this.setState({
         loaded: true,
         lab: res.data.data,
-        containers: res.data.children
+        containers
       });        
     })
     .catch(error => {
