@@ -12,6 +12,7 @@ import LabList from "./pages/LabList";
 import LabAdd from "./pages/LabAdd";
 
 import ContainerProfile from "./pages/ContainerProfile";
+import ContainerAdd from "./pages/ContainerAdd";
 
 import VirtualList from "./pages/VirtualList";
 
@@ -36,6 +37,7 @@ class Router extends Component {
         </Switch>
 
         <Switch>
+          <Route path='/containers/:containerId/add/:itemType' render={(props) => (<ContainerAdd {...props} {...this.props}/>)} />
           <Route path='/containers/:containerId' render={(props) => (<ContainerProfile {...props} {...this.props}/>)} />
         </Switch>
 
