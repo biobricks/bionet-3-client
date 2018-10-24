@@ -12,7 +12,6 @@ class VirtualList extends Component {
   }
 
   componentDidMount() {
-    // let virtualArray = []
     axios.get(`${appConfig.apiBaseUrl}/virtuals`)
     .then( res => {
       this.setState({virtuals: res.data.data})
