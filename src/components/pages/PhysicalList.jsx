@@ -47,7 +47,7 @@ class PhysicalList extends Component {
               <div className="card rounded-0 mt-3">
                 <div className="card-header bg-dark text-light rounded-0">
                   <h4 className="card-title mb-0">
-                    <i className="mdi mdi-dna mr-2" />Physical List
+                    <i className="mdi mdi-flask mr-2" />Physical List
                   </h4>
                 </div>
                 <div className="card-body">
