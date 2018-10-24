@@ -21,10 +21,10 @@ class VirtualList extends Component {
   }
   render() { 
     return ( 
-    <div>
+    <div className="container-fluid">
       {this.state.virtuals.map(virtual => (
         <div key={shortid.generate()}>
-          <div className="VirtualListItem"> 
+          <div className="row"> 
             <p>{virtual.name}</p>
             <p>{virtual.description}</p>
           </div>
