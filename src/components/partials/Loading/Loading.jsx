@@ -9,7 +9,7 @@ class Loading extends Component {
         <div className="card-header bg-dark text-light rounded-0">
           <div className="card-title mb-0">
             <span> 
-              <div class="lds-ring"><div></div><div></div><div></div><div></div></div> 
+              <div className="lds-ring"><div></div><div></div><div></div><div></div></div> 
               BioNet Loading Data...
             </span>
           </div>
