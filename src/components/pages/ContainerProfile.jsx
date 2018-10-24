@@ -9,14 +9,17 @@ import Grid from '../partials/Grid';
 
 import './LabProfile.css';
 import Loading from '../partials/Loading/Loading';
+import Breadcrumbs from '../partials/Breadcrumbs';
 
 class ContainerProfile extends Component {
   
   constructor(props) {
     super(props);
     this.state = {
+      containerId: "",
       loaded: false,
       redirect: false,
+      path: [],
       lab: {},
       container: {},
       childContainers: []
@@ -86,17 +89,29 @@ class ContainerProfile extends Component {
   getContainer() {
     axios.get(`${appConfig.apiBaseUrl}/containers/${this.props.match.params.containerId}`)
     .then(res => {
-      console.log("response", res.data);
+      //console.log("response", res.data);
       let container = res.data.data;
       let childContainers = res.data.containers;
       axios.get(`${appConfig.apiBaseUrl}/labs/${container.lab._id}`)
       .then(response => {
-        console.log("response 2", response.data);
-        this.setState({
-          loaded: true,
-          lab: response.data.data,
-          container,
-          childContainers
+        //console.log("response 2", response.data);
+        let lab = response.data.data;
+        let apiEndpoint = `${appConfig.apiBaseUrl}/labs/${lab._id}/container/${container._id}`;
+        console.log(apiEndpoint);
+        axios.get(apiEndpoint)
+        .then(res => {
+          console.log("response 3", res.data.data);
+          this.setState({
+            loaded: true,
+            path: res.data.data,
+            containerId: this.props.match.params.containerId,
+            lab,
+            container,
+            childContainers            
+          });
+        })
+        .catch(error => {
+          console.error(error);        
         });
       })
       .catch(error => {
@@ -130,6 +145,17 @@ class ContainerProfile extends Component {
     this.getContainer();
     //console.log(this.props.match);
   }  
+
+  componentDidUpdate() {
+    let currentContainerId = this.props.match.params.containerId;
+    let containerId = this.state.containerId;
+    if (this.state.loaded && currentContainerId !== containerId){
+      console.log('dont match')
+      this.getContainer();
+    } else {
+      console.log('match')
+    }
+  }
 
   render() { 
     let users = this.state.lab.users || [];
@@ -281,6 +307,16 @@ class ContainerProfile extends Component {
           
                     </div>
                   </div>
+                  
+                  {(this.state.path.length > 0) ? (
+                    <Breadcrumbs 
+                      {...this.props}
+                      path={this.state.path}
+                      lab={this.state.lab}
+                      item={this.state.container}
+                    />
+                  ) : null }  
+
                   { (Object.keys(this.state.container).length > 0) ? (
                     <div className="card-body text-center text-lg-left">
                       {(this.state.container.description.length > 0) ? (

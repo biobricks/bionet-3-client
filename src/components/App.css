@@ -26,3 +26,11 @@
 button.dropdown-item:hover {
 	cursor: pointer;
 }
+
+.breadcrumb-link:hover {
+	cursor: pointer;
+}
+
+ol.breadcrumb {
+	margin-bottom: 0;
+}
