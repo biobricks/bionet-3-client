@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import appConfig from '../../configuration.js';
+import shortid from 'shortid';
 
 class VirtualList extends Component {
   constructor() {
@@ -19,7 +20,17 @@ class VirtualList extends Component {
     .catch(e => console.log(e))
   }
   render() { 
-    return ( <div><h1>VirtualList Component</h1></div> );
+    return ( 
+    <div>
+      {this.state.virtuals.map(virtual => (
+        <div key={shortid.generate()}>
+          <div className="VirtualListItem"> 
+            <p>{virtual.name}</p>
+            <p>{virtual.description}</p>
+          </div>
+        </div>
+      ))}
+    </div> );
   }
 }
  
