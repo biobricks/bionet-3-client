@@ -7,6 +7,7 @@ import shortid from 'shortid';
 import AlertCard from '../partials/AlertCard';
 import Grid from '../partials/Grid';
 import ContainerNewForm from '../partials/ContainerNewForm';
+import Loading from '../partials/Loading/Loading';
 
 class LabAdd extends Component {
   
@@ -16,7 +17,8 @@ class LabAdd extends Component {
       redirect: false,
       newItemLocations: [],
       lab: {},
-      containers: []
+      containers: [],
+      loaded: true
     };
     this.getLab = this.getLab.bind(this);
     this.updateLab = this.updateLab.bind(this);
@@ -102,6 +104,7 @@ class LabAdd extends Component {
     let users = this.state.lab.users || [];
     let currentUserIsMember = false;
     let itemType = this.props.match.params.itemType || "container";
+    const isLoaded = this.state.loaded;
     for(let i = 0; i < users.length; i++) {
       let userId = users[i]._id || null;
       if (userId === this.props.currentUser._id) {
@@ -123,7 +126,11 @@ class LabAdd extends Component {
     }); 
 
     return (
+
       <div className="container-fluid">
+
+        {(isLoaded) ? (
+
         <div className="row">  
           { (this.props.isLoggedIn && currentUserIsMember) ? (
             <div className="col-12 col-md-7">
@@ -202,6 +209,14 @@ class LabAdd extends Component {
           </div>
           
         </div>
+
+        ) : (
+          <div className="row justify-content-center">
+            <div className="col-12 col-lg-5">
+              <Loading />
+            </div>
+          </div> 
+        )}
       </div>
     );
   }
