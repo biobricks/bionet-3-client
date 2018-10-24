@@ -8,6 +8,7 @@ import AlertCard from '../partials/AlertCard';
 import Grid from '../partials/Grid';
 
 import './LabProfile.css';
+import Loading from '../partials/Loading/Loading';
 
 class ContainerProfile extends Component {
   
@@ -17,7 +18,8 @@ class ContainerProfile extends Component {
       redirect: false,
       lab: {},
       container: {},
-      childContainers: []
+      childContainers: [],
+      loaded: true
     };
     this.onRequestLabMembership = this.onRequestLabMembership.bind(this);
     this.onCancelRequestLabMembership = this.onCancelRequestLabMembership.bind(this);
@@ -133,6 +135,8 @@ class ContainerProfile extends Component {
     let joinRequests = this.state.lab.joinRequests || [];
     let currentUserIsMember = false;
     let currentUserPendingApproval = false;
+    const isLoaded = this.state.loaded;
+    
     for(let i = 0; i < users.length; i++) {
       let userId = users[i]._id || null;
       if (userId === this.props.currentUser._id) {
@@ -162,6 +166,8 @@ class ContainerProfile extends Component {
 
     return (
       <div className="container-fluid pb-3">
+
+      {(isLoaded) ? (
         <div className="row">  
           { (this.props.isLoggedIn) ? (
             <div className="col-12 col-lg-7">
@@ -329,6 +335,14 @@ class ContainerProfile extends Component {
           ) : null }  
           
         </div>
+
+      ) : (
+        <div className="row justify-content-center">
+            <div className="col-12 col-lg-5">
+              <Loading/>
+            </div>
+          </div> 
+      )}
       </div>
     );
   }
