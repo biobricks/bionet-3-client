@@ -11,6 +11,7 @@ import LabEdit from "./pages/LabEdit";
 import LabProfile from "./pages/LabProfile";
 import LabList from "./pages/LabList";
 import LabAdd from "./pages/LabAdd";
+import LabDelete from "./pages/LabDelete";
 
 import ContainerEdit from "./pages/ContainerEdit";
 import ContainerProfile from "./pages/ContainerProfile";
@@ -40,6 +41,7 @@ class Router extends Component {
           <Route exact path='/labs/new' render={(props) => (<LabNew {...props} {...this.props}/>)} />
           <Route path='/labs/:labId/edit' render={(props) => (<LabEdit {...props} {...this.props}/>)} />
           <Route path='/labs/:labId/add/:itemType' render={(props) => (<LabAdd {...props} {...this.props}/>)} />
+          <Route path='/labs/:labId/remove' render={(props) => (<LabDelete {...props} {...this.props}/>)} />
           <Route path='/labs/:labId' render={(props) => (<LabProfile {...props} {...this.props}/>)} />
           <Route exact path='/labs' render={(props) => (<LabList {...props} {...this.props}/>)} />
         </Switch>

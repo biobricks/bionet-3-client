@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Auth from "../../modules/Auth";
-import { Link, Redirect } from 'react-router-dom';
+// import Auth from "../../modules/Auth";
+// import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import appConfig from '../../configuration.js';
 import Loading from '../partials/Loading/Loading';
