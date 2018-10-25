@@ -14,6 +14,7 @@ import LabAdd from "./pages/LabAdd";
 
 import ContainerEdit from "./pages/ContainerEdit";
 import ContainerProfile from "./pages/ContainerProfile";
+import ContainerList from "./pages/ContainerList";
 import ContainerAdd from "./pages/ContainerAdd";
 
 import VirtualList from "./pages/VirtualList";
@@ -44,6 +45,7 @@ class Router extends Component {
           <Route path='/containers/:containerId/edit' render={(props) => (<ContainerEdit {...props} {...this.props}/>)} />
           <Route path='/containers/:containerId/add/:itemType' render={(props) => (<ContainerAdd {...props} {...this.props}/>)} />
           <Route path='/containers/:containerId' render={(props) => (<ContainerProfile {...props} {...this.props}/>)} />
+          <Route exact path='/containers' render={(props) => (<ContainerList {...props} {...this.props}/>)} />
         </Switch>
 
         <Switch>
