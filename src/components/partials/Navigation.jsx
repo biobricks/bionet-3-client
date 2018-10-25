@@ -63,10 +63,12 @@ class Navigation extends Component {
                 Admin
               </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <Link className="dropdown-item" to="/">Action</Link>
-                <Link className="dropdown-item" to="/">Another action</Link>
+                <h6 className="dropdown-header">List</h6>
                 <div className="dropdown-divider"></div>
-                <Link className="dropdown-item" to="/">Something else here</Link>
+                <Link className="dropdown-item" to="/labs">Labs</Link>
+                <Link className="dropdown-item" to="/containers">Containers</Link>
+                <Link className="dropdown-item" to="/physicals">Physicals</Link>
+                <Link className="dropdown-item" to="/virtuals">Virtuals</Link>
               </div>
             </li>
             ) : null }
