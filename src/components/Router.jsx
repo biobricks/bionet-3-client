@@ -17,7 +17,9 @@ import ContainerProfile from "./pages/ContainerProfile";
 import ContainerList from "./pages/ContainerList";
 import ContainerAdd from "./pages/ContainerAdd";
 
+import VirtualNew from "./pages/VirtualNew";
 import VirtualList from "./pages/VirtualList";
+
 import PhysicalList from './pages/PhysicalList';
 
 class Router extends Component {
@@ -49,6 +51,7 @@ class Router extends Component {
         </Switch>
 
         <Switch>
+          <Route exact path='/virtuals/new' render={(props) => (<VirtualNew {...props} {...this.props}/>)} />
           <Route path='/virtuals' render={(props) => (<VirtualList {...props} {...this.props}/>)} />
         </Switch>
 
