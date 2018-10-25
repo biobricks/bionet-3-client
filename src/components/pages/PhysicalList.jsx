@@ -70,11 +70,12 @@ class PhysicalList extends Component {
             </div>               
           </div>
         ) : (
-          <div className="row justify-content-center">
-            <div className="col-12 col-lg-5">
-              <Loading />
-            </div>
-          </div>  
+          <div 
+            className="row justify-content-center align-items-center"
+            style={{'minHeight': '100vh'}}
+          >
+            <Loading />
+          </div>   
         )}  
       </div> 
     );
