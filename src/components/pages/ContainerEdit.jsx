@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Auth from "../../modules/Auth";
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import appConfig from '../../configuration.js';
 import axios from 'axios';
 import AlertCard from '../partials/AlertCard';
@@ -180,8 +180,57 @@ class ContainerEdit extends Component {
                             onChange={this.updateField}
                             placeholder="Container Name"
                           />
-                          <small className="form-text text-muted">Required - The name of your Lab. This will be public and visible to other Labs.</small>
                         </div>
+
+                        <div className="form-group">
+                          <label htmlFor="name">Description</label>
+                          <input 
+                            name="description"
+                            type="text"
+                            className="form-control"
+                            value={this.state.container.description}
+                            onChange={this.updateField}
+                            placeholder="A short description of the Container."
+                          />
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="name">Columns</label>
+                          <input 
+                            name="columns"
+                            type="number"
+                            className="form-control"
+                            value={this.state.container.columns}
+                            onChange={this.updateField}
+                            min="1"
+                            max="50"
+                            step="1"
+                          />
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="name">Rows</label>
+                          <input 
+                            name="rows"
+                            type="number"
+                            className="form-control"
+                            value={this.state.container.rows}
+                            onChange={this.updateField}
+                            min="1"
+                            max="50"
+                            step="1"
+                          />
+                        </div>
+
+                        <div className="form-group text-center">
+                          <div className="btn-group" role="group" aria-label="Basic example">
+                            <Link to={`/containers/${this.props.match.params.containerId}`} className="btn btn-secondary mt-3">Back</Link>
+                            <button 
+                              type="submit" 
+                              className="btn btn-success mt-3"
+                            >Save Changes</button>
+                          </div>  
+                        </div>   
 
                       </form> 
 
