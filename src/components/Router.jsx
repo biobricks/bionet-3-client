@@ -17,6 +17,7 @@ import ContainerEdit from "./pages/ContainerEdit";
 import ContainerProfile from "./pages/ContainerProfile";
 import ContainerList from "./pages/ContainerList";
 import ContainerAdd from "./pages/ContainerAdd";
+import ContainerDelete from "./pages/ContainerDelete";
 
 import VirtualNew from "./pages/VirtualNew";
 import VirtualProfile from "./pages/VirtualProfile";
@@ -49,6 +50,7 @@ class Router extends Component {
         <Switch>
           <Route path='/containers/:containerId/edit' render={(props) => (<ContainerEdit {...props} {...this.props}/>)} />
           <Route path='/containers/:containerId/add/:itemType' render={(props) => (<ContainerAdd {...props} {...this.props}/>)} />
+          <Route path='/containers/:containerId/remove' render={(props) => (<ContainerDelete {...props} {...this.props}/>)} />
           <Route path='/containers/:containerId' render={(props) => (<ContainerProfile {...props} {...this.props}/>)} />
           <Route exact path='/containers' render={(props) => (<ContainerList {...props} {...this.props}/>)} />
         </Switch>

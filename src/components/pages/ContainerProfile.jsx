@@ -261,7 +261,7 @@ class ContainerProfile extends Component {
                                   Edit
                                 </Link>
                                 <Link 
-                                  to={`/labs/${this.props.match.params.containerId}/remove`}
+                                  to={`/containers/${this.props.match.params.containerId}/remove`}
                                   className="dropdown-item"
                                 >
                                   <i className="mdi mdi-delete mr-2"/>
