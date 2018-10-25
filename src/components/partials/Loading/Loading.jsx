@@ -6,16 +6,12 @@ class Loading extends Component {
   state = {  }
   render() { 
     return ( 
-      <div className="card rounded-0 mt-3">
-        <div className="card-header bg-dark text-light rounded-0">
-          <div className="card-title mb-0">
-            <span> 
+
+            <div className="Loader">
               <img src={Loader} className="preLoader" alt="nope" />
-              BioNet Loading Data...
-            </span>
-          </div>
-        </div>
-      </div>    
+              <h3 className="loader-title">Loading BioNet Data...</h3>
+            </div>
+ 
     );
   }
 }

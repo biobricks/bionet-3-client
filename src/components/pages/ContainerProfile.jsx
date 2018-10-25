@@ -150,10 +150,7 @@ class ContainerProfile extends Component {
     let currentContainerId = this.props.match.params.containerId;
     let containerId = this.state.containerId;
     if (this.state.loaded && currentContainerId !== containerId){
-      console.log('dont match')
       this.getContainer();
-    } else {
-      console.log('match')
     }
   }
 
