@@ -25,12 +25,18 @@ import VirtualList from "./pages/VirtualList";
 
 import PhysicalList from './pages/PhysicalList';
 
+import Alert from './partials/Alert';
+
 class Router extends Component {
   
   render() {
 
     return (
       <main>
+
+        <Switch>
+          <Route exact path='/alert' render={(props) => (<Alert {...props} {...this.props}/>)} />
+        </Switch>
 
         <Switch>
           <Route exact path='/' render={(props) => (<Landing {...props} {...this.props}/>)} />

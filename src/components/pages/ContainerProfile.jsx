@@ -10,6 +10,7 @@ import Grid from '../partials/Grid';
 import './LabProfile.css';
 import Loading from '../partials/Loading/Loading';
 import Breadcrumbs from '../partials/Breadcrumbs';
+import Alert from '../partials/Alert';
 
 class ContainerProfile extends Component {
   
@@ -188,6 +189,9 @@ class ContainerProfile extends Component {
       )
     });
 
+    const alertMessage = this.props.alertMessage;
+    const alertExists = alertMessage && alertMessage.length > 0;
+
     return (
       <div className="container-fluid pb-3">
         {(isLoaded) ? (
@@ -305,6 +309,13 @@ class ContainerProfile extends Component {
                     </div>
                   </div>
                   
+                  {(alertExists) ? (
+                    <Alert 
+                      type={this.props.type}
+                      message={this.props.message}
+                    />
+                  ) : null }  
+
                   {(this.state.path.length > 0) ? (
                     <Breadcrumbs 
                       {...this.props}

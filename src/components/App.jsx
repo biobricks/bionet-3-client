@@ -19,10 +19,24 @@ class App extends Component {
     this.state = {
       redirectHome: false,
       isLoggedIn: false,
-      currentUser: {}
+      currentUser: {},
+      alertType: "",
+      alertMessage: ""
     };
     this.loginCurrentUser = this.loginCurrentUser.bind(this);
     this.logoutCurrentUser = this.logoutCurrentUser.bind(this);
+    this.setAlert = this.setAlert.bind(this);
+  }
+
+  setAlert(alertType, alertMessage) {
+    console.log('setAlert called', alertType, alertMessage);
+    this.setState({ alertType, alertMessage});
+    setTimeout(() => {
+      this.setState({
+        alertType: "",
+        alertMessage: ""
+      });
+    }, 5000);
   }
 
   loginCurrentUser() {
@@ -72,7 +86,8 @@ class App extends Component {
           <Router 
             {...this.state}
             loginCurrentUser={this.loginCurrentUser}
-            logoutCurrentUser={this.logoutCurrentUser}           
+            logoutCurrentUser={this.logoutCurrentUser}
+            setAlert={this.setAlert}         
           />
         </div>
         <Footer />
