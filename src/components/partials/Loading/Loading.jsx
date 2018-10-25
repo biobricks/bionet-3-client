@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Loader from '../../../images/DNA_dblHelix.svg';
 import "./Loading.css"
 
 class Loading extends Component {
@@ -9,7 +10,7 @@ class Loading extends Component {
         <div className="card-header bg-dark text-light rounded-0">
           <div className="card-title mb-0">
             <span> 
-              <div className="lds-ring"><div></div><div></div><div></div><div></div></div> 
+              <img src={Loader} className="preLoader" alt="nope" />
               BioNet Loading Data...
             </span>
           </div>
