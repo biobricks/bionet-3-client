@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
 import LabNew from "./pages/LabNew";
+import LabEdit from "./pages/LabEdit";
 import LabProfile from "./pages/LabProfile";
 import LabList from "./pages/LabList";
 import LabAdd from "./pages/LabAdd";
@@ -32,6 +33,7 @@ class Router extends Component {
 
         <Switch>
           <Route exact path='/labs/new' render={(props) => (<LabNew {...props} {...this.props}/>)} />
+          <Route path='/labs/:labId/edit' render={(props) => (<LabEdit {...props} {...this.props}/>)} />
           <Route path='/labs/:labId/add/:itemType' render={(props) => (<LabAdd {...props} {...this.props}/>)} />
           <Route path='/labs/:labId' render={(props) => (<LabProfile {...props} {...this.props}/>)} />
           <Route exact path='/labs' render={(props) => (<LabList {...props} {...this.props}/>)} />
@@ -44,6 +46,9 @@ class Router extends Component {
 
         <Switch>
           <Route path='/virtuals' render={(props) => (<VirtualList {...props} {...this.props}/>)} />
+        </Switch>
+
+        <Switch>
           <Route path='/physicals' render={(props) => (<PhysicalList {...props} {...this.props}/>)} />
         </Switch>
 
