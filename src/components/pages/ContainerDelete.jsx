@@ -49,6 +49,7 @@ class ContainerDelete extends Component {
     axios.post(`${appConfig.apiBaseUrl}/containers/${containerId}/remove`, this.state.container, config)
     .then(res => {     
       //console.log(res.data.data);
+      this.props.setAlert("success", `${this.state.container.name} was successfully deleted.`);
       this.setState({
         redirect: true
       });
