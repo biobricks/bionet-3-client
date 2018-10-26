@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import Auth from "../../modules/Auth";
-// import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import appConfig from '../../configuration.js';
 import Loading from '../partials/Loading/Loading';
@@ -101,7 +101,14 @@ class VirtualProfile extends Component {
                     </p>
                   ) : null }
               
-
+                  {this.props.currentUser.isAdmin ? (
+                    <div className="btn-group rounded-0">
+                      <Link 
+                        to={`/virtuals/${virtual._id}/remove`}
+                        className="btn btn-danger"
+                      >Delete Virtual</Link>
+                    </div>
+                  ) : null }
                 </div>
 
               </div>
