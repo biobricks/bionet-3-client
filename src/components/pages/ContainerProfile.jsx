@@ -314,16 +314,14 @@ class ContainerProfile extends Component {
                       type={this.props.alertType}
                       message={this.props.alertMessage}
                     />
-                  ) : null }  
-
-                  {(this.state.path.length > 0) ? (
-                    <Breadcrumbs 
-                      {...this.props}
-                      path={this.state.path}
-                      lab={this.state.lab}
-                      item={this.state.container}
-                    />
-                  ) : null }  
+                  ) : 
+                  <Breadcrumbs 
+                  {...this.props}
+                    path={this.state.path}
+                    lab={this.state.lab}
+                    item={this.state.container}
+                  />
+                }  
 
                   { (Object.keys(this.state.container).length > 0) ? (
                     <div className="card-body text-center text-lg-left">
