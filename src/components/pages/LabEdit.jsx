@@ -60,6 +60,7 @@ class LabEdit extends Component {
     axios.post(`${appConfig.apiBaseUrl}/labs/${labId}/edit`, lab, config)
     .then(res => {     
       //console.log(res.data.data);
+      this.props.setAlert("success", `${this.state.lab.name} was successfully updated.`);
       this.setState({
         redirect: true
       });
