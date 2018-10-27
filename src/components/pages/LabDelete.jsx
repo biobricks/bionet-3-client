@@ -58,6 +58,7 @@ class LabDelete extends Component {
     axios.post(`${appConfig.apiBaseUrl}/labs/${labId}/remove`, this.state.lab, config)
     .then(res => {     
       //console.log(res.data.data);
+      this.props.setAlert("success", `${this.state.lab.name} was successfully deleted.`);
       this.setState({
         redirect: true
       });
