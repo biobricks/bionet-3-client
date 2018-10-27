@@ -311,8 +311,8 @@ class ContainerProfile extends Component {
                   
                   {(alertExists) ? (
                     <Alert 
-                      type={this.props.type}
-                      message={this.props.message}
+                      type={this.props.alertType}
+                      message={this.props.alertMessage}
                     />
                   ) : null }  
 
