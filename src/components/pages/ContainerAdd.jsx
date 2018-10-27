@@ -141,11 +141,9 @@ class ContainerAdd extends Component {
       <div className="container-fluid">
 
         {(isLoaded) ? (
-
           <div className="row">  
             { (this.props.isLoggedIn && currentUserIsMember) ? (
               <div className="col-12 col-md-7">
-
                 <div className="card rounded-0 mt-3">
                   <div className="card-header bg-dark text-light rounded-0">
                     {(itemType === 'container') ? (
@@ -193,7 +191,6 @@ class ContainerAdd extends Component {
                     </ul>                  
                   </div>
                 ) : null }
-
               </div>
             ) : (
               <div className="col-12 col-md-7 ml-auto mr-auto text-center">
@@ -204,7 +201,6 @@ class ContainerAdd extends Component {
               </div>
             ) }  
             
-
             <div className="col-12 col-md-5">
               {(Object.keys(this.state.lab).length > 0) ? (
                 <Grid 
