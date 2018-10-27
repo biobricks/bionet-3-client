@@ -5,6 +5,7 @@ import axios from "axios";
 import appConfig from '../../configuration.js';
 import TreeGraph from '../partials/TreeGraph';
 import Loading from '../partials/Loading/Loading';
+import Alert from '../partials/Alert';
 
 class Landing extends Component {
 
@@ -145,6 +146,8 @@ class Landing extends Component {
     }
     treeDataArray.push(treeData);
   
+    const alertMessage = this.props.alertMessage;
+    const alertExists = alertMessage && alertMessage.length > 0;
 
     return (
       <div className="container-fluid pb-3">
@@ -156,6 +159,13 @@ class Landing extends Component {
                 <h4 className="card-title mb-0">BioNet</h4>
               </div>
               <div className="card-body">
+              
+                {(alertExists) ? (
+                  <Alert 
+                    type={this.props.alertType}
+                    message={this.props.alertMessage}
+                  />
+                ) : null }
 
                 {(this.props.isLoggedIn) ? (
                   <p className="card-text">
