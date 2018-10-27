@@ -155,18 +155,18 @@ class Landing extends Component {
         <div className="row">
           <div className="col-12 col-lg-7"> 
             <div className="card rounded-0 mt-3">
-              <div className="card-header bg-dark text-light rounded-0">
-                <h4 className="card-title mb-0">BioNet</h4>
-              </div>
-              <div className="card-body">
               
-                {(alertExists) ? (
+              {(alertExists) ? (
                   <Alert 
                     type={this.props.alertType}
                     message={this.props.alertMessage}
                   />
-                ) : null }
-
+              ) : null }
+              
+              <div className="card-header bg-dark text-light rounded-0">
+                <h4 className="card-title mb-0">BioNet</h4>
+              </div>
+              <div className="card-body">
                 {(this.props.isLoggedIn) ? (
                   <p className="card-text">
                     Welcome back to the BioNet <strong>{this.props.currentUser.username}</strong>!
