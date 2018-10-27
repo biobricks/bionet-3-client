@@ -252,6 +252,7 @@ class LabProfile extends Component {
       <div className="container-fluid pb-3">
         {(isLoaded) ? (
           <div className="row">
+
               { (this.props.isLoggedIn) ? (
               <div className="col-12 col-lg-7">
                 <div className="card rounded-0 mt-3">
@@ -261,6 +262,7 @@ class LabProfile extends Component {
                     message={this.props.alertMessage}
                   />
                 ) : null }
+                
                   <div className="card-header bg-dark text-light rounded-0">
                     <div className="card-title mb-0 text-center text-lg-left">
                       
