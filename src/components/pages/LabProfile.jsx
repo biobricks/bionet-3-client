@@ -7,6 +7,7 @@ import shortid from 'shortid';
 import AlertCard from '../partials/AlertCard';
 import Grid from '../partials/Grid';
 import Loading from '../partials/Loading/Loading';
+import Alert from '../partials/Alert';
 
 import './LabProfile.css';
 
@@ -244,14 +245,22 @@ class LabProfile extends Component {
       )
     }); 
 
+    const alertMessage = this.props.alertMessage;
+    const alertExists = alertMessage && alertMessage.length > 0;
+
     return (
       <div className="container-fluid pb-3">
         {(isLoaded) ? (
-          <div className="row">  
-            { (this.props.isLoggedIn) ? (
+          <div className="row">
+              { (this.props.isLoggedIn) ? (
               <div className="col-12 col-lg-7">
-
                 <div className="card rounded-0 mt-3">
+                {(alertExists) ? (
+                  <Alert 
+                    type={this.props.alertType}
+                    message={this.props.alertMessage}
+                  />
+                ) : null }
                   <div className="card-header bg-dark text-light rounded-0">
                     <div className="card-title mb-0 text-center text-lg-left">
                       
