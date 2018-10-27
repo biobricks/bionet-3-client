@@ -252,25 +252,21 @@ class LabProfile extends Component {
       <div className="container-fluid pb-3">
         {(isLoaded) ? (
           <div className="row">
-
               { (this.props.isLoggedIn) ? (
               <div className="col-12 col-lg-7">
                 <div className="card rounded-0 mt-3">
-                {(alertExists) ? (
-                  <Alert 
-                    type={this.props.alertType}
-                    message={this.props.alertMessage}
-                  />
-                ) : null }
-                
+                  {(alertExists) ? (
+                        <Alert 
+                        type={this.props.alertType}
+                        message={this.props.alertMessage}
+                        />
+                  ) :  
                   <div className="card-header bg-dark text-light rounded-0">
-                    <div className="card-title mb-0 text-center text-lg-left">
-                      
+                    <div className="card-title mb-0 text-center text-lg-left">  
                       <span><i className="mdi mdi-xl mdi-teach" /> {this.state.lab.name}</span>
                         <div id="heading-toolbar" className="btn-group" role="group">
                           {(currentUserIsMember) ? (
                             <div className="btn-group" role="group">                           
-
                               <button 
                                 id="add-button" 
                                 type="button" 
@@ -375,9 +371,10 @@ class LabProfile extends Component {
                             </div> 
                           ) : null }
                         </div>  
-          
                     </div>
                   </div>
+                  
+                  }
                   <div className="card-body text-center text-lg-left">
                     <p className="card-text">
                       {this.state.lab.description}
