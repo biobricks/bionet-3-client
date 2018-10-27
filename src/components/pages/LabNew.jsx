@@ -48,7 +48,8 @@ class LabNew extends Component {
         'json': true
       };  
       axios.post(`${appConfig.apiBaseUrl}/labs/new`, formData, config)
-      .then(res => {     
+      .then(res => {
+        this.props.setAlert("success", `${this.state.lab.name} was successfully created.`);     
         this.setState({ 
           lab: res.data.data,
           redirect: true 
