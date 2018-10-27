@@ -87,7 +87,6 @@ class ContainerDelete extends Component {
           <div className="row">  
             { (this.props.isLoggedIn && currentUserIsMember) ? (
               <div className="col-12 col-lg-7">
-
                 <div className="card rounded-0 mt-3">
                   <div className="card-header bg-dark text-light rounded-0">
                     <div className="card-title mb-0 text-center text-lg-left">
@@ -110,7 +109,6 @@ class ContainerDelete extends Component {
                     </div>
                   </div>
                 </div>
-
               </div>
             ) : (
               <div className="col-12 col-lg-7 text-center">
