@@ -140,7 +140,6 @@ class ContainerAdd extends Component {
 
     return (
       <div className="container-fluid">
-
         {(isLoaded) ? (
           <FadeIn>
             <div className="row">  
