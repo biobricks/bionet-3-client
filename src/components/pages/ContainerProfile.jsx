@@ -11,6 +11,7 @@ import './LabProfile.css';
 import Loading from '../partials/Loading/Loading';
 import Breadcrumbs from '../partials/Breadcrumbs';
 import Alert from '../partials/Alert';
+import FadeIn from 'react-fade-in';
 
 class ContainerProfile extends Component {
   
@@ -195,189 +196,190 @@ class ContainerProfile extends Component {
     return (
       <div className="container-fluid pb-3">
         {(isLoaded) ? (
-          <div className="row">  
-            { (this.props.isLoggedIn) ? (
-              <div className="col-12 col-lg-7">
+          <FadeIn>
+            <div className="row">  
+              { (this.props.isLoggedIn) ? (
+                <div className="col-12 col-lg-7">
 
-                <div className="card rounded-0 mt-3">
-                  <div className="card-header bg-dark text-light rounded-0">
-                    <div className="card-title mb-0 text-center text-lg-left">
-                      
-                      <span><i className="mdi mdi-xl mdi-grid" /> {this.state.container.name}</span>
-                        <div id="heading-toolbar" className="btn-group" role="group">
-                          {(currentUserIsMember) ? (
-                            <div className="btn-group" role="group">                           
+                  <div className="card rounded-0 mt-3">
+                    <div className="card-header bg-dark text-light rounded-0">
+                      <div className="card-title mb-0 text-center text-lg-left">
+                        
+                        <span><i className="mdi mdi-xl mdi-grid" /> {this.state.container.name}</span>
+                          <div id="heading-toolbar" className="btn-group" role="group">
+                            {(currentUserIsMember) ? (
+                              <div className="btn-group" role="group">                           
 
-                              <button 
-                                id="add-button" 
-                                type="button" 
-                                className="btn btn-success dropdown-toggle rounded-0"
-                                data-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                              >
-                                <i className="mdi mdi-lg mdi-plus-box mr-1" />
-                                Add&nbsp;
-                              </button>
-                              <div
-                                className="dropdown-menu"
-                                aria-labelledby="add-button"
-                              >
-                                <Link 
-                                  to={`/containers/${this.props.match.params.containerId}/add/container`}
-                                  className="dropdown-item"
+                                <button 
+                                  id="add-button" 
+                                  type="button" 
+                                  className="btn btn-success dropdown-toggle rounded-0"
+                                  data-toggle="dropdown"
+                                  aria-haspopup="true"
+                                  aria-expanded="false"
                                 >
-                                  <i className="mdi mdi-grid mr-2"/>
-                                  Container
-                                </Link>
-                                <Link 
-                                  to={`/containers/${this.props.match.params.containerId}/add/physical`}
-                                  className="dropdown-item"
+                                  <i className="mdi mdi-lg mdi-plus-box mr-1" />
+                                  Add&nbsp;
+                                </button>
+                                <div
+                                  className="dropdown-menu"
+                                  aria-labelledby="add-button"
                                 >
-                                  <i className="mdi mdi-flask mr-2"/>
-                                  Physical
-                                </Link>
+                                  <Link 
+                                    to={`/containers/${this.props.match.params.containerId}/add/container`}
+                                    className="dropdown-item"
+                                  >
+                                    <i className="mdi mdi-grid mr-2"/>
+                                    Container
+                                  </Link>
+                                  <Link 
+                                    to={`/containers/${this.props.match.params.containerId}/add/physical`}
+                                    className="dropdown-item"
+                                  >
+                                    <i className="mdi mdi-flask mr-2"/>
+                                    Physical
+                                  </Link>
+                                </div>
                               </div>
-                            </div>
-                          ) : null }
-                          {(currentUserIsMember) ? (  
-                            <div className="btn-group" role="group">  
-                              <button 
-                                id="settings-button" 
-                                type="button" 
-                                className="btn btn-primary dropdown-toggle rounded-0"
-                                data-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                              >
-                                <i className="mdi mdi-lg mdi-settings-box mr-1" />
-                                Settings&nbsp;
-                              </button>
-                              <div
-                                className="dropdown-menu"
-                                aria-labelledby="settings-button"
-                              >
-                                <Link 
-                                  to={`/containers/${this.props.match.params.containerId}/edit`}
-                                  className="dropdown-item"
+                            ) : null }
+                            {(currentUserIsMember) ? (  
+                              <div className="btn-group" role="group">  
+                                <button 
+                                  id="settings-button" 
+                                  type="button" 
+                                  className="btn btn-primary dropdown-toggle rounded-0"
+                                  data-toggle="dropdown"
+                                  aria-haspopup="true"
+                                  aria-expanded="false"
                                 >
-                                  <i className="mdi mdi-pencil mr-2"/>
-                                  Edit
-                                </Link>
-                                <Link 
-                                  to={`/containers/${this.props.match.params.containerId}/remove`}
-                                  className="dropdown-item"
+                                  <i className="mdi mdi-lg mdi-settings-box mr-1" />
+                                  Settings&nbsp;
+                                </button>
+                                <div
+                                  className="dropdown-menu"
+                                  aria-labelledby="settings-button"
                                 >
-                                  <i className="mdi mdi-delete mr-2"/>
-                                  Delete
-                                </Link>
-                              </div>
+                                  <Link 
+                                    to={`/containers/${this.props.match.params.containerId}/edit`}
+                                    className="dropdown-item"
+                                  >
+                                    <i className="mdi mdi-pencil mr-2"/>
+                                    Edit
+                                  </Link>
+                                  <Link 
+                                    to={`/containers/${this.props.match.params.containerId}/remove`}
+                                    className="dropdown-item"
+                                  >
+                                    <i className="mdi mdi-delete mr-2"/>
+                                    Delete
+                                  </Link>
+                                </div>
 
-                            </div> 
-                          ) : null }
-                          {(!currentUserIsMember && !currentUserPendingApproval) ? (
-                            <div className="btn-group" role="group">
-                              <button  
-                                className="btn btn-success rounded-0"
-                                onClick={this.onRequestLabMembership}
-                              >
-                                <i className="mdi mdi-account-plus mr-1" />
-                                Request Membership
-                              </button>
+                              </div> 
+                            ) : null }
+                            {(!currentUserIsMember && !currentUserPendingApproval) ? (
+                              <div className="btn-group" role="group">
+                                <button  
+                                  className="btn btn-success rounded-0"
+                                  onClick={this.onRequestLabMembership}
+                                >
+                                  <i className="mdi mdi-account-plus mr-1" />
+                                  Request Membership
+                                </button>
 
-                            </div> 
-                          ) : null }
-                          {(currentUserPendingApproval) ? (
-                            <div className="btn-group" role="group">
-                              <button 
-                                className="btn btn-warning rounded-0 disabled"
-                              >
-                                <i className="mdi mdi-account-plus mr-1" />
-                                Membership Pending Approval
-                              </button>                             
-                              <button 
-                                className="btn btn-sm btn-secondary rounded-0"
-                                onClick={this.onCancelRequestLabMembership}
-                              >
-                                <i className="mdi mdi-account-plus mr-1" />
-                                Cancel Request
-                              </button>
-                            </div> 
-                          ) : null }
-                        </div>  
-          
+                              </div> 
+                            ) : null }
+                            {(currentUserPendingApproval) ? (
+                              <div className="btn-group" role="group">
+                                <button 
+                                  className="btn btn-warning rounded-0 disabled"
+                                >
+                                  <i className="mdi mdi-account-plus mr-1" />
+                                  Membership Pending Approval
+                                </button>                             
+                                <button 
+                                  className="btn btn-sm btn-secondary rounded-0"
+                                  onClick={this.onCancelRequestLabMembership}
+                                >
+                                  <i className="mdi mdi-account-plus mr-1" />
+                                  Cancel Request
+                                </button>
+                              </div> 
+                            ) : null }
+                          </div>  
+            
+                      </div>
                     </div>
+                    
+                    {(alertExists) ? (
+                      <Alert 
+                        type={this.props.alertType}
+                        message={this.props.alertMessage}
+                      />
+                    ) : 
+                    <Breadcrumbs 
+                    {...this.props}
+                      path={this.state.path}
+                      lab={this.state.lab}
+                      item={this.state.container}
+                    />
+                  }  
+
+                    { (Object.keys(this.state.container).length > 0) ? (
+                      <div className="card-body text-center text-lg-left">
+                        {(this.state.container.description.length > 0) ? (
+                          <p className="card-text">
+                          {this.state.container.description}
+                        </p>
+                        ) : (
+                          <p className="card-text">
+                            No description provided.
+                          </p>
+                        )}
+                      </div>
+                    ) : null }
                   </div>
                   
-                  {(alertExists) ? (
-                    <Alert 
-                      type={this.props.alertType}
-                      message={this.props.alertMessage}
-                    />
-                  ) : 
-                  <Breadcrumbs 
-                  {...this.props}
-                    path={this.state.path}
-                    lab={this.state.lab}
-                    item={this.state.container}
-                  />
-                }  
-
-                  { (Object.keys(this.state.container).length > 0) ? (
-                    <div className="card-body text-center text-lg-left">
-                      {(this.state.container.description.length > 0) ? (
-                        <p className="card-text">
-                        {this.state.container.description}
-                      </p>
-                      ) : (
-                        <p className="card-text">
-                          No description provided.
-                        </p>
-                      )}
+                  {(containers.length > 0) ? (
+                    <div className="card rounded-0 mt-3 text-center text-lg-left">
+                      <div className="card-header bg-dark text-light rounded-0">
+                        <h4 className="card-title mb-0">
+                          <i className="mdi mdi-grid mr-2" />
+                          Containers
+                        </h4>                      
+                      </div>
+                      <ul className="list-group list-group-flush">
+                        {containers}
+                      </ul>                  
                     </div>
                   ) : null }
-                </div>
-                
-                {(containers.length > 0) ? (
-                  <div className="card rounded-0 mt-3 text-center text-lg-left">
-                    <div className="card-header bg-dark text-light rounded-0">
-                      <h4 className="card-title mb-0">
-                        <i className="mdi mdi-grid mr-2" />
-                        Containers
-                      </h4>                      
-                    </div>
-                    <ul className="list-group list-group-flush">
-                      {containers}
-                    </ul>                  
-                  </div>
-                ) : null }
 
-              </div>
-            ) : (
-              <div className="col-12 col-lg-7 text-center">
-                <AlertCard 
-                  title="Login Required"
-                  message="You must be logged in to view this content."
-                />
-              </div>
-            ) }  
-            
-            { (this.props.isLoggedIn) ? (
-              <div className="col-12 col-lg-5 text-center text-lg-left">
-                {(Object.keys(this.state.lab).length > 0) ? (
-                  <Grid 
-                    demo={false}
-                    selectLocations={false}
-                    recordType="Container"
-                    record={this.state.container}
-                    containers={this.state.childContainers}
+                </div>
+              ) : (
+                <div className="col-12 col-lg-7 text-center">
+                  <AlertCard 
+                    title="Login Required"
+                    message="You must be logged in to view this content."
                   />
-                ) : null }
-              </div>
-            ) : null }  
-            
-          </div> 
-    
+                </div>
+              ) }  
+              
+              { (this.props.isLoggedIn) ? (
+                <div className="col-12 col-lg-5 text-center text-lg-left">
+                  {(Object.keys(this.state.lab).length > 0) ? (
+                    <Grid 
+                      demo={false}
+                      selectLocations={false}
+                      recordType="Container"
+                      record={this.state.container}
+                      containers={this.state.childContainers}
+                    />
+                  ) : null }
+                </div>
+              ) : null }  
+              
+            </div> 
+          </FadeIn>
         ) : (
           <div 
             className="row justify-content-center align-items-center"
