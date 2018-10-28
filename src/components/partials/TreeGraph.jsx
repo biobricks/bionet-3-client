@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Tree from "react-d3-tree";
 
 class TreeGraph extends Component {
-
   constructor(props) {
     super(props);
     this.state = {};
