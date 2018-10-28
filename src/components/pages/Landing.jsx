@@ -6,6 +6,7 @@ import appConfig from '../../configuration.js';
 import TreeGraph from '../partials/TreeGraph';
 import Loading from '../partials/Loading/Loading';
 import Alert from '../partials/Alert';
+import FadeIn from 'react-fade-in';
 
 class Landing extends Component {
 
@@ -152,123 +153,121 @@ class Landing extends Component {
     return (
       <div className="container-fluid pb-3">
         {(isLoaded) ? (
-        <div className="row">
-          <div className="col-12 col-lg-7"> 
-            <div className="card rounded-0 mt-3">
-
-              {
-                (alertExists) ? (
-                  <Alert 
-                    type={this.props.alertType}
-                    message={this.props.alertMessage}
-                  />
-                ) : 
-                <div className="card-header bg-dark text-light rounded-0">
-                  <h4 className="card-title mb-0">BioNet</h4>
-                </div> 
-              }
-
-              <div className="card-body">
-                {(this.props.isLoggedIn) ? (
+        <FadeIn>
+          <div className="row">
+            <div className="col-12 col-lg-7"> 
+              <div className="card rounded-0 mt-3">
+                {
+                  (alertExists) ? (
+                    <Alert 
+                      type={this.props.alertType}
+                      message={this.props.alertMessage}
+                    />
+                  ) : 
+                  <div className="card-header bg-dark text-light rounded-0">
+                    <h4 className="card-title mb-0">BioNet</h4>
+                  </div> 
+                }
+                <div className="card-body">
+                  {(this.props.isLoggedIn) ? (
+                    <p className="card-text">
+                      Welcome back to the BioNet <strong>{this.props.currentUser.username}</strong>!
+                    </p>                  
+                  ) : (
+                    <p className="card-text">
+                      Welcome to the BioNet!
+                    </p>
+                  )}
                   <p className="card-text">
-                    Welcome back to the BioNet <strong>{this.props.currentUser.username}</strong>!
-                  </p>                  
-                ) : (
-                  <p className="card-text">
-                    Welcome to the BioNet!
+                    There are currently {this.state.users.length} Users at {this.state.labs.length} Labs listed.
                   </p>
-                )}
-                <p className="card-text">
-                  There are currently {this.state.users.length} Users at {this.state.labs.length} Labs listed.
-                </p>
-                {(this.props.isLoggedIn) ? (
-                  <p className="card-text">
-                    You currently belong to {this.state.labsJoined.length} {this.state.labsJoined.length > 1 ? "Labs" : "Lab"}.
-                  </p>
-                ) : null }
-              </div>
-              <div className="card-body">
-                <div style={{'border': '1px solid #ccc', 'height': '400px', 'width': '100%', 'overflow': 'hidden'}}>
-                  
-                  <TreeGraph 
-                    data={treeDataArray}
-                    height="400px"
-                    width="100%"
-                  />
-
+                  {(this.props.isLoggedIn) ? (
+                    <p className="card-text">
+                      You currently belong to {this.state.labsJoined.length} {this.state.labsJoined.length > 1 ? "Labs" : "Lab"}.
+                    </p>
+                  ) : null }
+                </div>
+                <div className="card-body">
+                  <div style={{'border': '1px solid #ccc', 'height': '400px', 'width': '100%', 'overflow': 'hidden'}}>
+                    <TreeGraph 
+                      data={treeDataArray}
+                      height="400px"
+                      width="100%"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="col-12 col-lg-5"> 
-            {(this.props.isLoggedIn) ? (
-              <div className="card mt-3 rounded-0">
-                <div className="card-header bg-dark text-light rounded-0">
-                  <h4 className="card-title mb-0 text-capitalize">Your Labs</h4>
-                </div>
-                {(this.state.labsJoined.length === 0) ? (
-                  <div className="card-body">
-                    <p className="card-text">
-                      You have not joined any Labs.
-                    </p>
-                  </div>                  
-                ) : null }
-                {(this.state.labsJoined.length > 0) ? (
-                  <ul className="list-group list-group-flush">
-                    {labsJoined}
-                    <Link to="/labs/new" className="list-group-item list-group-item-action bg-success text-light rounded-0">+ Add New Lab</Link>
-                  </ul>
-                ) : (
-                  <ul className="list-group list-group-flush">
-                    <Link to="/labs/new" className="list-group-item list-group-item-action bg-success text-light rounded-0">+ Add New Lab</Link>
-                  </ul>                  
-                )}
-
-              </div>
-            ) : null }
-            {(this.props.isLoggedIn) ? (
-              <div className="card mt-3 rounded-0">
-                <div className="card-header bg-dark text-light rounded-0">
-                  <h4 className="card-title mb-0 text-capitalize">Labs To Join</h4>
-                </div>
-                {(this.state.labsNotJoined.length === 0) ? (
-                  <div className="card-body">
-                    <p className="card-text">
-                      There are currently no Labs for you to Join.
-                    </p>
+            <div className="col-12 col-lg-5"> 
+              {(this.props.isLoggedIn) ? (
+                <div className="card mt-3 rounded-0">
+                  <div className="card-header bg-dark text-light rounded-0">
+                    <h4 className="card-title mb-0 text-capitalize">Your Labs</h4>
                   </div>
-                ) : null }
-                {(this.state.labsNotJoined.length > 0) ? (
-                  <ul className="list-group list-group-flush">
-                    {labsNotJoined}
-                  </ul>
-                ) : null }
-              </div>
-            ) : null }
+                  {(this.state.labsJoined.length === 0) ? (
+                    <div className="card-body">
+                      <p className="card-text">
+                        You have not joined any Labs.
+                      </p>
+                    </div>                  
+                  ) : null }
+                  {(this.state.labsJoined.length > 0) ? (
+                    <ul className="list-group list-group-flush">
+                      {labsJoined}
+                      <Link to="/labs/new" className="list-group-item list-group-item-action bg-success text-light rounded-0">+ Add New Lab</Link>
+                    </ul>
+                  ) : (
+                    <ul className="list-group list-group-flush">
+                      <Link to="/labs/new" className="list-group-item list-group-item-action bg-success text-light rounded-0">+ Add New Lab</Link>
+                    </ul>                  
+                  )}
 
-            {(this.props.isLoggedIn) ? (
-              <div className="card mt-3 rounded-0">
-                <div className="card-header bg-dark text-light rounded-0">
-                  <h4 className="card-title mb-0 text-capitalize">Membership Requests Pending</h4>
                 </div>
-                {(this.state.labsRequestPending.length === 0) ? (
-                  <div className="card-body">
-                    <p className="card-text">
-                      You currently have no pending membership requests to join other Labs.
-                    </p>
+              ) : null }
+              {(this.props.isLoggedIn) ? (
+                <div className="card mt-3 rounded-0">
+                  <div className="card-header bg-dark text-light rounded-0">
+                    <h4 className="card-title mb-0 text-capitalize">Labs To Join</h4>
                   </div>
-                ) : null }
-                {(this.state.labsRequestPending.length > 0) ? (
-                  <ul className="list-group list-group-flush">
-                    {labsRequestPending}
-                  </ul>
-                ) : null }
-              </div>
-            ) : null }
-          </div>
+                  {(this.state.labsNotJoined.length === 0) ? (
+                    <div className="card-body">
+                      <p className="card-text">
+                        There are currently no Labs for you to Join.
+                      </p>
+                    </div>
+                  ) : null }
+                  {(this.state.labsNotJoined.length > 0) ? (
+                    <ul className="list-group list-group-flush">
+                      {labsNotJoined}
+                    </ul>
+                  ) : null }
+                </div>
+              ) : null }
 
-        </div>
+              {(this.props.isLoggedIn) ? (
+                <div className="card mt-3 rounded-0">
+                  <div className="card-header bg-dark text-light rounded-0">
+                    <h4 className="card-title mb-0 text-capitalize">Membership Requests Pending</h4>
+                  </div>
+                  {(this.state.labsRequestPending.length === 0) ? (
+                    <div className="card-body">
+                      <p className="card-text">
+                        You currently have no pending membership requests to join other Labs.
+                      </p>
+                    </div>
+                  ) : null }
+                  {(this.state.labsRequestPending.length > 0) ? (
+                    <ul className="list-group list-group-flush">
+                      {labsRequestPending}
+                    </ul>
+                  ) : null }
+                </div>
+              ) : null }
+            </div>
+
+          </div>
+        </FadeIn>
         ) : (
           <div 
             className="row justify-content-center align-items-center"
