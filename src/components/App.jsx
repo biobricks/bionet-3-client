@@ -36,7 +36,7 @@ class App extends Component {
         alertType: "",
         alertMessage: ""
       });
-    }, 5000);
+    }, 3000);
   }
 
   loginCurrentUser() {

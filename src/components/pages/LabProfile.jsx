@@ -256,127 +256,128 @@ class LabProfile extends Component {
               { (this.props.isLoggedIn) ? (
               <div className="col-12 col-lg-7">
                 <div className="card rounded-0 mt-3">
-                {(alertExists) ? (
-                  <Alert 
-                    type={this.props.alertType}
-                    message={this.props.alertMessage}
-                  />
-                ) : null }
-                  <div className="card-header bg-dark text-light rounded-0">
-                    <div className="card-title mb-0 text-center text-lg-left">
-                      
-                      <span><i className="mdi mdi-xl mdi-teach" /> {this.state.lab.name}</span>
-                        <div id="heading-toolbar" className="btn-group" role="group">
-                          {(currentUserIsMember) ? (
-                            <div className="btn-group" role="group">                           
-
-                              <button 
-                                id="add-button" 
-                                type="button" 
-                                className="btn btn-success dropdown-toggle rounded-0"
-                                data-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                              >
-                                <i className="mdi mdi-lg mdi-plus-box mr-1" />
-                                Add&nbsp;
-                              </button>
-                              <div
-                                className="dropdown-menu"
-                                aria-labelledby="add-button"
-                              >
-                                <Link 
-                                  to={`/labs/${this.props.match.params.labId}/add/container`}
-                                  className="dropdown-item"
-                                >
-                                  <i className="mdi mdi-grid mr-2"/>
-                                  Container
-                                </Link>
-                                <Link 
-                                  to={`/labs/${this.props.match.params.labId}/add/physical`}
-                                  className="dropdown-item"
-                                >
-                                  <i className="mdi mdi-flask mr-2"/>
-                                  Physical
-                                </Link>
-                              </div>
-                            </div>
-                          ) : null }
-                          {(currentUserIsMember) ? (  
-                            <div className="btn-group" role="group">  
-                              <button 
-                                id="settings-button" 
-                                type="button" 
-                                className="btn btn-primary dropdown-toggle rounded-0"
-                                data-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                              >
-                                <i className="mdi mdi-lg mdi-settings-box mr-1" />
-                                Settings&nbsp;
-                              </button>
-                              <div
-                                className="dropdown-menu"
-                                aria-labelledby="settings-button"
-                              >
-                                <Link 
-                                  to={`/labs/${this.props.match.params.labId}/edit`}
-                                  className="dropdown-item"
-                                >
-                                  <i className="mdi mdi-pencil mr-2"/>
-                                  Edit
-                                </Link>
-                                <Link 
-                                  to={`/labs/${this.props.match.params.labId}/remove`}
-                                  className="dropdown-item"
-                                >
-                                  <i className="mdi mdi-delete mr-2"/>
-                                  Delete
-                                </Link>
+                  
+                  {
+                    (alertExists) ? (
+                        <Alert 
+                        type={this.props.alertType}
+                        message={this.props.alertMessage}
+                        />
+                    ) :
+                    <div className="card-header bg-dark text-light rounded-0">
+                      <div className="card-title mb-0 text-center text-lg-left">  
+                        <span><i className="mdi mdi-xl mdi-teach" /> {this.state.lab.name}</span>
+                          <div id="heading-toolbar" className="btn-group" role="group">
+                            {(currentUserIsMember) ? (
+                              <div className="btn-group" role="group">                           
                                 <button 
-                                  className="dropdown-item bg-danger text-light"
-                                  onClick={this.onRevokeLabMembership}
+                                  id="add-button" 
+                                  type="button" 
+                                  className="btn btn-success dropdown-toggle rounded-0"
+                                  data-toggle="dropdown"
+                                  aria-haspopup="true"
+                                  aria-expanded="false"
                                 >
-                                  <i className="mdi mdi-account-minus mr-2"/>
-                                  Leave Lab                              
+                                  <i className="mdi mdi-lg mdi-plus-box mr-1" />
+                                  Add&nbsp;
                                 </button>
+                                <div
+                                  className="dropdown-menu"
+                                  aria-labelledby="add-button"
+                                >
+                                  <Link 
+                                    to={`/labs/${this.props.match.params.labId}/add/container`}
+                                    className="dropdown-item"
+                                  >
+                                    <i className="mdi mdi-grid mr-2"/>
+                                    Container
+                                  </Link>
+                                  <Link 
+                                    to={`/labs/${this.props.match.params.labId}/add/physical`}
+                                    className="dropdown-item"
+                                  >
+                                    <i className="mdi mdi-flask mr-2"/>
+                                    Physical
+                                  </Link>
+                                </div>
                               </div>
+                            ) : null }
+                            {(currentUserIsMember) ? (  
+                              <div className="btn-group" role="group">  
+                                <button 
+                                  id="settings-button" 
+                                  type="button" 
+                                  className="btn btn-primary dropdown-toggle rounded-0"
+                                  data-toggle="dropdown"
+                                  aria-haspopup="true"
+                                  aria-expanded="false"
+                                >
+                                  <i className="mdi mdi-lg mdi-settings-box mr-1" />
+                                  Settings&nbsp;
+                                </button>
+                                <div
+                                  className="dropdown-menu"
+                                  aria-labelledby="settings-button"
+                                >
+                                  <Link 
+                                    to={`/labs/${this.props.match.params.labId}/edit`}
+                                    className="dropdown-item"
+                                  >
+                                    <i className="mdi mdi-pencil mr-2"/>
+                                    Edit
+                                  </Link>
+                                  <Link 
+                                    to={`/labs/${this.props.match.params.labId}/remove`}
+                                    className="dropdown-item"
+                                  >
+                                    <i className="mdi mdi-delete mr-2"/>
+                                    Delete
+                                  </Link>
+                                  <button 
+                                    className="dropdown-item bg-danger text-light"
+                                    onClick={this.onRevokeLabMembership}
+                                  >
+                                    <i className="mdi mdi-account-minus mr-2"/>
+                                    Leave Lab                              
+                                  </button>
+                                </div>
 
-                            </div> 
-                          ) : null }
-                          {(!currentUserIsMember && !currentUserPendingApproval) ? (
-                            <div className="btn-group" role="group">
-                              <button  
-                                className="btn btn-success rounded-0"
-                                onClick={this.onRequestLabMembership}
-                              >
-                                <i className="mdi mdi-account-plus mr-1" />
-                                Request Membership
-                              </button>
+                              </div> 
+                            ) : null }
+                            {(!currentUserIsMember && !currentUserPendingApproval) ? (
+                              <div className="btn-group" role="group">
+                                <button  
+                                  className="btn btn-success rounded-0"
+                                  onClick={this.onRequestLabMembership}
+                                >
+                                  <i className="mdi mdi-account-plus mr-1" />
+                                  Request Membership
+                                </button>
 
-                            </div> 
-                          ) : null }
-                          {(currentUserPendingApproval) ? (
-                            <div className="btn-group" role="group">
-                              <button 
-                                className="btn btn-warning rounded-0 disabled"
-                              >
-                                <i className="mdi mdi-account-plus mr-1" />
-                                Membership Pending Approval
-                              </button>                             
-                              <button 
-                                className="btn btn-sm btn-secondary rounded-0"
-                                onClick={this.onCancelRequestLabMembership}
-                              >
-                                <i className="mdi mdi-account-plus mr-1" />
-                                Cancel Request
-                              </button>
-                            </div> 
-                          ) : null }
-                        </div>  
-          
+                              </div> 
+                            ) : null }
+                            {(currentUserPendingApproval) ? (
+                              <div className="btn-group" role="group">
+                                <button 
+                                  className="btn btn-warning rounded-0 disabled"
+                                >
+                                  <i className="mdi mdi-account-plus mr-1" />
+                                  Membership Pending Approval
+                                </button>                             
+                                <button 
+                                  className="btn btn-sm btn-secondary rounded-0"
+                                  onClick={this.onCancelRequestLabMembership}
+                                >
+                                  <i className="mdi mdi-account-plus mr-1" />
+                                  Cancel Request
+                                </button>
+                              </div> 
+                            ) : null }
+                          </div>  
+                      </div>
                     </div>
-                  </div>
+                  }
+
                   <div className="card-body text-center text-lg-left">
                     <p className="card-text">
                       {this.state.lab.description}
