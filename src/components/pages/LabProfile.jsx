@@ -214,22 +214,24 @@ class LabProfile extends Component {
           className="card-body"
         >
           <p className="card-text">{user.username} is requesting to join {this.state.lab.name}.</p>
-          <div className="btn-group">
-            <button          
-              className="btn btn-success"
-              userid={user._id}
-              onClick={this.onAcceptRequestLabMembership}
-            >
-              Accept
-            </button>
-            <button          
-              className="btn btn-danger"
-              userid={user._id}
-              onClick={this.onDenyRequestLabMembership}
-            >
-              Deny
-            </button>
-          </div>  
+          {currentUserIsMember ? (
+            <div className="btn-group">
+              <button          
+                className="btn btn-success"
+                userid={user._id}
+                onClick={this.onAcceptRequestLabMembership}
+              >
+                Accept
+              </button>
+              <button          
+                className="btn btn-danger"
+                userid={user._id}
+                onClick={this.onDenyRequestLabMembership}
+              >
+                Deny
+              </button>
+            </div> 
+          ) : null }   
         </div>
       )
     });
