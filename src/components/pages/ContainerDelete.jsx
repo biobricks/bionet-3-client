@@ -6,6 +6,7 @@ import axios from 'axios';
 import AlertCard from '../partials/AlertCard';
 import Grid from '../partials/Grid';
 import Loading from '../partials/Loading/Loading';
+import FadeIn from 'react-fade-in';
 
 class ContainerDelete extends Component {
   
@@ -84,6 +85,7 @@ class ContainerDelete extends Component {
     return (
       <div className="container-fluid pb-3">
         {(isLoaded) ? (
+          <FadeIn>
           <div className="row">  
             { (this.props.isLoggedIn && currentUserIsMember) ? (
               <div className="col-12 col-lg-7">
@@ -134,6 +136,7 @@ class ContainerDelete extends Component {
             ) : null }  
             
           </div>
+          </FadeIn>
         ) : (
           <div 
             className="row justify-content-center align-items-center"
