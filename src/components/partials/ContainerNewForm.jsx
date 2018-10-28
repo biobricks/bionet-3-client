@@ -21,8 +21,8 @@ class ContainerNewForm extends Component {
         rows: 1,
         columns: 1,
         category: "General",
-        locations: this.props.newItemLocations || [],
-        bgColor: "#00D1FD"
+        bgColor: "#00D1FD",
+        locations: []
       }
     };
     this.updateField = this.updateField.bind(this);
@@ -58,6 +58,8 @@ class ContainerNewForm extends Component {
     e.preventDefault();
     let formData = this.state.form;
     //console.log(formData);
+    formData.locations = this.props.newItemLocations;
+    console.log(formData);
     this.submitForm(formData);
   }
 
