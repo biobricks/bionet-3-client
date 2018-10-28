@@ -8,6 +8,7 @@ import AlertCard from '../partials/AlertCard';
 import Grid from '../partials/Grid';
 import ContainerNewForm from '../partials/ContainerNewForm';
 import Loading from '../partials/Loading/Loading';
+import FadeIn from 'react-fade-in';
 
 class ContainerAdd extends Component {
   
@@ -141,82 +142,83 @@ class ContainerAdd extends Component {
       <div className="container-fluid">
 
         {(isLoaded) ? (
-          <div className="row">  
-            { (this.props.isLoggedIn && currentUserIsMember) ? (
-              <div className="col-12 col-md-7">
-                <div className="card rounded-0 mt-3">
-                  <div className="card-header bg-dark text-light rounded-0">
-                    {(itemType === 'container') ? (
-                      <div className="card-title mb-0">
-                        <i className="mdi mdi-xl mdi-grid" />
-                        <span>Add Container</span>
+          <FadeIn>
+            <div className="row">  
+              { (this.props.isLoggedIn && currentUserIsMember) ? (
+                <div className="col-12 col-md-7">
+                  <div className="card rounded-0 mt-3">
+                    <div className="card-header bg-dark text-light rounded-0">
+                      {(itemType === 'container') ? (
+                        <div className="card-title mb-0">
+                          <i className="mdi mdi-xl mdi-grid" />
+                          <span>Add Container</span>
+                        </div>
+                      ) : (
+                        <div className="card-title mb-0">
+                          <i className="mdi mdi-xl mdi-flask" />
+                          <span>Add Physical</span>
+                        </div>
+                      )}
+                    </div>
+                    {(this.state.newItemLocations.length === 0) ? (
+                      <div className="card-body">
+                        <p className="card-text">
+                          Select one or more cells for the <span className="text-capitalize">{itemType}</span> to occupy within {this.state.containers.name}.
+                        </p>       
                       </div>
                     ) : (
-                      <div className="card-title mb-0">
-                        <i className="mdi mdi-xl mdi-flask" />
-                        <span>Add Physical</span>
+                      <div className="card-body">
+                        {(itemType === 'container') ? (
+                          <ContainerNewForm 
+                            parentId={containerId}
+                            {...this.props} 
+                            {...this.state}
+                          />
+                        ) : null } 
+                        {(itemType === 'physical') ? (<div>Physical Form</div>) : null }      
                       </div>
                     )}
                   </div>
-                  {(this.state.newItemLocations.length === 0) ? (
-                    <div className="card-body">
-                      <p className="card-text">
-                        Select one or more cells for the <span className="text-capitalize">{itemType}</span> to occupy within {this.state.containers.name}.
-                      </p>       
+                  
+                  {(childContainers.length > 0) ? (
+                    <div className="card rounded-0 mt-3">
+                      <div className="card-header bg-dark text-light rounded-0">
+                        <h4 className="card-title mb-0">
+                          <i className="mdi mdi-teach mr-2" />
+                          Containers
+                        </h4>                      
+                      </div>
+                      <ul className="list-group list-group-flush">
+                        {childContainers}
+                      </ul>                  
                     </div>
-                  ) : (
-                    <div className="card-body">
-                      {(itemType === 'container') ? (
-                        <ContainerNewForm 
-                          parentId={containerId}
-                          {...this.props} 
-                          {...this.state}
-                        />
-                      ) : null } 
-                      {(itemType === 'physical') ? (<div>Physical Form</div>) : null }      
-                    </div>
-                  )}
+                  ) : null }
                 </div>
-                
-                {(childContainers.length > 0) ? (
-                  <div className="card rounded-0 mt-3">
-                    <div className="card-header bg-dark text-light rounded-0">
-                      <h4 className="card-title mb-0">
-                        <i className="mdi mdi-teach mr-2" />
-                        Containers
-                      </h4>                      
-                    </div>
-                    <ul className="list-group list-group-flush">
-                      {childContainers}
-                    </ul>                  
-                  </div>
+              ) : (
+                <div className="col-12 col-md-7 ml-auto mr-auto text-center">
+                  <AlertCard 
+                    title="Lab Membership Required"
+                    message="You must be logged in and a member of this lab to view this content."
+                  />
+                </div>
+              ) }  
+              
+              <div className="col-12 col-md-5">
+                {(Object.keys(this.state.lab).length > 0) ? (
+                  <Grid 
+                    demo={false}
+                    selectLocations={true}
+                    newItemLocations={this.state.newItemLocations}
+                    addLocation={this.addLocation}
+                    removeLocation={this.removeLocation}
+                    recordType="Container"
+                    record={this.state.container}
+                    containers={this.state.containers}
+                  />
                 ) : null }
               </div>
-            ) : (
-              <div className="col-12 col-md-7 ml-auto mr-auto text-center">
-                <AlertCard 
-                  title="Lab Membership Required"
-                  message="You must be logged in and a member of this lab to view this content."
-                />
-              </div>
-            ) }  
-            
-            <div className="col-12 col-md-5">
-              {(Object.keys(this.state.lab).length > 0) ? (
-                <Grid 
-                  demo={false}
-                  selectLocations={true}
-                  newItemLocations={this.state.newItemLocations}
-                  addLocation={this.addLocation}
-                  removeLocation={this.removeLocation}
-                  recordType="Container"
-                  record={this.state.container}
-                  containers={this.state.containers}
-                />
-              ) : null }
             </div>
-            
-          </div>
+          </FadeIn>
         ) : (
           <div 
             className="row justify-content-center align-items-center"
