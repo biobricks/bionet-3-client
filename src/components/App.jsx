@@ -77,20 +77,20 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="viewport-container">
-          <Navigation 
-            {...this.state}
-            loginCurrentUser={this.loginCurrentUser}
-            logoutCurrentUser={this.logoutCurrentUser}          
-          />
-          <Router 
-            {...this.state}
-            loginCurrentUser={this.loginCurrentUser}
-            logoutCurrentUser={this.logoutCurrentUser}
-            setAlert={this.setAlert}         
-          />
-        </div>
-        <Footer />
+          <div className="viewport-container">
+            <Navigation 
+              {...this.state}
+              loginCurrentUser={this.loginCurrentUser}
+              logoutCurrentUser={this.logoutCurrentUser}          
+            />
+            <Router 
+              {...this.state}
+              loginCurrentUser={this.loginCurrentUser}
+              logoutCurrentUser={this.logoutCurrentUser}
+              setAlert={this.setAlert}         
+            />
+          </div>
+          <Footer />
       </div>
     );
   }
