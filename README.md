@@ -6,12 +6,12 @@ Requires [git](https://git-scm.com/downloads) and [node](https://nodejs.org/en/d
 
 ### Clone 
 ```
-git clone https://github.com/matthewstewart/bionet.git
+git clone https://github.com/biobricks/bionet-3-client.git
 ```
 
 ### Change Directory To Project
 ```
-cd bionet
+cd bionet-3-client
 ```
 
 ### Install Dependencies
