@@ -1,3 +1,3 @@
 module.exports = {
-  "apiBaseUrl": "https://api.biohacking.services"
+  "apiBaseUrl": "https://bionet.me/api/v1"
 };

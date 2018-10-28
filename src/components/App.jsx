@@ -47,7 +47,7 @@ class App extends Component {
     };
     //console.log(config);
     axios
-      .get(`${appConfig.apiBaseUrl}/api/dashboard`, config)
+      .get(`${appConfig.apiBaseUrl}/dashboard`, config)
       .then(res => {
         let createdDate = new Date(res.data.user.createdAt);
         res.data.user["createdFromNow"] = moment(createdDate).fromNow();
