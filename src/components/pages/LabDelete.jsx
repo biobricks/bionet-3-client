@@ -6,6 +6,7 @@ import axios from 'axios';
 import AlertCard from '../partials/AlertCard';
 import Grid from '../partials/Grid';
 import Loading from '../partials/Loading/Loading';
+import FadeIn from 'react-fade-in';
 
 import './LabProfile.css';
 
@@ -93,58 +94,59 @@ class LabDelete extends Component {
     return (
       <div className="container-fluid pb-3">
         {(isLoaded) ? (
-          <div className="row">  
-            { (this.props.isLoggedIn && currentUserIsMember) ? (
-              <div className="col-12 col-lg-7">
+          <FadeIn>
+            <div className="row">  
+              { (this.props.isLoggedIn && currentUserIsMember) ? (
+                <div className="col-12 col-lg-7">
 
-                <div className="card rounded-0 mt-3">
-                  <div className="card-header bg-dark text-light rounded-0">
-                    <div className="card-title mb-0 text-center text-lg-left">
-                      <span><i className="mdi mdi-xl mdi-teach" /> Delete {this.state.lab.name}</span>
+                  <div className="card rounded-0 mt-3">
+                    <div className="card-header bg-dark text-light rounded-0">
+                      <div className="card-title mb-0 text-center text-lg-left">
+                        <span><i className="mdi mdi-xl mdi-teach" /> Delete {this.state.lab.name}</span>
+                      </div>
+                    </div>
+                    <div className="card-body text-center text-lg-left">
+                      <p className="card-text">
+                        <strong>Warning!</strong> This cannot be undone. Are you absolutely sure you want to <strong>Delete {this.state.lab.name}</strong>?
+                      </p>
+                      <div className="btn-group rounded-0">
+                        <Link 
+                          to={`/labs/${this.props.match.params.labId}`}
+                          className="btn btn-secondary rounded-0"
+                        >Cancel</Link>
+                        <button 
+                          className="btn btn-danger rounded-0"
+                          onClick={this.deleteLab}
+                        >Delete {this.state.lab.name}!</button>
+                      </div>
                     </div>
                   </div>
-                  <div className="card-body text-center text-lg-left">
-                    <p className="card-text">
-                      <strong>Warning!</strong> This cannot be undone. Are you absolutely sure you want to <strong>Delete {this.state.lab.name}</strong>?
-                    </p>
-                    <div className="btn-group rounded-0">
-                      <Link 
-                        to={`/labs/${this.props.match.params.labId}`}
-                        className="btn btn-secondary rounded-0"
-                      >Cancel</Link>
-                      <button 
-                        className="btn btn-danger rounded-0"
-                        onClick={this.deleteLab}
-                      >Delete {this.state.lab.name}!</button>
-                    </div>
-                  </div>
+
                 </div>
-
-              </div>
-            ) : (
-              <div className="col-12 col-lg-7 text-center">
-                <AlertCard 
-                  title="Lab Membership Required"
-                  message="You must be logged in and a member of this lab to view this content."
-                />
-              </div>
-            ) }  
-            
-            { (this.props.isLoggedIn && currentUserIsMember) ? (
-              <div className="col-12 col-lg-5 text-center text-lg-left">
-                {(Object.keys(this.state.lab).length > 0) ? (
-                  <Grid 
-                    demo={false}
-                    selectLocations={false}
-                    recordType="Lab"
-                    record={this.state.lab}
-                    containers={this.state.containers}
+              ) : (
+                <div className="col-12 col-lg-7 text-center">
+                  <AlertCard 
+                    title="Lab Membership Required"
+                    message="You must be logged in and a member of this lab to view this content."
                   />
-                ) : null }
-              </div>
-            ) : null }  
-            
-          </div>
+                </div>
+              ) }  
+              
+              { (this.props.isLoggedIn && currentUserIsMember) ? (
+                <div className="col-12 col-lg-5 text-center text-lg-left">
+                  {(Object.keys(this.state.lab).length > 0) ? (
+                    <Grid 
+                      demo={false}
+                      selectLocations={false}
+                      recordType="Lab"
+                      record={this.state.lab}
+                      containers={this.state.containers}
+                    />
+                  ) : null }
+                </div>
+              ) : null }  
+            </div>
+          </FadeIn>
         ) : (
           <div 
             className="row justify-content-center align-items-center"
