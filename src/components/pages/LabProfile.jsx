@@ -8,6 +8,7 @@ import AlertCard from '../partials/AlertCard';
 import Grid from '../partials/Grid';
 import Loading from '../partials/Loading/Loading';
 import Alert from '../partials/Alert';
+import FadeIn from 'react-fade-in';
 
 import './LabProfile.css';
 
@@ -251,11 +252,11 @@ class LabProfile extends Component {
     return (
       <div className="container-fluid pb-3">
         {(isLoaded) ? (
+          <FadeIn>
           <div className="row">
               { (this.props.isLoggedIn) ? (
               <div className="col-12 col-lg-7">
                 <div className="card rounded-0 mt-3">
-                  
                   {
                     (alertExists) ? (
                         <Alert 
@@ -451,6 +452,7 @@ class LabProfile extends Component {
             ) : null }  
             
           </div>
+          </FadeIn>
         ) : (
           <div 
             className="row justify-content-center align-items-center"
