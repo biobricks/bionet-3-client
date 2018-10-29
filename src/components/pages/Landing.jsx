@@ -260,17 +260,6 @@ class Landing extends Component {
                 </ul>
               ) : (
                 <ul className="list-group list-group-flush">
-                  {(this.state.textMode) ? (
-                    <button 
-                      className="list-group-item list-group-item-action btn bg-info text-light"
-                      onClick={this.toggleTextMode}
-                    ><i className="mdi mdi-circle-slice-8 mr-3"/>Round Nodes</button>
-                  ) : (
-                    <button 
-                      className="list-group-item list-group-item-action btn bg-info text-light"
-                      onClick={this.toggleTextMode}
-                    ><i className="mdi mdi-format-letter-case mr-3"/>Text Nodes</button>
-                  )}
                   <button 
                       className="list-group-item list-group-item-action btn bg-info text-light"
                       onClick={this.toggle3D}
