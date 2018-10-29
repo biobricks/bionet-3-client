@@ -9,8 +9,8 @@ import axios from "axios";
 
 import appConfig from '../configuration.js';
 
-  import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import './App.css';
 
@@ -32,7 +32,7 @@ class App extends Component {
   }
 
   setAlert(alertType, alertMessage) {
-    toast.success(alertMessage);
+    toast.info(alertMessage);
   }
 
   loginCurrentUser() {
@@ -75,7 +75,9 @@ class App extends Component {
       <div className="App">
         <ToastContainer 
           autoClose={3000} 
-          pauseOnFocusLoss={true}/>
+          pauseOnFocusLoss={true}
+          draggable={true}
+        />
           <div className="viewport-container">
             <Navigation 
               {...this.state}
