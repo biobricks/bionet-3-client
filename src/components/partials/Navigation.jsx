@@ -7,7 +7,7 @@ class Navigation extends Component {
   render() {
     let pathName = this.props.location.pathname;
     return (
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <nav className="navbar navbar-expand-lg navbar-dark bg-black">
         <Link className="navbar-brand" to="/">
           <img src={logo} alt="BioNet Logo" width="40" height="30"/>
         </Link>
