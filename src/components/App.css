@@ -46,16 +46,26 @@ ol.breadcrumb {
 	/* background-color: black; */
 }
 
-.panel {
+.panel-1 {
 	position: absolute;
 	top: 30px;
 	left: 15px;
 	width: 200px;
 	height: auto;
-	/* padding: 1.2rem 1.2rem 0 1.2rem; */
 	background-color: rgb(54,60,66);
 	z-index: 100;
 }
-.panel h4 {
+
+.panel-2 {
+	position: absolute;
+	top: calc(20vh);
+	right: calc(20vw);
+	width: 400px;
+	height: auto;
+	background-color: rgb(54,60,66);
+	z-index: 100;	
+}
+.panel-1 h4,
+.panel-2 h4 {
 	padding: 1.2rem;
 }

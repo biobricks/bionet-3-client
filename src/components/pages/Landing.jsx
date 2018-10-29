@@ -12,6 +12,8 @@ class Landing extends Component {
     super(props);
     this.state = {
       loaded: false,
+      clickedItemId: "",
+      clickedItemType: "",
       labContainers: [],
       level3Containers: [],
       users: [],
@@ -28,6 +30,7 @@ class Landing extends Component {
     this.getData = this.getData.bind(this);
     this.setGraphData = this.setGraphData.bind(this);
     this.toggleTextMode = this.toggleTextMode.bind(this);
+    this.handleNodeClick = this.handleNodeClick.bind(this);
   }  
 
   getData() {
@@ -117,7 +120,8 @@ class Landing extends Component {
         id: user._id,
         name: user.username,
         value: 30,
-        group: "user"
+        group: "user",
+        type: "user"
       };
       data.nodes.push(userNode);
     }
@@ -127,8 +131,9 @@ class Landing extends Component {
       let labNode = {
         id: lab._id,
         name: lab.name,
-        value: 30,
-        group: lab._id
+        value: 120,
+        group: lab._id,
+        type: 'lab'
       };
       data.nodes.push(labNode);
       // connect labs to labs
@@ -159,7 +164,8 @@ class Landing extends Component {
         id: container._id,
         name: container.name,
         value: 30,
-        group: container.lab._id        
+        group: container.lab._id,
+        type: 'container'        
       };
       data.nodes.push(containerNode);
       let containerParentLink = {
@@ -185,6 +191,25 @@ class Landing extends Component {
     });
   }
 
+  handleNodeClick(node) {
+    this.setState({
+      clickedItemId: node !== null ? node.id : null,
+      clickedItemType: node.type || ""
+    });
+    const distance = 40;
+    const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
+    this.fg.cameraPosition(
+      { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio },
+      node,
+      2000
+    );
+  }
+
+  handleNodeHover(node) {
+    let isHoverIn = node !== null;
+    isHoverIn ? console.log('hover', node.id) : console.log('hoverOut');
+  }
+
   componentDidMount() {
     this.getData();
   }
@@ -201,7 +226,8 @@ class Landing extends Component {
       <FadeIn>
         {(isLoaded) ? (
           <div className="graph-container">
-            <div className="panel">
+            
+            <div className="panel-1">
               <h4 className="text-info text-center mb-0">Welcome To BioNet</h4>
               <ul className="list-group list-group-flush">
                 {(this.state.textMode) ? (
@@ -217,7 +243,27 @@ class Landing extends Component {
                 )}
               </ul>
             </div>
+
+            {/* <div className="panel-2">
+              <h4 className="text-info text-center mb-0">Item Details</h4>
+              <ul className="list-group list-group-flush">
+                {(this.state.textMode) ? (
+                  <button 
+                    className="list-group-item list-group-item-action btn bg-info text-light"
+                    onClick={this.toggleTextMode}
+                  ><i className="mdi mdi-circle-slice-8 mr-3"/>Round Nodes</button>
+                ) : (
+                  <button 
+                    className="list-group-item list-group-item-action btn bg-info text-light"
+                    onClick={this.toggleTextMode}
+                  ><i className="mdi mdi-format-letter-case mr-3"/>Text Nodes</button>
+                )}
+              </ul>
+            </div> */}
+            
+
             <ForceGraph3D
+              ref={el => { this.fg = el; }}
               graphData={myData}
               nodeThreeObject={this.state.textMode === true ? node => {
                 const sprite = new SpriteText(node.name);
@@ -230,6 +276,8 @@ class Landing extends Component {
               linkDirectionalParticleSpeed={0.005}
               linkDirectionalParticleWidth={1}
               linkDirectionalParticleColor="green"
+              onNodeClick={this.handleNodeClick}
+              onNodeHover={this.handleNodeHover}
             />
           </div>
         ) : (
