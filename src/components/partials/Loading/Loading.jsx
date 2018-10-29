@@ -8,7 +8,7 @@ class Loading extends Component {
     return ( 
       <div className="Loader">
         <img src={Loader} className="preLoader" alt="" />
-        <h3 className="loader-title">Loading BioNet Data...</h3>
+        <h3 className="loader-title text-light">Loading BioNet Data...</h3>
       </div>
     );
   }
