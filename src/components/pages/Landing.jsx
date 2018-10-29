@@ -204,8 +204,8 @@ class Landing extends Component {
 
   handleNodeClick(node) {
     this.setState({
-      clickedItemId: this.state.clickedItemId === "" ? node.id : "",
-      clickedItemType: node.type || ""
+      clickedItemId: node.id,
+      clickedItemType: node.type
     });
     const distance = 40;
     const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
@@ -238,8 +238,10 @@ class Landing extends Component {
         {(isLoaded) ? (
           <div className="graph-container">
             
-            <div className="panel-1">
-              <h4 className="text-info text-center mb-0">Welcome To BioNet</h4>
+            <div className="panel-1 card border-0">
+              <div className="card-header">
+                <h4 className="text-info text-center mb-0">Welcome To BioNet</h4>
+              </div>  
               {(this.state.is3D) ? (
                 <ul className="list-group list-group-flush">
                   {(this.state.textMode) ? (
@@ -288,6 +290,7 @@ class Landing extends Component {
             {(this.state.is3D) ? (
               <ForceGraph3D
                 ref={el => { this.fg = el; }}
+                height={window.innerHeight - 60 - 60}
                 graphData={myData}
                 nodeThreeObject={this.state.textMode === true ? node => {
                   const sprite = new SpriteText(node.name);
@@ -308,6 +311,7 @@ class Landing extends Component {
             ) : (
               <ForceGraph2D
                 ref={el => { this.fg = el; }}
+                height={window.innerHeight - 60 - 60}
                 graphData={myData}
                 nodeAutoColorBy="group"
                 linkDirectionalParticleColor="green"
