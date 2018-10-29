@@ -81,6 +81,7 @@ class Landing extends Component {
             }
           }
           this.setState({
+            containers: containersAll,
             labContainers,
             level3Containers,
             users,
@@ -108,6 +109,7 @@ class Landing extends Component {
     let data = this.state.data;
     let labs = this.state.labs;
     let users = this.state.users;
+    let containers = this.state.containers;
     // add users
     for(let i = 0; i < users.length; i++){
       let user = users[i];
@@ -150,6 +152,27 @@ class Landing extends Component {
         data.links.push(memberLink);
       }
     }
+    // add containers
+    for(let i = 0; i < containers.length; i++){
+      let container = containers[i];
+      let containerNode = {
+        id: container._id,
+        name: container.name,
+        value: 30,
+        group: container.lab._id        
+      };
+      data.nodes.push(containerNode);
+      let containerParentLink = {
+        source: container.lab._id, 
+        target: container._id         
+      };
+      data.links.push(containerParentLink);
+      let containerCreatorLink = {
+        source: container.creator._id, 
+        target: container._id         
+      };
+      data.links.push(containerCreatorLink);
+    } 
     this.setState({
       loaded: true,
       data
