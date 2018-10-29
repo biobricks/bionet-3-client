@@ -34,3 +34,28 @@ button.dropdown-item:hover {
 ol.breadcrumb {
 	margin-bottom: 0;
 }
+
+.vis-network,
+.vis-network canvas,
+.graph-container {
+	position: relative;
+	display: block;
+	min-height: calc(100vh - 75px);
+	max-width: 100%;
+	overflow: hidden;
+	/* background-color: black; */
+}
+
+.panel {
+	position: absolute;
+	top: 30px;
+	left: 15px;
+	width: 200px;
+	height: auto;
+	/* padding: 1.2rem 1.2rem 0 1.2rem; */
+	background-color: rgb(54,60,66);
+	z-index: 100;
+}
+.panel h4 {
+	padding: 1.2rem;
+}

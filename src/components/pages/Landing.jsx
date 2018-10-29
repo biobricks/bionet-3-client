@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import shortid from 'shortid';
 import axios from "axios";
 import appConfig from '../../configuration.js';
-import TreeGraph from '../partials/TreeGraph';
 import Loading from '../partials/Loading/Loading';
-import Alert from '../partials/Alert';
 import FadeIn from 'react-fade-in';
+import { ForceGraph2D, ForceGraph3D, ForceGraphVR } from 'react-force-graph';
+import SpriteText from 'three-spritetext';
 
 class Landing extends Component {
 
@@ -20,9 +18,16 @@ class Landing extends Component {
       labs: [],
       labsJoined: [],
       labsNotJoined: [],
-      labsRequestPending: []
+      labsRequestPending: [],
+      data: {
+        nodes: [],
+        links: []
+      },
+      textMode: false
     };
     this.getData = this.getData.bind(this);
+    this.setGraphData = this.setGraphData.bind(this);
+    this.toggleTextMode = this.toggleTextMode.bind(this);
   }  
 
   getData() {
@@ -76,7 +81,6 @@ class Landing extends Component {
             }
           }
           this.setState({
-            loaded: true,
             labContainers,
             level3Containers,
             users,
@@ -85,6 +89,7 @@ class Landing extends Component {
             labsNotJoined,
             labsRequestPending
           });
+          this.setGraphData();
         })
         .catch(error => {
           console.error(error);        
@@ -99,6 +104,64 @@ class Landing extends Component {
     });    
   }
 
+  setGraphData() {
+    let data = this.state.data;
+    let labs = this.state.labs;
+    let users = this.state.users;
+    // add users
+    for(let i = 0; i < users.length; i++){
+      let user = users[i];
+      let userNode = {
+        id: user._id,
+        name: user.username,
+        value: 30,
+        group: "user"
+      };
+      data.nodes.push(userNode);
+    }
+    // add labs
+    for(let i = 0; i < labs.length; i++){
+      let lab = labs[i];
+      let labNode = {
+        id: lab._id,
+        name: lab.name,
+        value: 30,
+        group: lab._id
+      };
+      data.nodes.push(labNode);
+      // connect labs to labs
+      for(let j = 0; j < labs.length; j++){
+        let targetLab = labs[j];
+        let link = {
+          source: lab._id, 
+          target: targetLab._id          
+        };
+        if (targetLab._id !== lab._id) {
+          data.links.push(link);
+        }
+      }
+      for(let k = 0; k < lab.users.length; k++){
+        // connect lab to its members
+        let member = lab.users[k];
+        let memberLink = {
+          source: member._id, 
+          target: lab._id   
+        };
+        data.links.push(memberLink);
+      }
+    }
+    this.setState({
+      loaded: true,
+      data
+    })
+  }
+
+  toggleTextMode(e) {
+    this.setState({
+      textMode: !this.state.textMode
+    });
+  }
+
   componentDidMount() {
     this.getData();
   }
@@ -107,220 +170,54 @@ class Landing extends Component {
 
     const isLoaded = this.state.loaded;
 
-    const labs = this.state.labs || [];
-    const labContainers = this.state.labContainers || [];
-    const level3Containers = this.state.level3Containers || [];
-
-    const labsJoined = this.state.labsJoined.map((lab, index) => {
-      return (
-        <Link 
-          key={shortid.generate()}
-          className="list-group-item list-group-item-action bg-info text-light rounded-0"
-          to={`/labs/${lab._id}`}
-        >
-          {lab.name}
-        </Link>
-      )
-    });
-    
-    const labsNotJoined = this.state.labsNotJoined.map((lab, index) => {
-      return (
-        <Link 
-          key={shortid.generate()}
-          className="list-group-item list-group-item-action"
-          to={`/labs/${lab._id}`}
-        >
-          {lab.name}
-        </Link>
-      )
-    });    
-
-    const labsRequestPending = this.state.labsRequestPending.map((lab, index) => {
-      return (
-        <Link 
-          key={shortid.generate()}
-          className="list-group-item list-group-item-action"
-          to={`/labs/${lab._id}`}
-        >
-          {lab.name}
-        </Link>
-      )
-    });
-
-    let treeDataArray = [];
-
-    let treeData = {
-      name: 'BioNet',
-      children: []      
-    };
-
-    for(let labIndex = 0; labIndex < labs.length; labIndex++){
-      let lab = labs[labIndex];
-      let labNode = {
-        name: lab.name,
-        attributes: {
-          size: `${lab.columns}x${lab.rows}`,
-          members: lab.users.length
-        },
-        children: []
-      };
-      for(let i = 0; i < labContainers.length; i++){
-        let labContainer = labContainers[i];
-        let labContainerNode = {
-          name: labContainer.name,
-          attributes: {
-            size: `${labContainer.columns}x${labContainer.rows}`
-          },
-          children: []
-        };
-        for(let j = 0; j < level3Containers.length; j++){
-          let level3Container = level3Containers[j];
-          let level3ContainerNode = {
-            name: level3Container.name,
-            attributes: {
-              size: `${level3Container.columns}x${level3Container.rows}`
-            }            
-          };
-          if (level3Container.parent._id === labContainer._id){
-            labContainerNode.children.push(level3ContainerNode);
-          }
-        }
-        labNode.children.push(labContainerNode);
-      }
-      treeData.children.push(labNode);
-    }
-    treeDataArray.push(treeData);
-  
-    const alertMessage = this.props.alertMessage;
-    const alertExists = alertMessage && alertMessage.length > 0;
-
-    return (
-      <div className="container-fluid pb-3">
+    // const labs = this.state.labs || [];
+    // const labContainers = this.state.labContainers || [];
+    // const level3Containers = this.state.level3Containers || [];
+    const myData = this.state.data;
+    return (      
+      <FadeIn>
         {(isLoaded) ? (
-        <FadeIn>
-          <div className="row">
-            <div className="col-12 col-lg-7"> 
-              <div className="card rounded-0 mt-3">
-                {
-                  (alertExists) ? (
-                    <Alert 
-                      type={this.props.alertType}
-                      message={this.props.alertMessage}
-                    />
-                  ) : 
-                  <div className="card-header bg-dark text-light rounded-0">
-                    <h4 className="card-title mb-0">BioNet</h4>
-                  </div> 
-                }
-                <div className="card-body">
-                  {(this.props.isLoggedIn) ? (
-                    <p className="card-text">
-                      Welcome back to the BioNet <strong>{this.props.currentUser.username}</strong>!
-                    </p>                  
-                  ) : (
-                    <p className="card-text">
-                      Welcome to the BioNet!
-                    </p>
-                  )}
-                  <p className="card-text">
-                    There are currently {this.state.users.length} Users at {this.state.labs.length} Labs listed.
-                  </p>
-                  {(this.props.isLoggedIn) ? (
-                    <p className="card-text">
-                      You currently belong to {this.state.labsJoined.length} {this.state.labsJoined.length > 1 ? "Labs" : "Lab"}.
-                    </p>
-                  ) : null }
-                </div>
-                <div className="card-body">
-                  <div style={{'border': '1px solid #ccc', 'height': '400px', 'width': '100%', 'overflow': 'hidden'}}>
-                    <TreeGraph 
-                      data={treeDataArray}
-                      height="400px"
-                      width="100%"
-                    />
-                  </div>
-                </div>
-              </div>
+          <div className="graph-container">
+            <div className="panel">
+              <h4 className="text-info text-center mb-0">Welcome To BioNet</h4>
+              <ul className="list-group list-group-flush">
+                {(this.state.textMode) ? (
+                  <button 
+                    className="list-group-item list-group-item-action btn bg-info text-light"
+                    onClick={this.toggleTextMode}
+                  ><i className="mdi mdi-circle-slice-8 mr-3"/>Round Nodes</button>
+                ) : (
+                  <button 
+                    className="list-group-item list-group-item-action btn bg-info text-light"
+                    onClick={this.toggleTextMode}
+                  ><i className="mdi mdi-format-letter-case mr-3"/>Text Nodes</button>
+                )}
+              </ul>
             </div>
-
-            <div className="col-12 col-lg-5"> 
-              {(this.props.isLoggedIn) ? (
-                <div className="card mt-3 rounded-0">
-                  <div className="card-header bg-dark text-light rounded-0">
-                    <h4 className="card-title mb-0 text-capitalize">Your Labs</h4>
-                  </div>
-                  {(this.state.labsJoined.length === 0) ? (
-                    <div className="card-body">
-                      <p className="card-text">
-                        You have not joined any Labs.
-                      </p>
-                    </div>                  
-                  ) : null }
-                  {(this.state.labsJoined.length > 0) ? (
-                    <ul className="list-group list-group-flush">
-                      {labsJoined}
-                      <Link to="/labs/new" className="list-group-item list-group-item-action bg-success text-light rounded-0">+ Add New Lab</Link>
-                    </ul>
-                  ) : (
-                    <ul className="list-group list-group-flush">
-                      <Link to="/labs/new" className="list-group-item list-group-item-action bg-success text-light rounded-0">+ Add New Lab</Link>
-                    </ul>                  
-                  )}
-
-                </div>
-              ) : null }
-              {(this.props.isLoggedIn) ? (
-                <div className="card mt-3 rounded-0">
-                  <div className="card-header bg-dark text-light rounded-0">
-                    <h4 className="card-title mb-0 text-capitalize">Labs To Join</h4>
-                  </div>
-                  {(this.state.labsNotJoined.length === 0) ? (
-                    <div className="card-body">
-                      <p className="card-text">
-                        There are currently no Labs for you to Join.
-                      </p>
-                    </div>
-                  ) : null }
-                  {(this.state.labsNotJoined.length > 0) ? (
-                    <ul className="list-group list-group-flush">
-                      {labsNotJoined}
-                    </ul>
-                  ) : null }
-                </div>
-              ) : null }
-
-              {(this.props.isLoggedIn) ? (
-                <div className="card mt-3 rounded-0">
-                  <div className="card-header bg-dark text-light rounded-0">
-                    <h4 className="card-title mb-0 text-capitalize">Membership Requests Pending</h4>
-                  </div>
-                  {(this.state.labsRequestPending.length === 0) ? (
-                    <div className="card-body">
-                      <p className="card-text">
-                        You currently have no pending membership requests to join other Labs.
-                      </p>
-                    </div>
-                  ) : null }
-                  {(this.state.labsRequestPending.length > 0) ? (
-                    <ul className="list-group list-group-flush">
-                      {labsRequestPending}
-                    </ul>
-                  ) : null }
-                </div>
-              ) : null }
-            </div>
-
+            <ForceGraph3D
+              graphData={myData}
+              nodeThreeObject={this.state.textMode === true ? node => {
+                const sprite = new SpriteText(node.name);
+                sprite.color = node.color;
+                sprite.textHeight = 8;
+                return sprite;
+              } : null } 
+              nodeAutoColorBy="group"
+              linkDirectionalParticles={3}
+              linkDirectionalParticleSpeed={0.005}
+              linkDirectionalParticleWidth={1}
+              linkDirectionalParticleColor="green"
+            />
           </div>
-        </FadeIn>
         ) : (
           <div 
             className="row justify-content-center align-items-center"
             style={{'minHeight': '100vh'}}
           >
             <Loading />
-          </div>    
-        )}
-      </div>
+          </div>
+        )}  
+      </FadeIn>
     );
 
   }
