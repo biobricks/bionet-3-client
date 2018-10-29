@@ -319,11 +319,13 @@ class Landing extends Component {
             )}  
           </div>
         ) : (
-          <div 
-            className="row justify-content-center align-items-center"
-            style={{'minHeight': '100vh'}}
-          >
-            <Loading />
+          <div className="container-fluid">
+            <div 
+              className="row justify-content-center align-items-center"
+              style={{'height': 'calc(100vh - 60px - 60px)'}}
+            >
+              <Loading />
+            </div>
           </div>
         )}  
       </FadeIn>
