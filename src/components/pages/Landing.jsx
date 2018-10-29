@@ -4,7 +4,7 @@ import axios from "axios";
 import appConfig from '../../configuration.js';
 import Loading from '../partials/Loading/Loading';
 import FadeIn from 'react-fade-in';
-import { ForceGraph2D, ForceGraph3D, ForceGraphVR } from 'react-force-graph';
+import { ForceGraph2D, ForceGraph3D } from 'react-force-graph';
 import SpriteText from 'three-spritetext';
 
 class Landing extends Component {
@@ -27,11 +27,13 @@ class Landing extends Component {
         nodes: [],
         links: []
       },
-      textMode: false
+      textMode: false,
+      is3D: true
     };
     this.getData = this.getData.bind(this);
     this.setGraphData = this.setGraphData.bind(this);
     this.toggleTextMode = this.toggleTextMode.bind(this);
+    this.toggle3D = this.toggle3D.bind(this);
     this.handleNodeClick = this.handleNodeClick.bind(this);
   }  
 
@@ -194,6 +196,12 @@ class Landing extends Component {
     });
   }
 
+  toggle3D(e) {
+    this.setState({
+      is3D: !this.state.is3D
+    });
+  }
+
   handleNodeClick(node) {
     this.setState({
       clickedItemId: this.state.clickedItemId === "" ? node.id : "",
@@ -232,19 +240,43 @@ class Landing extends Component {
             
             <div className="panel-1">
               <h4 className="text-info text-center mb-0">Welcome To BioNet</h4>
-              <ul className="list-group list-group-flush">
-                {(this.state.textMode) ? (
+              {(this.state.is3D) ? (
+                <ul className="list-group list-group-flush">
+                  {(this.state.textMode) ? (
+                    <button 
+                      className="list-group-item list-group-item-action btn bg-info text-light"
+                      onClick={this.toggleTextMode}
+                    ><i className="mdi mdi-circle-slice-8 mr-3"/>Round Nodes</button>
+                  ) : (
+                    <button 
+                      className="list-group-item list-group-item-action btn bg-info text-light"
+                      onClick={this.toggleTextMode}
+                    ><i className="mdi mdi-format-letter-case mr-3"/>Text Nodes</button>
+                  )}
                   <button 
-                    className="list-group-item list-group-item-action btn bg-info text-light"
-                    onClick={this.toggleTextMode}
-                  ><i className="mdi mdi-circle-slice-8 mr-3"/>Round Nodes</button>
-                ) : (
+                      className="list-group-item list-group-item-action btn bg-info text-light"
+                      onClick={this.toggle3D}
+                    >2D</button>
+                </ul>
+              ) : (
+                <ul className="list-group list-group-flush">
+                  {(this.state.textMode) ? (
+                    <button 
+                      className="list-group-item list-group-item-action btn bg-info text-light"
+                      onClick={this.toggleTextMode}
+                    ><i className="mdi mdi-circle-slice-8 mr-3"/>Round Nodes</button>
+                  ) : (
+                    <button 
+                      className="list-group-item list-group-item-action btn bg-info text-light"
+                      onClick={this.toggleTextMode}
+                    ><i className="mdi mdi-format-letter-case mr-3"/>Text Nodes</button>
+                  )}
                   <button 
-                    className="list-group-item list-group-item-action btn bg-info text-light"
-                    onClick={this.toggleTextMode}
-                  ><i className="mdi mdi-format-letter-case mr-3"/>Text Nodes</button>
-                )}
-              </ul>
+                      className="list-group-item list-group-item-action btn bg-info text-light"
+                      onClick={this.toggle3D}
+                    >3D</button>
+                </ul>                
+              )}  
             </div>
 
             {/* <div className="panel-2">
@@ -264,26 +296,34 @@ class Landing extends Component {
               </ul>
             </div> */}
             
-
-            <ForceGraph3D
-              ref={el => { this.fg = el; }}
-              graphData={myData}
-              nodeThreeObject={this.state.textMode === true ? node => {
-                const sprite = new SpriteText(node.name);
-                sprite.color = node.color;
-                sprite.textHeight = 8;
-                return (
-                  <Link to="/">sprite</Link>
-                )  ;
-              } : null } 
-              nodeAutoColorBy="group"
-              linkDirectionalParticles={2}
-              linkDirectionalParticleSpeed={0.001}
-              linkDirectionalParticleWidth={0.5}
-              linkDirectionalParticleColor="green"
-              onNodeClick={this.handleNodeClick}
-              onNodeHover={this.handleNodeHover}
-            />
+            {(this.state.is3D) ? (
+              <ForceGraph3D
+                ref={el => { this.fg = el; }}
+                graphData={myData}
+                nodeThreeObject={this.state.textMode === true ? node => {
+                  const sprite = new SpriteText(node.name);
+                  sprite.color = node.color;
+                  sprite.textHeight = 8;
+                  return (
+                    <Link to="/">sprite</Link>
+                  )  ;
+                } : null } 
+                nodeAutoColorBy="group"
+                linkDirectionalParticles={2}
+                linkDirectionalParticleSpeed={0.001}
+                linkDirectionalParticleWidth={0.5}
+                linkDirectionalParticleColor="green"
+                onNodeClick={this.handleNodeClick}
+                onNodeHover={this.handleNodeHover}
+              />
+            ) : (
+              <ForceGraph2D
+                ref={el => { this.fg = el; }}
+                graphData={myData}
+                nodeAutoColorBy="group"
+                linkDirectionalParticleColor="green"
+              />              
+            )}  
           </div>
         ) : (
           <div 
