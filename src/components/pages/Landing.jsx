@@ -163,7 +163,7 @@ class Landing extends Component {
       };
       data.nodes.push(containerNode);
       let containerParentLink = {
-        source: container.lab._id, 
+        source: container.parent === null ? container.lab._id : container.parent._id, 
         target: container._id         
       };
       data.links.push(containerParentLink);
