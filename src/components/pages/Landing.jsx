@@ -14,6 +14,8 @@ class Landing extends Component {
     super(props);
     this.state = {
       loaded: false,
+      labContainers: [],
+      level3Containers: [],
       users: [],
       labs: [],
       labsJoined: [],
@@ -59,14 +61,34 @@ class Landing extends Component {
       }
       axios.get(`${appConfig.apiBaseUrl}/users`)
       .then(res => {
-        this.setState({
-          loaded: true,
-          users: res.data.data,
-          labs: labsAll,
-          labsJoined,
-          labsNotJoined,
-          labsRequestPending
-        });        
+        let users = res.data.data;
+        axios.get(`${appConfig.apiBaseUrl}/containers`)
+        .then(res => {
+          let containersAll = res.data.data;
+          let labContainers = [];
+          let level3Containers = [];
+          for(let i = 0; i < containersAll.length; i++){
+            let container = containersAll[i];
+            if (container.parent === null) {
+              labContainers.push(container);
+            } else {
+              level3Containers.push(container);
+            }
+          }
+          this.setState({
+            loaded: true,
+            labContainers,
+            level3Containers,
+            users,
+            labs: labsAll,
+            labsJoined,
+            labsNotJoined,
+            labsRequestPending
+          });
+        })
+        .catch(error => {
+          console.error(error);        
+        }); 
       })
       .catch(error => {
         console.error(error);        
@@ -86,6 +108,8 @@ class Landing extends Component {
     const isLoaded = this.state.loaded;
 
     const labs = this.state.labs || [];
+    const labContainers = this.state.labContainers || [];
+    const level3Containers = this.state.level3Containers || [];
 
     const labsJoined = this.state.labsJoined.map((lab, index) => {
       return (
@@ -134,14 +158,34 @@ class Landing extends Component {
       let lab = labs[labIndex];
       let labNode = {
         name: lab.name,
+        attributes: {
+          size: `${lab.columns}x${lab.rows}`,
+          members: lab.users.length
+        },
         children: []
       };
-      for(let labUserIndex = 0; labUserIndex < lab.users.length; labUserIndex++){
-        let labUser = lab.users[labUserIndex];
-        let labUserNode = {
-          name: labUser.username
+      for(let i = 0; i < labContainers.length; i++){
+        let labContainer = labContainers[i];
+        let labContainerNode = {
+          name: labContainer.name,
+          attributes: {
+            size: `${labContainer.columns}x${labContainer.rows}`
+          },
+          children: []
         };
-        labNode.children.push(labUserNode);
+        for(let j = 0; j < level3Containers.length; j++){
+          let level3Container = level3Containers[j];
+          let level3ContainerNode = {
+            name: level3Container.name,
+            attributes: {
+              size: `${level3Container.columns}x${level3Container.rows}`
+            }            
+          };
+          if (level3Container.parent._id === labContainer._id){
+            labContainerNode.children.push(level3ContainerNode);
+          }
+        }
+        labNode.children.push(labContainerNode);
       }
       treeData.children.push(labNode);
     }

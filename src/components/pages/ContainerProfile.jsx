@@ -94,7 +94,10 @@ class ContainerProfile extends Component {
       //console.log("response", res.data);
       let container = res.data.data;
       let childContainers = res.data.containers;
-      axios.get(`${appConfig.apiBaseUrl}/labs/${container.lab._id}`)
+      let lab = container.lab;
+      console.log('res.data', res.data);
+      //console.log('lab', lab);
+      axios.get(`${appConfig.apiBaseUrl}/labs/${lab._id}`)
       .then(response => {
         //console.log("response 2", response.data);
         let lab = response.data.data;

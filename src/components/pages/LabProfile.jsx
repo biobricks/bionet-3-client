@@ -40,6 +40,7 @@ class LabProfile extends Component {
       let containers = [];
       for(let i = 0; i < allChildContainers.length; i++){
         let childContainer = allChildContainers[i];
+        console.log('childContainer.parent', childContainer.parent)
         if (childContainer.parent === null) {
           containers.push(childContainer);
         }
