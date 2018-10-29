@@ -73,7 +73,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <ToastContainer autoClose={3000}/>
+        <ToastContainer 
+          autoClose={3000} 
+          pauseOnFocusLoss={true}/>
           <div className="viewport-container">
             <Navigation 
               {...this.state}
