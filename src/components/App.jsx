@@ -9,7 +9,7 @@ import axios from "axios";
 
 import appConfig from '../configuration.js';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import './App.css';
@@ -77,6 +77,7 @@ class App extends Component {
           autoClose={3000} 
           pauseOnFocusLoss={true}
           draggable={true}
+          transition={Zoom}
         />
           <div className="viewport-container">
             <Navigation 
