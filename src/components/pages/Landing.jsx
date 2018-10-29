@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import axios from "axios";
 import appConfig from '../../configuration.js';
 import Loading from '../partials/Loading/Loading';
@@ -14,6 +15,7 @@ class Landing extends Component {
       loaded: false,
       clickedItemId: "",
       clickedItemType: "",
+      clickedItem: {},
       labContainers: [],
       level3Containers: [],
       users: [],
@@ -131,9 +133,10 @@ class Landing extends Component {
       let labNode = {
         id: lab._id,
         name: lab.name,
-        value: 120,
+        val: lab.rows * lab.columns,
         group: lab._id,
-        type: 'lab'
+        type: 'lab',
+        nodeRelSize: 50
       };
       data.nodes.push(labNode);
       // connect labs to labs
@@ -163,7 +166,7 @@ class Landing extends Component {
       let containerNode = {
         id: container._id,
         name: container.name,
-        value: 30,
+        val: (container.rows * container.columns) / 20,
         group: container.lab._id,
         type: 'container'        
       };
@@ -193,7 +196,7 @@ class Landing extends Component {
 
   handleNodeClick(node) {
     this.setState({
-      clickedItemId: node !== null ? node.id : null,
+      clickedItemId: this.state.clickedItemId === "" ? node.id : "",
       clickedItemType: node.type || ""
     });
     const distance = 40;
@@ -269,12 +272,14 @@ class Landing extends Component {
                 const sprite = new SpriteText(node.name);
                 sprite.color = node.color;
                 sprite.textHeight = 8;
-                return sprite;
+                return (
+                  <Link to="/">sprite</Link>
+                )  ;
               } : null } 
               nodeAutoColorBy="group"
-              linkDirectionalParticles={3}
-              linkDirectionalParticleSpeed={0.005}
-              linkDirectionalParticleWidth={1}
+              linkDirectionalParticles={2}
+              linkDirectionalParticleSpeed={0.001}
+              linkDirectionalParticleWidth={0.5}
               linkDirectionalParticleColor="green"
               onNodeClick={this.handleNodeClick}
               onNodeHover={this.handleNodeHover}
