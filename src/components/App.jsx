@@ -51,6 +51,7 @@ class App extends Component {
           isLoggedIn: true,
           currentUser: res.data.user
         });
+        this.setAlert("success", "You have been succesfully logged in")
       });
   }
 
