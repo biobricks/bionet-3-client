@@ -29,12 +29,20 @@ import PhysicalList from './pages/PhysicalList';
 
 import Alert from './partials/Alert';
 
+import TempAlert from './templateForMatt/templateAlert';
+
 class Router extends Component {
   
   render() {
 
     return (
       <main>
+
+        <Switch>
+          <Route exact path='/templates' render={(props) => (<TempAlert {...props} {...this.props}/>)} />
+        </Switch>
+
+
 
         <Switch>
           <Route exact path='/' render={(props) => (<Landing {...props} {...this.props}/>)} />
