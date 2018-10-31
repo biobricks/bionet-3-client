@@ -47,8 +47,7 @@ class Menu extends Component {
               There are currently:<br/>
               {this.props.users.length} Users In {this.props.labs.length} Labs<br />
               {/* {this.props.containers.length} Lab Containers<br /> */}
-              {this.props.virtuals.length} Virtual Samples with
-              {this.props.physicals.length} Physical Instances
+              {this.props.virtuals.length} Virtual Samples with {this.props.physicals.length} Physical Instances
               
             </p>
           </div>

@@ -12,7 +12,7 @@ const Graph = {
         name: `User: ${user.username}`,
         val: 5,
         group: "user",
-        type: "user"
+        type: "User"
       };
       data.nodes.push(userNode);
       // virtuals by creator
@@ -28,11 +28,11 @@ const Graph = {
           };
           data.nodes.push(virtualNode);
           // virtual to creator
-          let creatorLink = {
-            name: `Virtual Sample ${virtual.name} created by ${user.username}`,
-            source: user._id,
-            target: virtual._id
-          };
+          // let creatorLink = {
+          //   name: `Virtual Sample ${virtual.name} created by ${user.username}`,
+          //   source: user._id,
+          //   target: virtual._id
+          // };
           //data.links.push(creatorLink);
         }
 
@@ -46,7 +46,7 @@ const Graph = {
         name: `${lab.name} - ${lab.users.length} ${lab.users.length !== 1 ? 'members' : 'member'}`,
         val: 60,
         group: lab._id,
-        type: 'lab'
+        type: 'Lab'
       };
       data.nodes.push(labNode);
       // physicals in lab
@@ -157,11 +157,11 @@ const Graph = {
       };
       data.links.push(virtualLink);      
       // physical to creator
-      let creatorLink = {
-        name: `Physical Sample ${physical.name} created by ${physical.creator.username}`,
-        source: physical.creator._id,
-        target: physical._id
-      };
+      // let creatorLink = {
+      //   name: `Physical Sample ${physical.name} created by ${physical.creator.username}`,
+      //   source: physical.creator._id,
+      //   target: physical._id
+      // };
       //data.links.push(creatorLink);
 
     }    

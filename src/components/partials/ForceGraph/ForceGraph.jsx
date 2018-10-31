@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import FadeIn from 'react-fade-in';
 //import Graph from '../../../modules/Graph';
-import { ForceGraph2D, ForceGraph3D } from 'react-force-graph';
-import SpriteText from 'three-spritetext';
+import { ForceGraph3D } from 'react-force-graph';
 import './ForceGraph.css';
 
 class ForceGraph extends Component {
@@ -37,22 +36,17 @@ class ForceGraph extends Component {
     const viewMode = this.props.viewMode;
     const graphData = this.props.graphData;
     return (
-      <div className="ForceGraph viewport-container">
+      <div className="ForceGraph">
         {documentReady ? (
           <FadeIn>
           
-              <div id="graph" className="graph-container">
+              <div id="graph" className="graph-container pt-3">
+
                 <ForceGraph3D
                   ref={el => { this.fg = el; }}
                   height={window.innerHeight - 60 - 60}
                   width={this.state.width}
                   graphData={graphData}
-                  // nodeThreeObject={this.state.textMode === true ? node => {
-                  //   const sprite = new SpriteText(node.name);
-                  //   sprite.color = node.color;
-                  //   sprite.textHeight = 8;
-                  //   return sprite;
-                  // } : null } 
                   nodeLabel="name"
                   nodeAutoColorBy="group"
                   numDimensions={viewMode === '3D' ? 3 : 2}
@@ -60,8 +54,8 @@ class ForceGraph extends Component {
                   linkDirectionalParticleSpeed={0.001}
                   linkDirectionalParticleWidth={1}
                   // linkDirectionalParticleColor="green"
-                  //onNodeClick={this.handleNodeClick}
-                  //onNodeHover={this.handleNodeHover}
+                  onNodeClick={this.props.handleNodeClick}
+                  onNodeHover={this.props.handleNodeHover}
                 />
               </div>  
          
