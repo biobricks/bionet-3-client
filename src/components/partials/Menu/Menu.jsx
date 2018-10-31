@@ -43,7 +43,14 @@ class Menu extends Component {
             <h4 className="card-title mb-0 text-capitalize">{title}</h4>
           </div>
           <div className="card-body">
-            <p className="card-text">There are currently {this.props.users.length} Users and {this.props.labs.length} Labs.</p>
+            <p className="card-text">
+              There are currently:<br/>
+              {this.props.users.length} Users In {this.props.labs.length} Labs<br />
+              {/* {this.props.containers.length} Lab Containers<br /> */}
+              {this.props.virtuals.length} Virtual Samples with
+              {this.props.physicals.length} Physical Instances
+              
+            </p>
           </div>
           <ul className="list-group list-group-flush">
             {(this.props.viewMode === 'simple') ? (
