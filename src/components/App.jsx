@@ -21,6 +21,7 @@ class App extends Component {
       redirectHome: false,
       isLoggedIn: false,
       currentUser: {},
+      viewMode: "simple",
       alertType: "",
       alertMessage: ""
     };
@@ -53,11 +54,13 @@ class App extends Component {
       .get(`${appConfig.apiBaseUrl}/dashboard`, config)
       .then(res => {
         let createdDate = new Date(res.data.user.createdAt);
-        res.data.user["createdFromNow"] = moment(createdDate).fromNow();
+        let currentUser = res.data.user;
+        currentUser["createdFromNow"] = moment(createdDate).fromNow();
         this.setState({
           userValidated: true,
           isLoggedIn: true,
-          currentUser: res.data.user
+          currentUser,
+          viewMode: currentUser.settings.display.mode
         });
       });
   }

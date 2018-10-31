@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Api from '../../modules/Api';
+import Graph from '../../modules/Graph';
 import Menu from '../partials/Menu/Menu';
 import Loading from '../partials/Loading/Loading';
 import ForceGraph from '../partials/ForceGraph/ForceGraph';
@@ -13,7 +14,8 @@ class Landing extends Component {
       success: false,
       errors: [],
       users: [],
-      labs: []
+      labs: [],
+      graphData: {}
     };
     this.getData = this.getData.bind(this);
   }
@@ -30,6 +32,8 @@ class Landing extends Component {
     if (state.errors.length === 0){
       state.success = true;
     }
+
+    state.graphData = Graph.getOverview(state.users, state.labs);
     return state;
   }
 
@@ -38,18 +42,19 @@ class Landing extends Component {
     .then((res) => {
       this.setState(res);
       this.props.setReady(true);
+      console.log(res.graphData);
     });
   }
 
   render() {
     return (
       <Loading {...this.props}>
-        <div className="Landing container-fluid">
+        <div className="Landing graph container-fluid">
           <div className="row">
-            <div className="col-12 col-lg-5">
-              <Menu />
+            <div className="col-12 col-lg-3">
+              <Menu {...this.state}/>
             </div>
-            <div className="col-12 col-lg-5">
+            <div className="col-12 col-lg-9">
               <ForceGraph 
                 {...this.props}
                 {...this.state}

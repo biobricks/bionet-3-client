@@ -27,6 +27,10 @@ code {
   border-color: rgb(87, 104, 109);
 }
 
+p.card-text {
+	font-size: 1.2em;
+}
+
 .mdi-lg {
 	font-size: 1.2em;
 }
@@ -62,7 +66,7 @@ ol.breadcrumb {
 	/* max-height: calc(100vh - 80px); */
 	max-width: 100%;
 	overflow: hidden;
-	background-color: black;
+	/* background-color: black; */
 }
 
 .panel-1 {

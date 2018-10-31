@@ -18,6 +18,9 @@ class Menu extends Component {
 
   render() {
 
+    //const users = this.props.users;
+    //const labs = this.props.labs;
+
     let title = null;
     switch (this.state.mode) {
       case "welcome":
@@ -32,6 +35,9 @@ class Menu extends Component {
         <div className="card rounded-0 mt-3">
           <div className="card-header rounded-0 bg-info text-light">
             <h4 className="card-title mb-0">{title}</h4>
+          </div>
+          <div className="card-body">
+            <p className="card-text">There are currently {this.props.users.length} Users and {this.props.labs.length} Labs.</p>
           </div>
         </div>
       </div>
