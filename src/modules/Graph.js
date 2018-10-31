@@ -22,9 +22,9 @@ const Graph = {
           let virtualNode = {
             id: virtual._id,
             name: `Virtual Sample: ${virtual.name}`,
-            val: 5,
-            group: "virtual",
-            type: "virtual"            
+            val: 15,
+            group: "Virtual",
+            type: "Virtual"            
           };
           // virtual to creator
           let creatorLink = {
@@ -44,7 +44,7 @@ const Graph = {
       let labNode = {
         id: lab._id,
         name: `${lab.name} - ${lab.users.length} ${lab.users.length !== 1 ? 'members' : 'member'}`,
-        val: (lab.rows * lab.columns) / 10,
+        val: 60,
         group: lab._id,
         type: 'lab'
       };
@@ -78,7 +78,7 @@ const Graph = {
       let containerNode = {
         id: container._id,
         name: `Container: ${container.name}`,
-        val: 5,
+        val: container.parent !== null ? 7 : 15,
         group: container.lab._id,
         type: "Container"            
       };
@@ -95,6 +95,36 @@ const Graph = {
       };
       data.links.push(parentLink); 
     }
+    // physicals
+    for(let i = 0; i < physicals.length; i++){
+      let physical = physicals[i];
+      let physicalNode = {
+        id: physical._id,
+        name: `Physical: ${physical.name}`,
+        val: 3,
+        group: "Physical",
+        type: "Physical"            
+      };
+      data.nodes.push(physicalNode);
+      // physical to lab/parent container
+      let parentLink = physical.parent !== null ? {
+        name: `Physical: ${physical.name} is inside of Container: ${physical.parent.name}`,
+        source: physical.parent._id,
+        target: physical._id
+      } : {
+        name: `Physical: ${physical.name} is inside of Lab: ${physical.parent.lab.name}`,
+        source: physical.parent.lab._id,
+        target: physical._id
+      };
+      data.links.push(parentLink);
+      // physical to creator
+      let creatorLink = {
+        name: `Physical Sample ${physical.name} created by ${physical.creator.username}`,
+        source: physical.creator._id,
+        target: physical._id
+      };
+      data.links.push(creatorLink);
+    }    
     return data;   
   }
 };
