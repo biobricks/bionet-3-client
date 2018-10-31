@@ -40,41 +40,30 @@ class ForceGraph extends Component {
       <div className="ForceGraph viewport-container">
         {documentReady ? (
           <FadeIn>
-            {(viewMode === 'simple') ? (
-              <div id="graph" className="graph-container">
-                <ForceGraph2D
-                  ref={el => { this.fg = el; }}
-                  height={window.innerHeight - 60 - 60}
-                  width={this.state.width}
-                  graphData={graphData}
-                  nodeAutoColorBy="group"
-                  linkDirectionalParticleColor="green"
-                />  
-              </div>
-            ) : null }
-            {(viewMode === '3D') ? (
+          
               <div id="graph" className="graph-container">
                 <ForceGraph3D
                   ref={el => { this.fg = el; }}
                   height={window.innerHeight - 60 - 60}
                   width={this.state.width}
                   graphData={graphData}
-                  nodeThreeObject={this.state.textMode === true ? node => {
-                    const sprite = new SpriteText(node.name);
-                    sprite.color = node.color;
-                    sprite.textHeight = 8;
-                    return sprite;
-                  } : null } 
+                  // nodeThreeObject={this.state.textMode === true ? node => {
+                  //   const sprite = new SpriteText(node.name);
+                  //   sprite.color = node.color;
+                  //   sprite.textHeight = 8;
+                  //   return sprite;
+                  // } : null } 
                   nodeAutoColorBy="group"
+                  numDimensions={viewMode === '3D' ? 3 : 2}
                   linkDirectionalParticles={2}
                   linkDirectionalParticleSpeed={0.001}
-                  linkDirectionalParticleWidth={0.5}
+                  linkDirectionalParticleWidth={1}
                   linkDirectionalParticleColor="green"
                   //onNodeClick={this.handleNodeClick}
                   //onNodeHover={this.handleNodeHover}
                 />
               </div>  
-            ) : null }
+         
           </FadeIn>
         ) : null }  
       </div>

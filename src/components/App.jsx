@@ -21,7 +21,7 @@ class App extends Component {
       redirectHome: false,
       isLoggedIn: false,
       currentUser: {},
-      viewMode: "simple",
+      viewMode: "3D",
       alertType: "",
       alertMessage: ""
     };
@@ -46,7 +46,8 @@ class App extends Component {
   }
 
   setViewMode(viewMode) {
-    this.setState({ viewMode })
+    this.setState({ viewMode });
+    
   }
 
   loginCurrentUser() {
@@ -65,7 +66,8 @@ class App extends Component {
           userValidated: true,
           isLoggedIn: true,
           currentUser,
-          viewMode: currentUser.settings.display.mode
+          //viewMode: currentUser.settings.display.mode
+          viewMode: "3D"
         });
       });
   }
