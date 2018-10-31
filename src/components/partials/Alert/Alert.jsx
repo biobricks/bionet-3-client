@@ -29,7 +29,6 @@ class Alert extends Component {
       <ToastContainer {...this.state}/>
     );
   }
-
 }
 
 export default Alert;  
