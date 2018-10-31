@@ -39,6 +39,7 @@ class Login extends Component {
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
+        this.props.setAlert("success", "You have been succesfully logged in");
         Auth.authenticateUser(xhr.response.token);       
         this.props.loginCurrentUser();
         this.setState({
@@ -74,9 +75,9 @@ class Login extends Component {
     }
     return (
       <div className="container-fluid">
-        <div className="row mt-3">
+        <div className="row">
           <div className="col col-md-7 col-lg-5 ml-md-auto mr-md-auto text-center">
-            <div className="card rounded-0">
+            <div className="card rounded-0 mt-3">
               <div className="card-header bg-dark text-light rounded-0">
                 <h4 className="card-title mb-0">Login</h4>
               </div>

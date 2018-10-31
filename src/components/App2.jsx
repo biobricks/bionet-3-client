@@ -1,24 +1,25 @@
 import React, { Component } from 'react';
-import moment from "moment";
-import axios from "axios";
-import FadeIn from 'react-fade-in';
-import { toast } from 'react-toastify';
 import Auth from "../modules/Auth";
 import Navigation from './partials/Navigation';
-import Alert from './partials/Alert/Alert';
-import Loading from './partials/Loading/Loading';
 import Router from './Router';
 import Footer from './partials/Footer';
+
+import moment from "moment";
+import axios from "axios";
+
 import appConfig from '../configuration.js';
+
+import { ToastContainer, toast, Zoom } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import './App.css';
+
 
 class App extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      ready: false,
-      userValidated: false,
       redirectHome: false,
       isLoggedIn: false,
       currentUser: {},
@@ -28,20 +29,10 @@ class App extends Component {
     this.loginCurrentUser = this.loginCurrentUser.bind(this);
     this.logoutCurrentUser = this.logoutCurrentUser.bind(this);
     this.setAlert = this.setAlert.bind(this);
-    this.setReady = this.setReady.bind(this);
   }
 
   setAlert(alertType, alertMessage) {
-    switch(alertType){
-      case "success":
-        toast.success(alertMessage);
-        break;
-      case "error":
-        toast.error(alertMessage);
-        break; 
-      default:
-        toast.info(alertMessage);
-    }
+    toast.info(alertMessage);
   }
 
   loginCurrentUser() {
@@ -50,16 +41,17 @@ class App extends Component {
         authorization: `Bearer ${Auth.getToken()}`
       }
     };
+    //console.log(config);
     axios
       .get(`${appConfig.apiBaseUrl}/dashboard`, config)
       .then(res => {
         let createdDate = new Date(res.data.user.createdAt);
         res.data.user["createdFromNow"] = moment(createdDate).fromNow();
         this.setState({
-          userValidated: true,
           isLoggedIn: true,
           currentUser: res.data.user
         });
+        this.setAlert("success", "You have been succesfully logged in")
       });
   }
 
@@ -72,42 +64,34 @@ class App extends Component {
     });
   }
 
-  setReady(bool) {
-    this.setState({ ready: bool });
-  }
-
   componentDidMount() {
     //Auth.deauthenticateUser();
     if (Auth.isUserAuthenticated()) {
       this.loginCurrentUser();
-    } else {
-      this.setState({
-        userValidated: true
-      });
     }
   }
 
   render() {
     return (
       <div className="App">
-          <Navigation 
-            {...this.state}
-            loginCurrentUser={this.loginCurrentUser}
-            logoutCurrentUser={this.logoutCurrentUser}          
-          />
+        <ToastContainer 
+          autoClose={3000} 
+          pauseOnFocusLoss={true}
+          draggable={true}
+          transition={Zoom}
+        />
           <div className="viewport-container">
-            <Alert />
-            {this.state.userValidated ? (
-              <FadeIn>
-                <Router 
-                  {...this.state}
-                  loginCurrentUser={this.loginCurrentUser}
-                  logoutCurrentUser={this.logoutCurrentUser}
-                  setAlert={this.setAlert}
-                  setReady={this.setReady}         
-                />
-              </FadeIn>
-            ) : null }
+            <Navigation 
+              {...this.state}
+              loginCurrentUser={this.loginCurrentUser}
+              logoutCurrentUser={this.logoutCurrentUser}          
+            />
+            <Router 
+              {...this.state}
+              loginCurrentUser={this.loginCurrentUser}
+              logoutCurrentUser={this.logoutCurrentUser}
+              setAlert={this.setAlert}         
+            />
           </div>
           <Footer />
       </div>

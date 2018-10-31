@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import Landing from './pages/Landing';
+//import Landing2 from './pages/Landing2';
 
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -36,13 +37,13 @@ class Router extends Component {
       <main>
 
         <Switch>
-          <Route exact path='/alert' render={(props) => (<Alert {...props} {...this.props}/>)} />
-        </Switch>
-
-        <Switch>
           <Route exact path='/' render={(props) => (<Landing {...props} {...this.props}/>)} />
+        </Switch>
+        
+        <Switch>
           <Route exact path='/login' render={(props) => (<Login {...props} {...this.props}/>)} />
           <Route exact path='/signup' render={(props) => (<Signup {...props} {...this.props}/>)} />
+          <Route exact path='/alert' render={(props) => (<Alert {...props} {...this.props}/>)} />
         </Switch>
 
         <Switch>
@@ -71,6 +72,11 @@ class Router extends Component {
 
         <Switch>
           <Route path='/physicals' render={(props) => (<PhysicalList {...props} {...this.props}/>)} />
+        </Switch>
+
+        <Switch>
+          <Route path='/actions/:actionType(view|update|delete)/:modelEndpoint(labs|containers|physicals|virtuals)/:itemId' render={(props) => (<Landing {...props} {...this.props}/>)} />
+          <Route path='/actions/:actionType(create|select)/:modelEndpoint(labs|containers|physicals|virtuals)' render={(props) => (<Landing {...props} {...this.props}/>)} />
         </Switch>
 
       </main>
