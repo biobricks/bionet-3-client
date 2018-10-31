@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-// import '../../../loader.js';
-//import $ from 'jquery';
 import FadeIn from 'react-fade-in';
 //import Graph from '../../../modules/Graph';
 import { ForceGraph2D, ForceGraph3D } from 'react-force-graph';
-//import SpriteText from 'three-spritetext';
+import SpriteText from 'three-spritetext';
 import './ForceGraph.css';
 
 class ForceGraph extends Component {
@@ -19,10 +17,7 @@ class ForceGraph extends Component {
 
   setWidth() {
     let width = window.$('#graph').innerWidth();
-    console.log(width);
-    this.setState({
-      width: window.$('#graph').innerWidth()
-    });
+    this.setState({ width });
   }
 
   componentDidMount() {
@@ -47,18 +42,38 @@ class ForceGraph extends Component {
           <FadeIn>
             {(viewMode === 'simple') ? (
               <div id="graph" className="graph-container">
-              <ForceGraph2D
-                ref={el => { this.fg = el; }}
-                height={window.innerHeight - 60 - 60}
-                width={this.state.width}
-                graphData={graphData}
-                nodeAutoColorBy="group"
-                linkDirectionalParticleColor="green"
-              />  
+                <ForceGraph2D
+                  ref={el => { this.fg = el; }}
+                  height={window.innerHeight - 60 - 60}
+                  width={this.state.width}
+                  graphData={graphData}
+                  nodeAutoColorBy="group"
+                  linkDirectionalParticleColor="green"
+                />  
               </div>
             ) : null }
-            {(this.props.mode === '3D') ? (
-              <div>3D</div>
+            {(viewMode === '3D') ? (
+              <div id="graph" className="graph-container">
+                <ForceGraph3D
+                  ref={el => { this.fg = el; }}
+                  height={window.innerHeight - 60 - 60}
+                  width={this.state.width}
+                  graphData={graphData}
+                  nodeThreeObject={this.state.textMode === true ? node => {
+                    const sprite = new SpriteText(node.name);
+                    sprite.color = node.color;
+                    sprite.textHeight = 8;
+                    return sprite;
+                  } : null } 
+                  nodeAutoColorBy="group"
+                  linkDirectionalParticles={2}
+                  linkDirectionalParticleSpeed={0.001}
+                  linkDirectionalParticleWidth={0.5}
+                  linkDirectionalParticleColor="green"
+                  //onNodeClick={this.handleNodeClick}
+                  //onNodeHover={this.handleNodeHover}
+                />
+              </div>  
             ) : null }
           </FadeIn>
         ) : null }  

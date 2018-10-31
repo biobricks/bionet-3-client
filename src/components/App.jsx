@@ -29,6 +29,7 @@ class App extends Component {
     this.logoutCurrentUser = this.logoutCurrentUser.bind(this);
     this.setAlert = this.setAlert.bind(this);
     this.setReady = this.setReady.bind(this);
+    this.setViewMode = this.setViewMode.bind(this);
   }
 
   setAlert(alertType, alertMessage) {
@@ -42,6 +43,10 @@ class App extends Component {
       default:
         toast.info(alertMessage);
     }
+  }
+
+  setViewMode(viewMode) {
+    this.setState({ viewMode })
   }
 
   loginCurrentUser() {
@@ -106,7 +111,8 @@ class App extends Component {
                   loginCurrentUser={this.loginCurrentUser}
                   logoutCurrentUser={this.logoutCurrentUser}
                   setAlert={this.setAlert}
-                  setReady={this.setReady}         
+                  setReady={this.setReady}
+                  setViewMode={this.setViewMode}      
                 />
               </FadeIn>
             ) : null }

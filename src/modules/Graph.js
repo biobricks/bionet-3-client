@@ -1,5 +1,5 @@
 const Graph = {
-  "getOverview": (users, labs) => {
+  "getOverview": (users, labs, virtuals) => {
     let data = {
       nodes: [],
       links: []
@@ -8,12 +8,30 @@ const Graph = {
       let user = users[i];
       let userNode = {
         id: user._id,
-        name: user.username,
+        name: `User: ${user.username}`,
         val: 5,
         group: "user",
         type: "user"
       };
       data.nodes.push(userNode);
+      for(let j = 0; j < virtuals.length; j++){
+        let virtual = virtuals[j];
+        if (virtual.creator._id === user._id) {
+          let virtualNode = {
+            id: virtual._id,
+            name: `Virtual: ${virtual.name}`,
+            val: 5,
+            group: "virtual",
+            type: "virtual"            
+          };
+          let creatorLink = {
+            source: user._id,
+            target: virtual._id
+          };
+          data.nodes.push(virtualNode);
+          data.links.push(creatorLink);
+        }
+      }
     }
     for(let i = 0; i < labs.length; i++){
       let lab = labs[i];

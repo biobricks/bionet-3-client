@@ -15,6 +15,7 @@ class Landing extends Component {
       errors: [],
       users: [],
       labs: [],
+      virtuals: [],
       graphData: {}
     };
     this.getData = this.getData.bind(this);
@@ -28,12 +29,15 @@ class Landing extends Component {
     
     let getLabs = await Api.getAll('labs');
     if (!getLabs.success) { this.state.errors.push(getLabs.error); this.props.setAlert('error', `${getLabs.message}: ${getLabs.error.code} - ${getLabs.error.message}`)} else { state.labs = getLabs.labs; }
+
+    let getVirtuals = await Api.getAll('virtuals');
+    if (!getVirtuals.success) { this.state.errors.push(getVirtuals.error); this.props.setAlert('error', `${getVirtuals.message}: ${getVirtuals.error.code} - ${getVirtuals.error.message}`)} else { state.virtuals = getVirtuals.virtuals; }
     
     if (state.errors.length === 0){
       state.success = true;
     }
 
-    state.graphData = Graph.getOverview(state.users, state.labs);
+    state.graphData = Graph.getOverview(state.users, state.labs, state.virtuals);
     return state;
   }
 
@@ -47,14 +51,18 @@ class Landing extends Component {
   }
 
   render() {
+    const viewMode = this.props.viewMode;
     return (
       <Loading {...this.props}>
-        <div className="Landing graph container-fluid">
+        <div className="Landing graph container-fluid" style={viewMode === '3D' ? {'backgroundColor': 'black'} : null}>
           <div className="row">
-            <div className="col-12 col-lg-3">
-              <Menu {...this.state}/>
+            <div className="col-12 col-lg-5">
+              <Menu 
+                {...this.props}
+                {...this.state}
+              />
             </div>
-            <div className="col-12 col-lg-9">
+            <div className="col-12 col-lg-7">
               <ForceGraph 
                 {...this.props}
                 {...this.state}
