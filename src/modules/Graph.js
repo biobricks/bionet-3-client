@@ -26,14 +26,14 @@ const Graph = {
             group: "Virtual",
             type: "Virtual"            
           };
+          data.nodes.push(virtualNode);
           // virtual to creator
           let creatorLink = {
             name: `Virtual Sample ${virtual.name} created by ${user.username}`,
             source: user._id,
             target: virtual._id
           };
-          data.nodes.push(virtualNode);
-          data.links.push(creatorLink);
+          //data.links.push(creatorLink);
         }
 
       }
@@ -49,6 +49,34 @@ const Graph = {
         type: 'lab'
       };
       data.nodes.push(labNode);
+      // physicals in lab
+      // for(let i = 0; i < physicals.length; i++){
+      //   let physical = physicals[i];
+      //   if (physical.parent == null) {
+      //     let physicalNode = {
+      //       id: physical._id,
+      //       name: `Physical: ${physical.name}`,
+      //       val: 3,
+      //       group: "Physical",
+      //       type: "Physical"            
+      //     };
+      //     data.nodes.push(physicalNode);
+      //     // physical to lab/parent container
+      //     let parentLink = {
+      //       name: `Physical: ${physical.name} is inside of Container: ${physical.parent.name}`,
+      //       source: physical.parent._id,
+      //       target: physical._id
+      //     };
+      //     data.links.push(parentLink);
+      //     // physical to creator
+      //     let creatorLink = {
+      //       name: `Physical Sample ${physical.name} created by ${physical.creator.username}`,
+      //       source: physical.creator._id,
+      //       target: physical._id
+      //     };
+      //     data.links.push(creatorLink);
+      //   }
+      // }       
       // labs to member users
       for(let j = 0; j < lab.users.length; j++){
         let labUser = lab.users[j];
@@ -95,9 +123,10 @@ const Graph = {
       };
       data.links.push(parentLink); 
     }
-    // physicals
+    // physicals in container
     for(let i = 0; i < physicals.length; i++){
       let physical = physicals[i];
+
       let physicalNode = {
         id: physical._id,
         name: `Physical: ${physical.name}`,
@@ -106,24 +135,35 @@ const Graph = {
         type: "Physical"            
       };
       data.nodes.push(physicalNode);
-      // physical to lab/parent container
-      let parentLink = physical.parent !== null ? {
+      // physical to parent container
+      let parentLink = {
         name: `Physical: ${physical.name} is inside of Container: ${physical.parent.name}`,
         source: physical.parent._id,
         target: physical._id
-      } : {
-        name: `Physical: ${physical.name} is inside of Lab: ${physical.parent.lab.name}`,
-        source: physical.parent.lab._id,
-        target: physical._id
       };
       data.links.push(parentLink);
+      // physical to lab
+      let labLink = {
+        name: `Physical: ${physical.name} is inside of Lab: ${physical.lab.name}`,
+        source: physical.lab._id,
+        target: physical._id
+      };
+      data.links.push(labLink);   
+      // physical to virtual
+      let virtualLink = {
+        name: `Physical: ${physical.name} is an instance of Virtua: ${physical.virtual.name}`,
+        source: physical.virtual._id,
+        target: physical._id
+      };
+      data.links.push(virtualLink);      
       // physical to creator
       let creatorLink = {
         name: `Physical Sample ${physical.name} created by ${physical.creator.username}`,
         source: physical.creator._id,
         target: physical._id
       };
-      data.links.push(creatorLink);
+      //data.links.push(creatorLink);
+
     }    
     return data;   
   }

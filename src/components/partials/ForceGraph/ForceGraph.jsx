@@ -53,7 +53,7 @@ class ForceGraph extends Component {
                   //   sprite.textHeight = 8;
                   //   return sprite;
                   // } : null } 
-                  // nodeLabel="name"
+                  nodeLabel="name"
                   nodeAutoColorBy="group"
                   numDimensions={viewMode === '3D' ? 3 : 2}
                   linkDirectionalParticles={2}
