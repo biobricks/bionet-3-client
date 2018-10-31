@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import Loader from '../../../images/DNA_dblHelix.svg';
 import "./Loading.css"
 
-const Children = (props) => {
-
-};
-
 class Loading extends Component {
   render() { 
     return ( 

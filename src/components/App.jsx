@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 import Auth from "../modules/Auth";
 import Navigation from './partials/Navigation';
 import Alert from './partials/Alert/Alert';
-import Loading from './partials/Loading/Loading';
 import Router from './Router';
 import Footer from './partials/Footer';
 import appConfig from '../configuration.js';
