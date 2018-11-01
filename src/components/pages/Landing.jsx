@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import shortid from 'shortid';
 import Api from '../../modules/Api';
 import Graph from '../../modules/Graph';
 import Menu from '../partials/Menu/Menu';
@@ -162,7 +163,58 @@ class Landing extends Component {
   }
 
   render() {
-    //const viewMode = this.props.viewMode;
+    let item = this.state.itemIsClicked ? this.state.itemClicked : this.state.itemIsHovered ? this.state.itemHovered : null;
+    let itemAttrArray = item ? Object.keys(item) : [];
+    let itemAttrLength = itemAttrArray.length;
+    let itemType = this.state.itemIsClicked ? this.state.itemTypeClicked : this.state.itemIsHovered ? this.state.itemTypeHovered : null;
+    let itemIconClasses, itemTitle;
+    switch(itemType) {
+      case 'User':
+        itemTitle = item.username;
+        itemIconClasses = 'mdi mdi-account mr-2';
+        break;
+      case 'Lab':
+        itemTitle = item.name;
+        itemIconClasses = 'mdi mdi-teach mr-2';
+        break;  
+      case 'Container':
+        itemTitle = item.name;
+        itemIconClasses = 'mdi mdi-grid mr-2';
+        break;
+      case 'Physical':
+        itemTitle = item.name;
+        itemIconClasses = 'mdi mdi-flask mr-2';
+        break;
+      case 'Virtual':
+        itemTitle = item.name;
+        itemIconClasses = 'mdi mdi-dna mr-2';
+        break;  
+      default: 
+        itemTitle = 'Navigate BioNet';
+        itemIconClasses = 'mdi mdi-map-outline mr-2';
+    }
+
+    let itemAttributes;
+    if (item && itemAttrLength > 0) {
+      let keyValArray = [];
+      for(let i = 0; i < itemAttrArray.length; i++) {
+        let itemAttr = itemAttrArray[i];
+        let key = itemAttr;
+        let val = item[itemAttr];
+        if (key !== 'datName' && key !== 'datKey' && key !== 'createdAt' && key !== 'updatedAt' && key !== 'bgColor' && key !== '_id' && typeof val == 'string'){
+          keyValArray.push({ key, val });
+        }
+      }
+    
+      itemAttributes = keyValArray.map((attr, attrIndex) => {
+        return (
+          <p key={shortid.generate()} className="card-text">
+            <strong className="text-capitalize">{attr.key}</strong>: {attr.val}
+          </p>
+        );
+      });
+    }
+
     return (
       <Loading {...this.props}>
         <div className="Landing graph container-fluid" style={{'backgroundColor': 'black'}}>
@@ -174,90 +226,24 @@ class Landing extends Component {
                 {...this.state}
               />
 
-              {(!this.state.itemIsClicked && !this.state.itemIsHovered) ? (
-                <div className="card mt-3 rounded-0">
-                  <div className="card-header rounded-0 bg-info text-light">
-                    <h4 className="card-title mb-0 text-capitalize">
-                      <i className="mdi mdi-map-outline mr-2"/>Navigate BioNet
-                    </h4>
-                  </div>
-                  <div className="card-body">
-                    <p className="card-text">
-                      Hover or Click on any BioNode for details.
-                    </p>
-                  </div>
+            <div className="card mt-3 rounded-0">
+              <div className="card-header rounded-0 bg-info text-light">
+                <h4 className="card-title mb-0 text-capitalize">
+                  <i className={itemIconClasses}/>{itemTitle}
+                </h4>
+              </div>
+              {(item && itemAttrLength > 0) ? (
+                <div className="card-body">
+                  {itemAttributes}
                 </div>
-              ) : null }
-
-              {(!this.state.itemIsClicked && this.state.itemIsHovered && Object.keys(this.state.itemHovered).length > 0) ? (
-                <div className="card mt-3 rounded-0">
-                  <div className="card-header rounded-0 bg-info text-light">
-                    {(this.state.itemTypeHovered === 'User') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-account mr-2"/>{this.state.itemHovered.username}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeHovered === 'Lab') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-teach mr-2"/>{this.state.itemHovered.name}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeHovered === 'Container') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-grid mr-2"/>{this.state.itemHovered.name}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeHovered === 'Physical') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-flask mr-2"/>{this.state.itemHovered.name}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeHovered === 'Virtual') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-dna mr-2"/>{this.state.itemHovered.name}
-                      </h4>
-                    ) : null }
-                  </div>
-                  <div className="card-body">
-                    <p className="card-text">{this.state.itemHovered.description}</p>
-                  </div>
-                </div>
-              ) : null }
-
-              {(this.state.itemIsClicked && Object.keys(this.state.itemClicked).length > 0) ? (
-                <div className="card mt-3 rounded-0">
-                  <div className="card-header rounded-0 bg-info text-light">
-                    {(this.state.itemTypeClicked === 'User') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-account mr-2"/>{this.state.itemClicked.username}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeClicked === 'Lab') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-teach mr-2"/>{this.state.itemClicked.name}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeClicked === 'Container') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-grid mr-2"/>{this.state.itemClicked.name}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeClicked === 'Physical') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-flask mr-2"/>{this.state.itemClicked.name}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeClicked === 'Virtual') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-dna mr-2"/>{this.state.itemClicked.name}
-                      </h4>
-                    ) : null }
-                  </div>
-                  <div className="card-body">
-                    <p className="card-text">{this.state.itemClicked.description}</p>
-                  </div>
-                </div>
-              ) : null }
+              ) : (
+                <div className="card-body">
+                  <p className="card-text">
+                    Hover or Click on any BioNode for details.
+                  </p>
+                </div>                
+              )}  
+            </div>
 
             </div>
             <div className="col-12 col-lg-7">
