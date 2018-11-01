@@ -26,8 +26,10 @@ class App extends Component {
       isLoggedIn: false,
       currentUser: {},
       viewMode: "3D",
-      alertType: "",
-      alertMessage: ""
+
+      //set default to see in tests 
+      alertType: "This is an alert type",
+      alertMessage: "This is the message"
     };
     this.loginCurrentUser = this.loginCurrentUser.bind(this);
     this.logoutCurrentUser = this.logoutCurrentUser.bind(this);
