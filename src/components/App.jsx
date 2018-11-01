@@ -5,7 +5,7 @@ import FadeIn from 'react-fade-in';
 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import shortid from 'shortid';
+
 // import Alert from './partials/Alert/Alert';
 
 import Auth from "../modules/Auth";
