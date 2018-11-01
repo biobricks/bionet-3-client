@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import moment from "moment";
 import axios from "axios";
 import FadeIn from 'react-fade-in';
-import { toast } from 'react-toastify';
+
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import shortid from 'shortid';
+// import Alert from './partials/Alert/Alert';
+
 import Auth from "../modules/Auth";
 import Navigation from './partials/Navigation';
-import Alert from './partials/Alert/Alert';
 import Router from './Router';
 import Footer from './partials/Footer';
 import appConfig from '../configuration.js';
@@ -39,7 +43,10 @@ class App extends Component {
         break;
       case "error":
         toast.error(alertMessage);
-        break; 
+        break;
+      case "default":
+        toast(alertMessage);
+        break;  
       default:
         toast.info(alertMessage);
     }
@@ -105,7 +112,7 @@ class App extends Component {
             logoutCurrentUser={this.logoutCurrentUser}          
           />
           <div className="viewport-container">
-            <Alert />
+            <ToastContainer/>
             {this.state.userValidated ? (
               <FadeIn>
                 <Router 
