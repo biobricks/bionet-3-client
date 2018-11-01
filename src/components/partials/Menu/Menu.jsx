@@ -44,6 +44,10 @@ class Menu extends Component {
     let itemType = this.props.itemIsClicked ? this.props.itemTypeClicked : this.props.itemIsHovered ? this.props.itemTypeHovered : null;
     let itemIconClasses, itemTitle;
     switch(itemType) {
+      case 'BioNet':
+        itemTitle = 'BioNet API';
+        itemIconClasses = 'mdi mdi-file-tree mr-2';
+        break;
       case 'User':
         itemTitle = item.username;
         itemIconClasses = 'mdi mdi-account mr-2';
@@ -65,7 +69,7 @@ class Menu extends Component {
         itemIconClasses = 'mdi mdi-dna mr-2';
         break;  
       default: 
-        itemTitle = 'Navigate BioNet';
+        itemTitle = 'Navigate';
         itemIconClasses = 'mdi mdi-map-outline mr-2';
     }
 
@@ -161,9 +165,16 @@ class Menu extends Component {
               </div>
             ) : (
               <div className="card-body"> 
-                <p className="card-text">
-                  Hover or Click on any BioNode for details.
-                </p>
+                {(itemType === 'BioNet') ? (
+                  <p className="card-text">
+                    The BioNet Application Program Interface (API) receives calls from across the BioNet and responds with User, Inventory and Material Information.
+                  </p>
+                ) : (
+                  <p className="card-text">
+                    Hover or Click on any BioNode for details.
+                  </p>
+                )}
+
               </div>                
             )}  
           </div>          

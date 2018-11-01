@@ -4,6 +4,15 @@ const Graph = {
       nodes: [],
       links: []
     };
+    let apiNode = {
+      id: 'bionet',
+      name: 'BioNet API',
+      val: 5,
+      group: "BioNet",
+      type: "BioNet",
+      color: "lightGreen"
+    };
+    data.nodes.push(apiNode);
     for(let i = 0; i < users.length; i++){
       let user = users[i];
       let userNode = {
@@ -27,6 +36,14 @@ const Graph = {
         color: "blue"        
       };
       data.nodes.push(labNode);
+
+      let labApiLink = {
+        name: `BioNet API receives calls from ${lab.name} and responds with User and Material Data.`,
+        source: 'bionet',
+        target: lab._id
+      };
+      data.links.push(labApiLink);
+
       for(let j = 0; j < lab.users.length; j++){
         let labUser = lab.users[j];
         let labUserLink = {
