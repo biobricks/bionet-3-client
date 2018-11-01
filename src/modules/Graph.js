@@ -49,7 +49,7 @@ const Graph = {
     }
     return data;  
   },
-  "getOverview": (currentUser, itemSelected, users, labs, virtuals, containers, physicals) => {
+  "getOverview": (currentUser, users, labs, virtuals, containers, physicals) => {
     let data = {
       nodes: [],
       links: []
@@ -63,7 +63,7 @@ const Graph = {
         val: currentUser && user._id === currentUser._id ? 30 : 5,
         group: "current",
         type: "User",
-        color: user._id === itemSelected._id ? "green" : "gold"
+        color: "gold"
       };
       data.nodes.push(userNode);
       // virtuals by creator

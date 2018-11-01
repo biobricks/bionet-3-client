@@ -8,20 +8,20 @@ const Api = {
       let res = {
         'success': true,
         'message': message,
+        'result': data.data,
         'error': null
       };
-      res[`${modelNamePlural}`] = data.data;
       return res;
     } catch (error) {
       let res = {
         'success': false,
         'message': `There was a problem fetching ${appConfig.apiBaseUrl}/${modelNamePlural}.`,
+        'result': [],
         'error': {
           'code': error.response.status,
           'message': error.response.statusText
         }
       };
-      res[`${modelNamePlural}`] = [];
       return res;
     }
   }

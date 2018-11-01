@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import shortid from 'shortid';
-import moment from 'moment';
 import Api from '../../modules/Api';
 import Graph from '../../modules/Graph';
 import Menu from '../partials/Menu/Menu';
@@ -38,6 +35,7 @@ class Landing extends Component {
     this.getData = this.getData.bind(this);
     this.handleNodeClick = this.handleNodeClick.bind(this);
     this.handleNodeHover = this.handleNodeHover.bind(this);
+    this.getAll = this.getAll.bind(this);
   }
 
   sortUsers(users) {
@@ -94,29 +92,18 @@ class Landing extends Component {
     return response;    
   }
 
+  async getAll(endpoint) {
+    let getItems =  await Api.getAll(endpoint);
+    if (getItems.success) {
+      return getItems.result;
+    } else {
+      this.props.setAlert('error', `${getItems.message}: ${getItems.error.code} - ${getItems.error.message}`);
+      return [];
+    }
+  }
+
   async getData() {
     let state = this.state;
-    
-    let getUsers = await Api.getAll('users');
-    if (!getUsers.success) { 
-      this.state.errors.push(getUsers.error); 
-      this.props.setAlert('error', `${getUsers.message}: ${getUsers.error.code} - ${getUsers.error.message}`)
-    } else { state.users = getUsers.users; }
-    
-    let getLabs = await Api.getAll('labs');
-    if (!getLabs.success) { this.state.errors.push(getLabs.error); this.props.setAlert('error', `${getLabs.message}: ${getLabs.error.code} - ${getLabs.error.message}`)} else { state.labs = getLabs.labs; }
-
-    let getVirtuals = await Api.getAll('virtuals');
-    if (!getVirtuals.success) { this.state.errors.push(getVirtuals.error); this.props.setAlert('error', `${getVirtuals.message}: ${getVirtuals.error.code} - ${getVirtuals.error.message}`)} else { state.virtuals = getVirtuals.virtuals; }
-
-    let getPhysicals = await Api.getAll('physicals');
-    if (!getPhysicals.success) { this.state.errors.push(getPhysicals.error); this.props.setAlert('error', `${getPhysicals.message}: ${getPhysicals.error.code} - ${getPhysicals.error.message}`)} else { 
-      //console.log('getData physicals', getPhysicals.physicals);
-      state.physicals = getPhysicals.physicals; 
-    }
-
-    let getContainers = await Api.getAll('containers');
-    if (!getContainers.success) { this.state.errors.push(getContainers.error); this.props.setAlert('error', `${getContainers.message}: ${getContainers.error.code} - ${getContainers.error.message}`)} else { state.containers = getContainers.containers; }
     
     if (state.errors.length === 0){
       state.success = true;
@@ -126,15 +113,20 @@ class Landing extends Component {
     let params = this.props.match.params;
     let paramsExist = Object.keys(params).length > 0;
 
-    if(!isLoggedIn){
-      state.graphData = Graph.getOverview(this.props.currentUser, this.state.itemSelected, state.users, state.labs, state.virtuals, state.containers, state.physicals);
+    if((isLoggedIn && !paramsExist) || !isLoggedIn){
+      
+      state.users = await this.getAll('users');
+      state.labs  = await this.getAll('labs');
+      state.virtuals  = await this.getAll('virtuals');
+      state.physicals  = await this.getAll('physicals');
+      state.containers  = await this.getAll('containers');
+      state.graphData = Graph.getOverview(this.props.currentUser, state.users, state.labs, state.virtuals, state.containers, state.physicals);
       return state;
     } else if (isLoggedIn && paramsExist) {
       console.log('params', params);
+      state.users = await this.getAll('users');
+      state.labs  = await this.getAll('labs');
       state.graphData = Graph.getLabsByUser(this.props.currentUser, state.users, state.labs);
-      return state;
-    } else { 
-      state.graphData = Graph.getOverview(this.props.currentUser, this.state.itemSelected, state.users, state.labs, state.virtuals, state.containers, state.physicals);
       return state;
     }
     
@@ -181,7 +173,7 @@ class Landing extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.match.params)
+    console.log('this.props.match.params: ', this.props.match.params);
     this.getData()
     .then((res) => {
       this.setState(res);
@@ -191,76 +183,6 @@ class Landing extends Component {
   }
 
   render() {
-    let item = this.state.itemIsClicked || this.state.itemIsHovered ? this.state.itemSelected : null;
-    let itemAttrArray = item ? Object.keys(item) : [];
-    let itemType = this.state.itemIsClicked ? this.state.itemTypeClicked : this.state.itemIsHovered ? this.state.itemTypeHovered : null;
-    let itemIconClasses, itemTitle;
-    switch(itemType) {
-      case 'User':
-        itemTitle = item.username;
-        itemIconClasses = 'mdi mdi-account mr-2';
-        break;
-      case 'Lab':
-        itemTitle = item.name;
-        itemIconClasses = 'mdi mdi-teach mr-2';
-        break;  
-      case 'Container':
-        itemTitle = item.name;
-        itemIconClasses = 'mdi mdi-grid mr-2';
-        break;
-      case 'Physical':
-        itemTitle = item.name;
-        itemIconClasses = 'mdi mdi-flask mr-2';
-        break;
-      case 'Virtual':
-        itemTitle = item.name;
-        itemIconClasses = 'mdi mdi-dna mr-2';
-        break;  
-      default: 
-        itemTitle = 'Navigate BioNet';
-        itemIconClasses = 'mdi mdi-map-outline mr-2';
-    }
-
-    let itemAttributes;
-    if (item && item !== false && Object.keys(item).length > 0) {
-      let keyValArray = [];
-      for(let i = 0; i < itemAttrArray.length; i++) {
-        let itemAttr = itemAttrArray[i];
-        let key = itemAttr;
-        let val = item[itemAttr];
-        if (key !== 'email' && key !== 'name' && key !== 'datName' && key !== 'datKey' && key !== 'bgColor' && key !== '_id' && typeof val == 'string'){
-          keyValArray.push({ key, val });
-        }
-      }
-    
-      itemAttributes = keyValArray.map((attr, attrIndex) => {
-        if (!this.props.isLoggedIn) {
-          if (attr.key === 'description') {
-            return (
-              <p key={shortid.generate()} className="card-text">
-                <strong className="text-capitalize">{attr.key}</strong>: {attr.val}
-              </p>
-            );
-          }            
-        } else {
-          if (attr.key === 'createdAt' || attr.key === 'updatedAt') {
-            let attrDate = new Date(attr.val);
-            let fromNow = moment(attrDate).fromNow();
-            return (
-              <p key={shortid.generate()} className="card-text">
-                <strong className="text-capitalize">{attr.key}</strong>: {fromNow}
-              </p>
-            );
-          } else {
-            return (
-              <p key={shortid.generate()} className="card-text">
-                <strong className="text-capitalize">{attr.key}</strong>: {attr.val}
-              </p>
-            );
-          }
-        }
-      });
-    }
 
     return (
       <Loading {...this.props}>
@@ -272,33 +194,6 @@ class Landing extends Component {
                 {...this.props}
                 {...this.state}
               />
-
-            <div className="card mt-3 rounded-0">
-              <div className="card-header rounded-0 bg-info text-light">
-                <h4 className="card-title mb-0 text-capitalize">
-                  <i className={itemIconClasses}/>{itemTitle}
-                </h4>
-              </div>
-              {(item && item !== false && Object.keys(item).length > 0) ? (
-                <div className="card-body">
-                  {itemAttributes}
-                  {(!this.props.isLoggedIn) ? (
-                    <p className="card-text">
-                      <div className="mb-2"><Link to="/login">Login</Link> or <Link to="/signup">Sign Up</Link> to:</div>
-                      <i className="mdi mdi-checkbox-marked-circle text-success mr-2"/>Create &amp; Organize Your Own Lab<br/>
-                      <i className="mdi mdi-checkbox-marked-circle text-success mr-2"/>Join Other Labs<br/>
-                      <i className="mdi mdi-checkbox-marked-circle text-success mr-2"/>Grow BioNet!
-                    </p>
-                  ) : null}
-                </div>
-              ) : (
-                <div className="card-body"> 
-                  <p className="card-text">
-                    Hover or Click on any BioNode for details.
-                  </p>
-                </div>                
-              )}  
-            </div>
 
             </div>
             {(Object.keys(this.state.graphData).length > 0) ? (
