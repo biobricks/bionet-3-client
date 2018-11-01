@@ -44,7 +44,7 @@ class Navigation extends Component {
                 {this.props.currentUser.username}
               </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <Link className="dropdown-item" to="/labs">List Labs</Link>
+                <Link className="dropdown-item" to="/actions/list/labs">List Labs</Link>
               </div>
             </li>
             ) : null }

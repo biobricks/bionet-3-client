@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import shortid from 'shortid';
 import moment from 'moment';
 import Api from '../../modules/Api';
@@ -21,18 +22,26 @@ class Landing extends Component {
       virtuals: [],
       physicals: [],
       containers: [],
+      graphDataType: "all",
+      graphDataId: "",
       graphData: {},
       itemIsHovered: false,
       itemIsClicked: false,
       itemTypeHovered: "",
       itemTypeClicked: "",
       itemHovered: {},
-      itemClicked: {}
+      itemClicked: {},
+      itemSelected: {}
     };
+    this.sortUsers = this.sortUsers.bind(this);
     this.getItemByType = this.getItemByType.bind(this);
     this.getData = this.getData.bind(this);
     this.handleNodeClick = this.handleNodeClick.bind(this);
     this.handleNodeHover = this.handleNodeHover.bind(this);
+  }
+
+  sortUsers(users) {
+
   }
 
   getItemByType(id, type) {
@@ -113,8 +122,19 @@ class Landing extends Component {
       state.success = true;
     }
 
-    state.graphData = Graph.getOverview(this.props.currentUser, state.users, state.labs, state.virtuals, state.containers, state.physicals);
-    return state;
+    let isLoggedIn = this.props.isLoggedIn;
+    let params = this.props.match.params;
+    let paramsExist = Object.keys(params).length > 0;
+
+    if(!isLoggedIn){
+      state.graphData = Graph.getOverview(this.props.currentUser, this.state.itemSelected, state.users, state.labs, state.virtuals, state.containers, state.physicals);
+      return state;
+    } else if (isLoggedIn && paramsExist) {
+      console.log('params', params);
+    } else { 
+      state.graphData = Graph.getLabsByUser(this.props.currentUser, state.users, state.labs);
+    }
+    
   }
 
   handleNodeClick(node) {
@@ -125,6 +145,7 @@ class Landing extends Component {
       itemIsClicked: true,
       itemTypeClicked: type,
       itemClicked: response,
+      itemSelected: response
     });
     setTimeout(() => {
       this.setState({
@@ -143,7 +164,8 @@ class Landing extends Component {
         this.setState({
           itemIsHovered: true,
           itemTypeHovered: type, 
-          itemHovered: response 
+          itemHovered: response,
+          itemSelected: response
         });
       }
     } else {
@@ -156,6 +178,7 @@ class Landing extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props.match.params)
     this.getData()
     .then((res) => {
       this.setState(res);
@@ -165,7 +188,7 @@ class Landing extends Component {
   }
 
   render() {
-    let item = this.state.itemIsClicked ? this.state.itemClicked : this.state.itemIsHovered ? this.state.itemHovered : null;
+    let item = this.state.itemIsClicked || this.state.itemIsHovered ? this.state.itemSelected : null;
     let itemAttrArray = item ? Object.keys(item) : [];
     let itemType = this.state.itemIsClicked ? this.state.itemTypeClicked : this.state.itemIsHovered ? this.state.itemTypeHovered : null;
     let itemIconClasses, itemTitle;
@@ -208,20 +231,30 @@ class Landing extends Component {
       }
     
       itemAttributes = keyValArray.map((attr, attrIndex) => {
-        if (attr.key === 'createdAt' || attr.key === 'updatedAt') {
-          let attrDate = new Date(attr.val);
-          let fromNow = moment(attrDate).fromNow();
-          return (
-            <p key={shortid.generate()} className="card-text">
-              <strong className="text-capitalize">{attr.key}</strong>: {fromNow}
-            </p>
-          );
+        if (!this.props.isLoggedIn) {
+          if (attr.key === 'description') {
+            return (
+              <p key={shortid.generate()} className="card-text">
+                <strong className="text-capitalize">{attr.key}</strong>: {attr.val}
+              </p>
+            );
+          }            
         } else {
-          return (
-            <p key={shortid.generate()} className="card-text">
-              <strong className="text-capitalize">{attr.key}</strong>: {attr.val}
-            </p>
-          );
+          if (attr.key === 'createdAt' || attr.key === 'updatedAt') {
+            let attrDate = new Date(attr.val);
+            let fromNow = moment(attrDate).fromNow();
+            return (
+              <p key={shortid.generate()} className="card-text">
+                <strong className="text-capitalize">{attr.key}</strong>: {fromNow}
+              </p>
+            );
+          } else {
+            return (
+              <p key={shortid.generate()} className="card-text">
+                <strong className="text-capitalize">{attr.key}</strong>: {attr.val}
+              </p>
+            );
+          }
         }
       });
     }
@@ -246,6 +279,14 @@ class Landing extends Component {
               {(item && item !== false && Object.keys(item).length > 0) ? (
                 <div className="card-body">
                   {itemAttributes}
+                  {(!this.props.isLoggedIn) ? (
+                    <p className="card-text">
+                      <Link to="/login">Login</Link> or <Link to="/signup">Sign Up</Link> to:<br/>
+                      Create &amp; Organize Your Own Lab<br/>
+                      Join Other Labs<br/>
+                      Grow BioNet!
+                    </p>
+                  ) : null}
                 </div>
               ) : (
                 <div className="card-body"> 

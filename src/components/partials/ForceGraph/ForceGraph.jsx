@@ -40,12 +40,12 @@ class ForceGraph extends Component {
   }
 
   shouldComponentUpdate() {
-    console.log('should update');
+    //console.log('should update');
     return true;
   }
 
   componentWillReceiveProps() {
-    console.log('will receive props');
+    //console.log('will receive props');
     //this.forceUpdate();
   }
 
@@ -78,6 +78,9 @@ class ForceGraph extends Component {
                 nodeLabel="name"
                 nodeAutoColorBy="group"
                 numDimensions={viewMode === '3D' ? 3 : 2}
+                //nodeOpacity={.9}
+                linkWidth={1.3}
+                //linkOpacity={.35}
                 linkDirectionalParticles={2}
                 linkDirectionalParticleSpeed={0.001}
                 linkDirectionalParticleWidth={1}

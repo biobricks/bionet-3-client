@@ -1,5 +1,55 @@
 const Graph = {
-  "getOverview": (currentUser, users, labs, virtuals, containers, physicals) => {
+  "getLabsByUser": (currentUser, users, labs) => {
+    let data = {
+      nodes: [],
+      links: []
+    };
+    for(let i = 0; i < users.length; i++){
+      let user = users[i];
+      let userNode = {
+        id: user._id,
+        name: `${user.username}`,
+        val: 5,
+        group: "User",
+        type: "User",
+        color: currentUser._id === user._id ? "green" : "gold"       
+      };
+      data.nodes.push(userNode);
+    } 
+    for(let i = 0; i < labs.length; i++){
+      let lab = labs[i];
+      let labNode = {
+        id: lab._id,
+        name: `${lab.name}`,
+        val: 5,
+        group: "Lab",
+        type: "Lab",
+        color: "blue"        
+      };
+      data.nodes.push(labNode);
+      for(let j = 0; j < lab.users.length; j++){
+        let labUser = lab.users[j];
+        let labUserLink = {
+          name: `${labUser.username} is a member of ${lab.name}`,
+          source: labUser._id,
+          target: lab._id,
+          color: labUser._id === currentUser._id ? 'lightGreen' : 'grey'
+        };
+        data.links.push(labUserLink);
+      }
+      let nextLabIndex = i === (labs.length - 1) ? 0 : i + 1;
+      let nextLab = labs[nextLabIndex];
+      
+      let labLabLink = {
+        name: `${lab.name} networks with ${nextLab.name} via BioNet`,
+        source: lab._id,
+        target: nextLab._id 
+      };
+      data.links.push(labLabLink);
+    }
+    return data;  
+  },
+  "getOverview": (currentUser, itemSelected, users, labs, virtuals, containers, physicals) => {
     let data = {
       nodes: [],
       links: []
@@ -13,7 +63,7 @@ const Graph = {
         val: currentUser && user._id === currentUser._id ? 30 : 5,
         group: "current",
         type: "User",
-        color: "white"
+        color: user._id === itemSelected._id ? "green" : "gold"
       };
       data.nodes.push(userNode);
       // virtuals by creator
@@ -45,7 +95,7 @@ const Graph = {
       let labNode = {
         id: lab._id,
         name: `${lab.name} - ${lab.users.length} ${lab.users.length !== 1 ? 'members' : 'member'}`,
-        val: 60,
+        val: 30,
         group: lab._id,
         type: 'Lab'
       };

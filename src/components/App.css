@@ -20,7 +20,8 @@ code {
 	margin: 0;
 	width: 100%;
 	min-height: calc(100vh - 65px - 65px);
-	background-color: rgb(122, 161, 172);
+	/* background-color: rgb(122, 161, 172); */
+	background-color: black;
 }
 
 .card {
@@ -66,7 +67,7 @@ ol.breadcrumb {
 	/* max-height: calc(100vh - 80px); */
 	max-width: 100%;
 	overflow: hidden;
-	/* background-color: black; */
+	background-color: black;
 }
 
 .panel-1 {

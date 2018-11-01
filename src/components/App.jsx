@@ -25,7 +25,7 @@ class App extends Component {
       redirectHome: false,
       isLoggedIn: false,
       currentUser: {},
-      viewMode: "simple",
+      viewMode: "3D",
 
       //set default to see in tests 
       alertType: "This is an alert type",
