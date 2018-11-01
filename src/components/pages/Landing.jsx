@@ -20,12 +20,66 @@ class Landing extends Component {
       containers: [],
       graphData: {},
       itemIsHovered: false,
+      itemIsClicked: false,
       itemTypeHovered: "",
-      itemHovered: {}
+      itemTypeClicked: "",
+      itemHovered: {},
+      itemClicked: {}
     };
+    this.getItemByType = this.getItemByType.bind(this);
     this.getData = this.getData.bind(this);
     this.handleNodeClick = this.handleNodeClick.bind(this);
     this.handleNodeHover = this.handleNodeHover.bind(this);
+  }
+
+  getItemByType(id, type) {
+    let response = null;
+    switch(type) {
+      case "User":
+        for(let i = 0; i < this.state.users.length; i++){
+          let user = this.state.users[i];
+          if (user._id === id){
+            response = user;
+          }
+        }
+        break;
+      case "Lab":
+        for(let i = 0; i < this.state.labs.length; i++){
+          let lab = this.state.labs[i];
+          if (lab._id === id){
+            response = lab;
+          }
+        }
+        break; 
+      case "Container":
+        for(let i = 0; i < this.state.containers.length; i++){
+          let container = this.state.containers[i];
+          if (container._id === id){
+            response = container;
+          }
+        }
+        break;
+      case "Virtual":
+        for(let i = 0; i < this.state.virtuals.length; i++){
+          let virtual = this.state.virtuals[i];
+          if (virtual._id === id){
+            response = virtual;
+          }
+        }
+        break;
+      case "Physical":
+        for(let i = 0; i < this.state.physicals.length; i++){
+          let physical = this.state.physicals[i];
+          
+          if (physical._id === id){
+            response = physical;
+          }
+        }
+        break;
+      default:
+        // response = null;         
+    }
+    return response;    
   }
 
   async getData() {
@@ -61,65 +115,33 @@ class Landing extends Component {
   }
 
   handleNodeClick(node) {
-    console.log('handleNodeClick', node);
+    let {id, type} = node;
+    let response = this.getItemByType(id,type);
+    this.setState({
+      itemIsClicked: true,
+      itemTypeClicked: type,
+      itemClicked: response,
+    });
+    setTimeout(() => {
+      this.setState({
+        itemIsClicked: false
+      });
+    }, 2000);
   }
   
   handleNodeHover(node) {
     if (node && Object.keys(node).length > 0) {
       //let hoveredItem = {};
       let {id, type} = node;
-      let response;
+      let response = this.getItemByType(id,type);
       //console.log('handleNodeHover', type, id);
-      switch(type) {
-        case "User":
-          for(let i = 0; i < this.state.users.length; i++){
-            let user = this.state.users[i];
-            if (user._id === id){
-              response = user;
-            }
-          }
-          break;
-        case "Lab":
-          for(let i = 0; i < this.state.labs.length; i++){
-            let lab = this.state.labs[i];
-            if (lab._id === id){
-              response = lab;
-            }
-          }
-          break; 
-        case "Container":
-          for(let i = 0; i < this.state.containers.length; i++){
-            let container = this.state.containers[i];
-            if (container._id === id){
-              response = container;
-            }
-          }
-          break;
-        case "Virtual":
-          for(let i = 0; i < this.state.virtuals.length; i++){
-            let virtual = this.state.virtuals[i];
-            if (virtual._id === id){
-              response = virtual;
-            }
-          }
-          break;
-        case "Physical":
-          for(let i = 0; i < this.state.physicals.length; i++){
-            let physical = this.state.physicals[i];
-            
-            if (physical._id === id){
-              response = physical;
-            }
-          }
-          break;
-        default:
-          // response = null;         
+      if(!this.state.itemIsClicked) {
+        this.setState({
+          itemIsHovered: true,
+          itemTypeHovered: type, 
+          itemHovered: response 
+        });
       }
-      this.setState({
-        itemIsHovered: true,
-        itemTypeHovered: type, 
-        itemHovered: response 
-      });
     } else {
       // this.setState({
       //   itemIsHovered: false,
@@ -145,11 +167,13 @@ class Landing extends Component {
         <div className="Landing graph container-fluid" style={{'backgroundColor': 'black'}}>
           <div className="row">
             <div className="col-12 col-lg-5">
+              
               <Menu 
                 {...this.props}
                 {...this.state}
               />
-              {(this.state.itemIsHovered && Object.keys(this.state.itemHovered).length > 0) ? (
+
+              {(!this.state.itemIsClicked && this.state.itemIsHovered && Object.keys(this.state.itemHovered).length > 0) ? (
                 <div className="card mt-3 rounded-0">
                   <div className="card-header rounded-0 bg-info text-light">
                     {(this.state.itemTypeHovered === 'User') ? (
@@ -182,16 +206,43 @@ class Landing extends Component {
                     <p className="card-text">{this.state.itemHovered.description}</p>
                   </div>
                 </div>
-              ) : (
+              ) : null }
+
+              {(this.state.itemIsClicked && Object.keys(this.state.itemClicked).length > 0) ? (
                 <div className="card mt-3 rounded-0">
                   <div className="card-header rounded-0 bg-info text-light">
-                    <h4 className="card-title mb-0 text-capitalize">Select Item</h4>
+                    {(this.state.itemTypeClicked === 'User') ? (
+                      <h4 className="card-title mb-0 text-capitalize">
+                        <i className="mdi mdi-account mr-2"/>{this.state.itemClicked.username}
+                      </h4>
+                    ) : null }
+                    {(this.state.itemTypeClicked === 'Lab') ? (
+                      <h4 className="card-title mb-0 text-capitalize">
+                        <i className="mdi mdi-teach mr-2"/>{this.state.itemClicked.name}
+                      </h4>
+                    ) : null }
+                    {(this.state.itemTypeClicked === 'Container') ? (
+                      <h4 className="card-title mb-0 text-capitalize">
+                        <i className="mdi mdi-grid mr-2"/>{this.state.itemClicked.name}
+                      </h4>
+                    ) : null }
+                    {(this.state.itemTypeClicked === 'Physical') ? (
+                      <h4 className="card-title mb-0 text-capitalize">
+                        <i className="mdi mdi-flask mr-2"/>{this.state.itemClicked.name}
+                      </h4>
+                    ) : null }
+                    {(this.state.itemTypeClicked === 'Virtual') ? (
+                      <h4 className="card-title mb-0 text-capitalize">
+                        <i className="mdi mdi-dna mr-2"/>{this.state.itemClicked.name}
+                      </h4>
+                    ) : null }
                   </div>
                   <div className="card-body">
-                    Hover over an item on the graph to display details.
+                    <p className="card-text">{this.state.itemClicked.description}</p>
                   </div>
                 </div>
-              )}  
+              ) : null }
+
             </div>
             <div className="col-12 col-lg-7">
               <ForceGraph 
