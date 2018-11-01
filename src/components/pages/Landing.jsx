@@ -281,10 +281,10 @@ class Landing extends Component {
                   {itemAttributes}
                   {(!this.props.isLoggedIn) ? (
                     <p className="card-text">
-                      <Link to="/login">Login</Link> or <Link to="/signup">Sign Up</Link> to:<br/>
-                      Create &amp; Organize Your Own Lab<br/>
-                      Join Other Labs<br/>
-                      Grow BioNet!
+                      <div className="mb-2"><Link to="/login">Login</Link> or <Link to="/signup">Sign Up</Link> to:</div>
+                      <i className="mdi mdi-checkbox-marked-circle text-success mr-2"/>Create &amp; Organize Your Own Lab<br/>
+                      <i className="mdi mdi-checkbox-marked-circle text-success mr-2"/>Join Other Labs<br/>
+                      <i className="mdi mdi-checkbox-marked-circle text-success mr-2"/>Grow BioNet!
                     </p>
                   ) : null}
                 </div>
