@@ -3,7 +3,7 @@ import moment from "moment";
 import axios from "axios";
 import FadeIn from 'react-fade-in';
 
-import { toast, ToastContainer } from 'react-toastify';
+import { toast, ToastContainer, Flip } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // import Alert from './partials/Alert/Alert';
@@ -28,7 +28,7 @@ class App extends Component {
       viewMode: "3D",
 
       //set default to see in tests 
-      alertType: "This is an alert type",
+      alertType: "alert type",
       alertMessage: "This is the message"
     };
     this.loginCurrentUser = this.loginCurrentUser.bind(this);
@@ -114,7 +114,12 @@ class App extends Component {
             logoutCurrentUser={this.logoutCurrentUser}          
           />
           <div className="viewport-container">
-            <ToastContainer/>
+            <ToastContainer 
+              transition={Flip}
+              pauseOnFocusLoss={true}
+              draggable={true}
+              autoClose={3000}
+            />
             {this.state.userValidated ? (
               <FadeIn>
                 <Router 
