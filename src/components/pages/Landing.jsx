@@ -115,6 +115,7 @@ class Landing extends Component {
   }
 
   handleNodeClick(node) {
+    // change state
     let {id, type} = node;
     let response = this.getItemByType(id,type);
     this.setState({

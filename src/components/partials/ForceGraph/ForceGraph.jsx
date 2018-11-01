@@ -19,6 +19,18 @@ class ForceGraph extends Component {
     this.setState({ width });
   }
 
+  handleClick = node => {
+    // Aim at node from outside it
+    const distance = 60;
+    const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
+    this.fg.cameraPosition(
+      { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
+      node, // lookAt ({ x, y, z })
+      3000  // ms transition duration
+    );
+    this.props.handleNodeClick(node, );
+  };
+
   componentDidMount() {
     if (this.props.ready) {
       // console.log('users', this.props.users);
@@ -54,7 +66,7 @@ class ForceGraph extends Component {
                   linkDirectionalParticleSpeed={0.001}
                   linkDirectionalParticleWidth={1}
                   // linkDirectionalParticleColor="green"
-                  onNodeClick={this.props.handleNodeClick}
+                  onNodeClick={this.handleClick}
                   onNodeHover={this.props.handleNodeHover}
                 />
               </div>  
