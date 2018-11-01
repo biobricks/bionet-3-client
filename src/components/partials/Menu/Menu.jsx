@@ -3,6 +3,11 @@ import { Link } from 'react-router-dom';
 import shortid from 'shortid';
 import moment from 'moment';
 import './Menu.css';
+import UserProfile from '../Profile/UserProfile/UserProfile';
+import LabProfile from '../Profile/LabProfile/LabProfile';
+import VirtualProfile from '../Profile/VirtualProfile/VirtualProfile';
+import PhysicalProfile from '../Profile/PhysicalProfile/PhysicalProfile';
+import ContainerProfile from '../Profile/ContainerProfile/ContainerProfile';
 
 class Menu extends Component {
   
@@ -43,6 +48,7 @@ class Menu extends Component {
     let itemAttrArray = item ? Object.keys(item) : [];
     let itemType = this.props.itemIsClicked ? this.props.itemTypeClicked : this.props.itemIsHovered ? this.props.itemTypeHovered : null;
     let itemIconClasses, itemTitle;
+    let itemComponent = null;
     switch(itemType) {
       case 'BioNet':
         itemTitle = 'BioNet API';
@@ -51,73 +57,36 @@ class Menu extends Component {
       case 'User':
         itemTitle = item.username;
         itemIconClasses = 'mdi mdi-account mr-2';
+        itemComponent = <UserProfile {...this.props} {...this.state} />;
         break;
       case 'Lab':
         itemTitle = item.name;
         itemIconClasses = 'mdi mdi-teach mr-2';
+        itemComponent = <LabProfile {...this.props} {...this.state} />;
         break;  
       case 'Container':
         itemTitle = item.name;
         itemIconClasses = 'mdi mdi-grid mr-2';
+        itemComponent = <ContainerProfile {...this.props} {...this.state} />;
         break;
       case 'Physical':
         itemTitle = item.name;
         itemIconClasses = 'mdi mdi-flask mr-2';
+        itemComponent = <PhysicalProfile {...this.props} {...this.state} />;
         break;
       case 'Virtual':
         itemTitle = item.name;
         itemIconClasses = 'mdi mdi-dna mr-2';
+        itemComponent = <VirtualProfile {...this.props} {...this.state} />;
         break;  
       default: 
         itemTitle = 'Navigate';
         itemIconClasses = 'mdi mdi-map-outline mr-2';
-    }
-
-    let itemAttributes;
-    if (item && item !== false && Object.keys(item).length > 0) {
-      let keyValArray = [];
-      for(let i = 0; i < itemAttrArray.length; i++) {
-        let itemAttr = itemAttrArray[i];
-        let key = itemAttr;
-        let val = item[itemAttr];
-        if (key !== 'email' && key !== 'name' && key !== 'datName' && key !== 'datKey' && key !== 'bgColor' && key !== '_id' && typeof val == 'string'){
-          keyValArray.push({ key, val });
-        }
-      }
-    
-      itemAttributes = keyValArray.map((attr, attrIndex) => {
-        if (!this.props.isLoggedIn) {
-          if (attr.key === 'description') {
-            return (
-              <p key={shortid.generate()} className="card-text">
-                <strong className="text-capitalize">{attr.key}</strong>: {attr.val}
-              </p>
-            );
-          } else {
-            return null;
-          }         
-        } else {
-          if (attr.key === 'createdAt' || attr.key === 'updatedAt') {
-            let attrDate = new Date(attr.val);
-            let fromNow = moment(attrDate).fromNow();
-            return (
-              <p key={shortid.generate()} className="card-text">
-                <strong className="text-capitalize">{attr.key}</strong>: {fromNow}
-              </p>
-            );
-          } else {
-            return (
-              <p key={shortid.generate()} className="card-text">
-                <strong className="text-capitalize">{attr.key}</strong>: {attr.val}
-              </p>
-            );
-          }
-        }
-      });
-    }
+    } 
 
     return (
       <div className="Menu">
+        
         <div className="card rounded-0 mt-3">
           <div className="card-header rounded-0 bg-info text-light">
             <h4 className="card-title mb-0 text-capitalize">{title}</h4>
@@ -142,8 +111,22 @@ class Menu extends Component {
               </button> 
             ) : null }  
           </ul>
+          {(!this.props.isLoggedIn) ? (
+            <div className="card-body">
+              <div className="mb-2"><Link to="/login">Login</Link> or <Link to="/signup">Sign Up</Link> to:</div>
+              <p className="card-text">
+                <i className="mdi mdi-checkbox-marked-circle text-success mr-2"/>Create &amp; Organize Your Own Lab<br/>
+                <i className="mdi mdi-checkbox-marked-circle text-success mr-2"/>Join Other Labs<br/>
+                <i className="mdi mdi-checkbox-marked-circle text-success mr-2"/>Grow BioNet!
+              </p>
+            </div>            
+          ) : null }
         </div>
-        <div className="card mt-3 rounded-0">
+
+        {(itemComponent) ? ( <div>{itemComponent}</div>) : null }
+
+        
+        {/* <div className="card mt-3 rounded-0">
             <div className="card-header rounded-0 bg-info text-light">
               <h4 className="card-title mb-0 text-capitalize">
                 <i className={itemIconClasses}/>{itemTitle}
@@ -151,9 +134,9 @@ class Menu extends Component {
             </div>
             {(item && item !== false && Object.keys(item).length > 0) ? (
               <div className="card-body">
-                {itemAttributes}
+               
                 {(!this.props.isLoggedIn) ? (
-                  <div>
+                  <div className="card-body">
                     <div className="mb-2"><Link to="/login">Login</Link> or <Link to="/signup">Sign Up</Link> to:</div>
                     <p className="card-text">
                       <i className="mdi mdi-checkbox-marked-circle text-success mr-2"/>Create &amp; Organize Your Own Lab<br/>
@@ -177,7 +160,7 @@ class Menu extends Component {
 
               </div>                
             )}  
-          </div>          
+          </div>           */}
       </div>
     );
   }

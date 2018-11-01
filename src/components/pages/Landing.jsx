@@ -32,7 +32,7 @@ class Landing extends Component {
       itemClicked: {},
       itemSelected: {}
     };
-    this.sortUsers = this.sortUsers.bind(this);
+    this.sortLabUsers = this.sortLabUsers.bind(this);
     this.getItemByType = this.getItemByType.bind(this);
     this.getData = this.getData.bind(this);
     this.handleNodeClick = this.handleNodeClick.bind(this);
@@ -40,7 +40,7 @@ class Landing extends Component {
     this.getAll = this.getAll.bind(this);
   }
 
-  sortUsers(users) {
+  sortLabUsers(users, labs) {
 
   }
 

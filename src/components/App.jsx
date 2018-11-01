@@ -70,14 +70,38 @@ class App extends Component {
       .then(res => {
         let createdDate = new Date(res.data.user.createdAt);
         let currentUser = res.data.user;
-        currentUser["createdFromNow"] = moment(createdDate).fromNow();
-        this.setState({
-          userValidated: true,
-          isLoggedIn: true,
-          currentUser,
-          //viewMode: currentUser.settings.display.mode
-          // viewMode: "VR"
-        });
+        axios
+          .get(`${appConfig.apiBaseUrl}/labs`, config)
+          .then(res => {
+            currentUser["createdFromNow"] = moment(createdDate).fromNow();
+            let userLabs = [];
+            let labCoMembers = [];
+            let labs = res.data.data;
+            for(let i = 0; i < labs.length; i++){
+              let lab = labs[i];
+              for(let j = 0; j < lab.users.length; j++){
+                let labUser = lab.users[j];
+                if (labUser._id === currentUser._id){
+                  userLabs.push(lab);
+                }
+                for(let k = 0; k < labCoMembers.length; k++){
+                  let labCoMember = labCoMembers[k];
+                  if( labCoMembers.indexOf(labCoMember) === -1 ){
+                    labCoMembers.push(labCoMember);
+                  }
+                }
+              }
+            }
+            currentUser['labs'] = userLabs;
+            currentUser['labCoMembers'] = labCoMembers;
+            this.setState({
+              userValidated: true,
+              isLoggedIn: true,
+              currentUser,
+              //viewMode: currentUser.settings.display.mode
+              // viewMode: "VR"
+            });
+        });    
       });
   }
 
