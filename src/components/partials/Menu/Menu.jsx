@@ -30,7 +30,7 @@ class Menu extends Component {
     let title = null;
     switch (this.state.mode) {
       case "welcome":
-        title = `Welcome To BioNet${this.props.isLoggedIn ? (' ' + this.props.currentUser.username) : ""}`;
+        title = `BioNet`;
         break;
       default:
         title = "Loading";  
@@ -41,15 +41,6 @@ class Menu extends Component {
         <div className="card rounded-0 mt-3">
           <div className="card-header rounded-0 bg-info text-light">
             <h4 className="card-title mb-0 text-capitalize">{title}</h4>
-          </div>
-          <div className="card-body">
-            <p className="card-text">
-              There are currently:<br/>
-              {this.props.users.length} Users In {this.props.labs.length} Labs<br />
-              {/* {this.props.containers.length} Lab Containers<br /> */}
-              {this.props.virtuals.length} Virtual Samples with {this.props.physicals.length} Physical Instances
-              
-            </p>
           </div>
           <ul className="list-group list-group-flush">
             {(this.props.viewMode === 'simple') ? (

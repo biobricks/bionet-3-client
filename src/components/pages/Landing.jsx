@@ -173,6 +173,21 @@ class Landing extends Component {
                 {...this.state}
               />
 
+              {(!this.state.itemIsClicked && !this.state.itemIsHovered) ? (
+                <div className="card mt-3 rounded-0">
+                  <div className="card-header rounded-0 bg-info text-light">
+                    <h4 className="card-title mb-0 text-capitalize">
+                      <i className="mdi mdi-map-outline mr-2"/>Navigate BioNet
+                    </h4>
+                  </div>
+                  <div className="card-body">
+                    <p className="card-text">
+                      Hover or Click on any BioNode for details.
+                    </p>
+                  </div>
+                </div>
+              ) : null }
+
               {(!this.state.itemIsClicked && this.state.itemIsHovered && Object.keys(this.state.itemHovered).length > 0) ? (
                 <div className="card mt-3 rounded-0">
                   <div className="card-header rounded-0 bg-info text-light">
