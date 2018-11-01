@@ -1,28 +1,6 @@
 import React, { Component } from 'react';
 
 class AlertCard extends Component {
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      type: "Type",
-      message: "Message",
-    }
-  }
-
-  // setTypeAndMessage = () => {
-  //   this.setState({
-  //     type: this.props.alertType,
-  //     message: this.props.alertMessage
-  //   })
-  // }
-
-  componentDidMount() {
-    // this.setTypeAndMessage()
-    // console.log(this.props.alertType)
-    // console.log(this.props.alertMessage)
-  }
-
   render() {
     return (
       <div className="card mt-3">
