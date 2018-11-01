@@ -22,6 +22,8 @@ class Landing extends Component {
       graphDataType: "all",
       graphDataId: "",
       graphData: {},
+      itemAction: "",
+      itemEndpoint: "",
       itemIsHovered: false,
       itemIsClicked: false,
       itemTypeHovered: "",
@@ -123,10 +125,21 @@ class Landing extends Component {
       state.graphData = Graph.getOverview(this.props.currentUser, state.users, state.labs, state.virtuals, state.containers, state.physicals);
       return state;
     } else if (isLoggedIn && paramsExist) {
+      
       console.log('params', params);
-      state.users = await this.getAll('users');
-      state.labs  = await this.getAll('labs');
-      state.graphData = Graph.getLabsByUser(this.props.currentUser, state.users, state.labs);
+      let {actionType, modelEndpoint} = params;
+      state.itemAction = actionType;
+      state.itemEndpoint = modelEndpoint;
+      
+      // view
+      if (state.itemAction === 'list') {
+        switch(state.itemEndpoint) {
+          case 'labs':
+            state.users = await this.getAll('users');
+            state.labs  = await this.getAll('labs');
+            state.graphData = Graph.getLabsByUser(this.props.currentUser, state.users, state.labs);
+        }
+      }
       return state;
     }
     
