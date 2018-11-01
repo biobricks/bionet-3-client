@@ -4,6 +4,7 @@ import Graph from '../../modules/Graph';
 import Menu from '../partials/Menu/Menu';
 import Loading from '../partials/Loading/Loading';
 import ForceGraph from '../partials/ForceGraph/ForceGraph';
+import VRForceGraph from '../partials/ForceGraph/VRForceGraph';
 import './Landing.css';
 
 class Landing extends Component {
@@ -18,18 +19,29 @@ class Landing extends Component {
       virtuals: [],
       physicals: [],
       containers: [],
+      graphDataType: "all",
+      graphDataId: "",
       graphData: {},
+      itemAction: "",
+      itemEndpoint: "",
       itemIsHovered: false,
       itemIsClicked: false,
       itemTypeHovered: "",
       itemTypeClicked: "",
       itemHovered: {},
-      itemClicked: {}
+      itemClicked: {},
+      itemSelected: {}
     };
+    this.sortUsers = this.sortUsers.bind(this);
     this.getItemByType = this.getItemByType.bind(this);
     this.getData = this.getData.bind(this);
     this.handleNodeClick = this.handleNodeClick.bind(this);
     this.handleNodeHover = this.handleNodeHover.bind(this);
+    this.getAll = this.getAll.bind(this);
+  }
+
+  sortUsers(users) {
+
   }
 
   getItemByType(id, type) {
@@ -82,45 +94,66 @@ class Landing extends Component {
     return response;    
   }
 
+  async getAll(endpoint) {
+    let getItems =  await Api.getAll(endpoint);
+    if (getItems.success) {
+      return getItems.result;
+    } else {
+      this.props.setAlert('error', `${getItems.message}: ${getItems.error.code} - ${getItems.error.message}`);
+      return [];
+    }
+  }
+
   async getData() {
     let state = this.state;
-    
-    let getUsers = await Api.getAll('users');
-    if (!getUsers.success) { 
-      this.state.errors.push(getUsers.error); 
-      this.props.setAlert('error', `${getUsers.message}: ${getUsers.error.code} - ${getUsers.error.message}`)
-    } else { state.users = getUsers.users; }
-    
-    let getLabs = await Api.getAll('labs');
-    if (!getLabs.success) { this.state.errors.push(getLabs.error); this.props.setAlert('error', `${getLabs.message}: ${getLabs.error.code} - ${getLabs.error.message}`)} else { state.labs = getLabs.labs; }
-
-    let getVirtuals = await Api.getAll('virtuals');
-    if (!getVirtuals.success) { this.state.errors.push(getVirtuals.error); this.props.setAlert('error', `${getVirtuals.message}: ${getVirtuals.error.code} - ${getVirtuals.error.message}`)} else { state.virtuals = getVirtuals.virtuals; }
-
-    let getPhysicals = await Api.getAll('physicals');
-    if (!getPhysicals.success) { this.state.errors.push(getPhysicals.error); this.props.setAlert('error', `${getPhysicals.message}: ${getPhysicals.error.code} - ${getPhysicals.error.message}`)} else { 
-      //console.log('getData physicals', getPhysicals.physicals);
-      state.physicals = getPhysicals.physicals; 
-    }
-
-    let getContainers = await Api.getAll('containers');
-    if (!getContainers.success) { this.state.errors.push(getContainers.error); this.props.setAlert('error', `${getContainers.message}: ${getContainers.error.code} - ${getContainers.error.message}`)} else { state.containers = getContainers.containers; }
     
     if (state.errors.length === 0){
       state.success = true;
     }
 
-    state.graphData = Graph.getOverview(state.users, state.labs, state.virtuals, state.containers, state.physicals);
-    return state;
+    let isLoggedIn = this.props.isLoggedIn;
+    let params = this.props.match.params;
+    let paramsExist = Object.keys(params).length > 0;
+
+    if((isLoggedIn && !paramsExist) || !isLoggedIn){
+      
+      state.users = await this.getAll('users');
+      state.labs  = await this.getAll('labs');
+      state.virtuals  = await this.getAll('virtuals');
+      state.physicals  = await this.getAll('physicals');
+      state.containers  = await this.getAll('containers');
+      state.graphData = Graph.getOverview(this.props.currentUser, state.users, state.labs, state.virtuals, state.containers, state.physicals);
+      return state;
+    } else if (isLoggedIn && paramsExist) {
+      
+      console.log('params', params);
+      let {actionType, modelEndpoint} = params;
+      state.itemAction = actionType;
+      state.itemEndpoint = modelEndpoint;
+      
+      // view
+      if (state.itemAction === 'list') {
+        switch(state.itemEndpoint) {
+          case 'labs':
+            state.users = await this.getAll('users');
+            state.labs  = await this.getAll('labs');
+            state.graphData = Graph.getLabsByUser(this.props.currentUser, state.users, state.labs);
+        }
+      }
+      return state;
+    }
+    
   }
 
   handleNodeClick(node) {
+    // change state
     let {id, type} = node;
     let response = this.getItemByType(id,type);
     this.setState({
       itemIsClicked: true,
       itemTypeClicked: type,
       itemClicked: response,
+      itemSelected: response
     });
     setTimeout(() => {
       this.setState({
@@ -139,7 +172,8 @@ class Landing extends Component {
         this.setState({
           itemIsHovered: true,
           itemTypeHovered: type, 
-          itemHovered: response 
+          itemHovered: response,
+          itemSelected: response
         });
       }
     } else {
@@ -152,6 +186,7 @@ class Landing extends Component {
   }
 
   componentDidMount() {
+    console.log('this.props.match.params: ', this.props.match.params);
     this.getData()
     .then((res) => {
       this.setState(res);
@@ -161,7 +196,7 @@ class Landing extends Component {
   }
 
   render() {
-    //const viewMode = this.props.viewMode;
+
     return (
       <Loading {...this.props}>
         <div className="Landing graph container-fluid" style={{'backgroundColor': 'black'}}>
@@ -173,86 +208,28 @@ class Landing extends Component {
                 {...this.state}
               />
 
-              {(!this.state.itemIsClicked && this.state.itemIsHovered && Object.keys(this.state.itemHovered).length > 0) ? (
-                <div className="card mt-3 rounded-0">
-                  <div className="card-header rounded-0 bg-info text-light">
-                    {(this.state.itemTypeHovered === 'User') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-account mr-2"/>{this.state.itemHovered.username}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeHovered === 'Lab') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-teach mr-2"/>{this.state.itemHovered.name}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeHovered === 'Container') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-grid mr-2"/>{this.state.itemHovered.name}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeHovered === 'Physical') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-flask mr-2"/>{this.state.itemHovered.name}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeHovered === 'Virtual') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-dna mr-2"/>{this.state.itemHovered.name}
-                      </h4>
-                    ) : null }
-                  </div>
-                  <div className="card-body">
-                    <p className="card-text">{this.state.itemHovered.description}</p>
-                  </div>
-                </div>
-              ) : null }
-
-              {(this.state.itemIsClicked && Object.keys(this.state.itemClicked).length > 0) ? (
-                <div className="card mt-3 rounded-0">
-                  <div className="card-header rounded-0 bg-info text-light">
-                    {(this.state.itemTypeClicked === 'User') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-account mr-2"/>{this.state.itemClicked.username}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeClicked === 'Lab') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-teach mr-2"/>{this.state.itemClicked.name}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeClicked === 'Container') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-grid mr-2"/>{this.state.itemClicked.name}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeClicked === 'Physical') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-flask mr-2"/>{this.state.itemClicked.name}
-                      </h4>
-                    ) : null }
-                    {(this.state.itemTypeClicked === 'Virtual') ? (
-                      <h4 className="card-title mb-0 text-capitalize">
-                        <i className="mdi mdi-dna mr-2"/>{this.state.itemClicked.name}
-                      </h4>
-                    ) : null }
-                  </div>
-                  <div className="card-body">
-                    <p className="card-text">{this.state.itemClicked.description}</p>
-                  </div>
-                </div>
-              ) : null }
-
             </div>
-            <div className="col-12 col-lg-7">
-              <ForceGraph 
-                {...this.props}
-                {...this.state}
-                graphData={this.state.graphData}
-                handleNodeClick={this.handleNodeClick}
-                handleNodeHover={this.handleNodeHover}
-              />
-            </div>  
+            {(Object.keys(this.state.graphData).length > 0) ? (
+              <div className="col-12 col-lg-7">
+                {(this.props.viewMode === 'VR') ? (
+                  <VRForceGraph 
+                    {...this.props}
+                    {...this.state}
+                    graphData={this.state.graphData}
+                    handleNodeClick={this.handleNodeClick}
+                    handleNodeHover={this.handleNodeHover}
+                  />
+                ) : (
+                  <ForceGraph 
+                    {...this.props}
+                    {...this.state}
+                    graphData={this.state.graphData}
+                    handleNodeClick={this.handleNodeClick}
+                    handleNodeHover={this.handleNodeHover}
+                  />
+                )}  
+              </div> 
+            ) : null }
           </div>
         </div>
       </Loading>

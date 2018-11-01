@@ -81,7 +81,7 @@ class Router extends Component {
 
         <Switch>
           <Route path='/actions/:actionType(view|update|delete)/:modelEndpoint(labs|containers|physicals|virtuals)/:itemId' render={(props) => (<Landing {...props} {...this.props}/>)} />
-          <Route path='/actions/:actionType(create|select)/:modelEndpoint(labs|containers|physicals|virtuals)' render={(props) => (<Landing {...props} {...this.props}/>)} />
+          <Route path='/actions/:actionType(list|create|select)/:modelEndpoint(labs|containers|physicals|virtuals)' render={(props) => (<Landing {...props} {...this.props}/>)} />
         </Switch>
 
       </main>

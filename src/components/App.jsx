@@ -55,8 +55,8 @@ class App extends Component {
   }
 
   setViewMode(viewMode) {
+    //this.forceUpdate();
     this.setState({ viewMode });
-    
   }
 
   loginCurrentUser() {
@@ -76,7 +76,7 @@ class App extends Component {
           isLoggedIn: true,
           currentUser,
           //viewMode: currentUser.settings.display.mode
-          viewMode: "3D"
+          // viewMode: "VR"
         });
       });
   }
