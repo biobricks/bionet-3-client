@@ -4,30 +4,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { css } from 'glamor';
 // import AlertCard from './../partials/AlertCard';
 
-const SuccessMessage = () => {
-  return(
-    <div>
-        <h4>Success</h4>
-        <p>This is the success message</p>
-    </div>
-  )
-}
-
-const ErrorMessage = () => {
-  return(
-    <div>
-        <h4>
-          {/* {this.props.alertType} */}
-          Error
-        </h4>
-        <p>
-        {/* {this.props.alertMessage} */}
-        This is an error message
-        </p>
-    </div>
-  )
-}
-
 class Toasty extends Component {
 
   setCardAlert(alertType, alertMessage) {

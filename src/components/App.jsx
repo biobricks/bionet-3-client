@@ -15,6 +15,8 @@ import Footer from './partials/Footer';
 import appConfig from '../configuration.js';
 import './App.css';
 
+import { css } from 'glamor';
+
 class App extends Component {
 
   constructor(props) {
@@ -26,10 +28,6 @@ class App extends Component {
       isLoggedIn: false,
       currentUser: {},
       viewMode: "3D",
-
-      //set default to see in tests 
-      alertType: "alert type",
-      alertMessage: "This is the message"
     };
     this.loginCurrentUser = this.loginCurrentUser.bind(this);
     this.logoutCurrentUser = this.logoutCurrentUser.bind(this);
@@ -39,15 +37,56 @@ class App extends Component {
   }
 
   setAlert(alertType, alertMessage) {
+    const Message = () => {
+      return(
+        <div>
+            <h4>{alertType}</h4>
+            <p>{alertMessage}</p>
+        </div>
+      )
+    }
     switch(alertType){
       case "success":
-        toast.success(alertMessage);
+        toast(<Message/>, {
+          className: css({
+            color: '#5cb85c',
+            borderStyle: 'solid',
+            borderWidth: '2px',
+            borderColor: '#5cb85c',
+            backgroundColor: 'black',
+            borderRadius: '5px',
+            padding: '1.25rem',
+            fontFamily: "Helvetica"
+          }),
+        });
         break;
       case "error":
-        toast.error(alertMessage);
+        toast(<Message/>, {
+          className: css({
+            color: '#d9534f',
+            borderStyle: 'solid',
+            borderWidth: '2px',
+            borderColor: '#d9534f',
+            backgroundColor: 'black',
+            borderRadius: '5px',
+            padding: '1.25rem',
+            fontFamily: "Helvetica"
+          }),
+        });
         break;
       case "default":
-        toast(alertMessage);
+        toast(<Message/>, {
+          className: css({
+            color: 'white',
+            borderStyle: 'solid',
+            borderWidth: '2px',
+            borderColor: 'white',
+            backgroundColor: 'black',
+            borderRadius: '5px',
+            padding: '1.25rem',
+            fontFamily: "Helvetica"
+          }),
+        });
         break;  
       default:
         toast.info(alertMessage);
@@ -71,6 +110,7 @@ class App extends Component {
         let createdDate = new Date(res.data.user.createdAt);
         let currentUser = res.data.user;
         currentUser["createdFromNow"] = moment(createdDate).fromNow();
+        this.setAlert("success", "You've been logged in")
         this.setState({
           userValidated: true,
           isLoggedIn: true,
