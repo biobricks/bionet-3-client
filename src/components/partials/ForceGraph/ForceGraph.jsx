@@ -12,6 +12,8 @@ class ForceGraph extends Component {
       width: 1
     };
     this.setWidth = this.setWidth.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.handleLinkHover = this.handleLinkHover.bind(this);
   }
 
   setWidth() {
@@ -32,6 +34,10 @@ class ForceGraph extends Component {
     }
     this.props.handleNodeClick(node);
   };
+
+  handleLinkHover() {
+    
+  }
 
   componentDidMount() {
     if (this.props.ready) {
@@ -70,6 +76,7 @@ class ForceGraph extends Component {
                   // linkDirectionalParticleColor="green"
                   onNodeClick={this.handleClick}
                   onNodeHover={this.props.handleNodeHover}
+                  onLinkHover={this.handleLinkHover}
                 />
               </div>  
          

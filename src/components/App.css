@@ -59,7 +59,7 @@ ol.breadcrumb {
 .vis-network,
 .vis-network canvas,
 .graph-container,
-.graph-container canvas {
+.graph-container canvas, {
 	position: relative;
 	display: block;
 	height: auto;
