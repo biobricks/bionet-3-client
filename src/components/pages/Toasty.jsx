@@ -1,24 +1,41 @@
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { css } from 'glamor';
+
 // import shortid from 'shortid';
 import AlertCard from './../partials/AlertCard';
 
-const ExampleMessage = () => {
+const SuccessMessage = () => {
   return(
-    <div className="card mt-3">
-      <div className="card-header bg-dark text-light">
-        <h4 className="card-title mb-0">
+    <div>
+        <h4>
           {/* {this.props.alertType} */}
-          this is the whatever title
+          Success
         </h4>
-      </div>
-      <div className="card-body">
-        <p className="card-text">
-          {/* {this.props.alertMessage} */}
-          this is the whatever message
+        <hr/>
+        <p>
+        {/* {this.props.alertMessage} */}
+        This is the success message
         </p>
-      </div> 
+      
+    </div>
+  )
+}
+
+const ErrorMessage = () => {
+  return(
+    <div>
+        <h4>
+          {/* {this.props.alertType} */}
+          Error
+        </h4>
+        <hr/>
+        <p>
+        {/* {this.props.alertMessage} */}
+        This is an error message
+        </p>
+      
     </div>
   )
 }
@@ -26,8 +43,27 @@ const ExampleMessage = () => {
 class Toasty extends Component {
   state = {  }
   componentDidMount() {
+    console.log(this.props.alertType)
+    console.log(this.props.alertMessage)
     // render as component; set to default; options: toast.success, error, info 
-    toast(<ExampleMessage/>);
+    toast.success(<SuccessMessage/>, {
+      className: css({
+        color: 'white',
+        borderRadius: '5px',
+        padding: '1.25rm',
+        backgroundColor: '#5cb85c',
+        fontFamily: "Helvetica"
+      }),
+    });
+    toast.error(<ErrorMessage/>, {
+      className: css({
+        color: 'white',
+        borderRadius: '5px',
+        padding: '1.25rm',
+        backgroundColor: '#d9534f',
+        fontFamily: "Helvetica"
+      }),
+    });
     toast(<AlertCard/>);
     // traditional toast
     this.props.setAlert("success", `The thing was successfull.`);
