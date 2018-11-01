@@ -114,7 +114,7 @@ class App extends Component {
             logoutCurrentUser={this.logoutCurrentUser}          
           />
           <div className="viewport-container">
-            <ToastContainer 
+            <ToastContainer
               transition={Flip}
               pauseOnFocusLoss={true}
               draggable={true}
