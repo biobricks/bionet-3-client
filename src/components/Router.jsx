@@ -29,12 +29,19 @@ import PhysicalList from './pages/PhysicalList';
 
 import Alert from './partials/Alert';
 
+import Toasty from './pages/Toasty';
+
 class Router extends Component {
   
   render() {
 
     return (
       <main>
+
+        <Switch>
+          <Route exact path='/toasty' render={(props) => (<Toasty {...props} {...this.props}/>)} />
+        </Switch>
+
         <Switch>
           <Route exact path='/' render={(props) => (<Landing {...props} {...this.props}/>)} />
         </Switch>
