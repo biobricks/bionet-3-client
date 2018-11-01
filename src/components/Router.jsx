@@ -37,7 +37,6 @@ class Router extends Component {
 
     return (
       <main>
-
         <Switch>
           <Route exact path='/toasty' render={(props) => (<Toasty {...props} {...this.props}/>)} />
         </Switch>
