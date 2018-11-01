@@ -25,7 +25,7 @@ class App extends Component {
       redirectHome: false,
       isLoggedIn: false,
       currentUser: {},
-      viewMode: "3D",
+      viewMode: "simple",
 
       //set default to see in tests 
       alertType: "This is an alert type",
@@ -55,8 +55,8 @@ class App extends Component {
   }
 
   setViewMode(viewMode) {
+    //this.forceUpdate();
     this.setState({ viewMode });
-    
   }
 
   loginCurrentUser() {
@@ -76,7 +76,7 @@ class App extends Component {
           isLoggedIn: true,
           currentUser,
           //viewMode: currentUser.settings.display.mode
-          viewMode: "3D"
+          // viewMode: "VR"
         });
       });
   }

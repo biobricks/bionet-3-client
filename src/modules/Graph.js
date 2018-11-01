@@ -1,5 +1,5 @@
 const Graph = {
-  "getOverview": (users, labs, virtuals, containers, physicals) => {
+  "getOverview": (currentUser, users, labs, virtuals, containers, physicals) => {
     let data = {
       nodes: [],
       links: []
@@ -10,9 +10,10 @@ const Graph = {
       let userNode = {
         id: user._id,
         name: `User: ${user.username}`,
-        val: 5,
-        group: "user",
-        type: "User"
+        val: currentUser && user._id === currentUser._id ? 30 : 5,
+        group: "current",
+        type: "User",
+        color: "white"
       };
       data.nodes.push(userNode);
       // virtuals by creator

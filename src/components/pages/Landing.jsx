@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import shortid from 'shortid';
+import moment from 'moment';
 import Api from '../../modules/Api';
 import Graph from '../../modules/Graph';
 import Menu from '../partials/Menu/Menu';
 import Loading from '../partials/Loading/Loading';
 import ForceGraph from '../partials/ForceGraph/ForceGraph';
+import VRForceGraph from '../partials/ForceGraph/VRForceGraph';
 import './Landing.css';
 
 class Landing extends Component {
@@ -111,7 +113,7 @@ class Landing extends Component {
       state.success = true;
     }
 
-    state.graphData = Graph.getOverview(state.users, state.labs, state.virtuals, state.containers, state.physicals);
+    state.graphData = Graph.getOverview(this.props.currentUser, state.users, state.labs, state.virtuals, state.containers, state.physicals);
     return state;
   }
 
@@ -165,7 +167,6 @@ class Landing extends Component {
   render() {
     let item = this.state.itemIsClicked ? this.state.itemClicked : this.state.itemIsHovered ? this.state.itemHovered : null;
     let itemAttrArray = item ? Object.keys(item) : [];
-    let itemAttrLength = itemAttrArray.length;
     let itemType = this.state.itemIsClicked ? this.state.itemTypeClicked : this.state.itemIsHovered ? this.state.itemTypeHovered : null;
     let itemIconClasses, itemTitle;
     switch(itemType) {
@@ -195,23 +196,33 @@ class Landing extends Component {
     }
 
     let itemAttributes;
-    if (item && itemAttrLength > 0) {
+    if (item && item !== false && Object.keys(item).length > 0) {
       let keyValArray = [];
       for(let i = 0; i < itemAttrArray.length; i++) {
         let itemAttr = itemAttrArray[i];
         let key = itemAttr;
         let val = item[itemAttr];
-        if (key !== 'datName' && key !== 'datKey' && key !== 'createdAt' && key !== 'updatedAt' && key !== 'bgColor' && key !== '_id' && typeof val == 'string'){
+        if (key !== 'email' && key !== 'name' && key !== 'datName' && key !== 'datKey' && key !== 'bgColor' && key !== '_id' && typeof val == 'string'){
           keyValArray.push({ key, val });
         }
       }
     
       itemAttributes = keyValArray.map((attr, attrIndex) => {
-        return (
-          <p key={shortid.generate()} className="card-text">
-            <strong className="text-capitalize">{attr.key}</strong>: {attr.val}
-          </p>
-        );
+        if (attr.key === 'createdAt' || attr.key === 'updatedAt') {
+          let attrDate = new Date(attr.val);
+          let fromNow = moment(attrDate).fromNow();
+          return (
+            <p key={shortid.generate()} className="card-text">
+              <strong className="text-capitalize">{attr.key}</strong>: {fromNow}
+            </p>
+          );
+        } else {
+          return (
+            <p key={shortid.generate()} className="card-text">
+              <strong className="text-capitalize">{attr.key}</strong>: {attr.val}
+            </p>
+          );
+        }
       });
     }
 
@@ -232,12 +243,12 @@ class Landing extends Component {
                   <i className={itemIconClasses}/>{itemTitle}
                 </h4>
               </div>
-              {(item && itemAttrLength > 0) ? (
+              {(item && item !== false && Object.keys(item).length > 0) ? (
                 <div className="card-body">
                   {itemAttributes}
                 </div>
               ) : (
-                <div className="card-body">
+                <div className="card-body"> 
                   <p className="card-text">
                     Hover or Click on any BioNode for details.
                   </p>
@@ -246,15 +257,27 @@ class Landing extends Component {
             </div>
 
             </div>
-            <div className="col-12 col-lg-7">
-              <ForceGraph 
-                {...this.props}
-                {...this.state}
-                graphData={this.state.graphData}
-                handleNodeClick={this.handleNodeClick}
-                handleNodeHover={this.handleNodeHover}
-              />
-            </div>  
+            {(Object.keys(this.state.graphData).length > 0) ? (
+              <div className="col-12 col-lg-7">
+                {(this.props.viewMode === 'VR') ? (
+                  <VRForceGraph 
+                    {...this.props}
+                    {...this.state}
+                    graphData={this.state.graphData}
+                    handleNodeClick={this.handleNodeClick}
+                    handleNodeHover={this.handleNodeHover}
+                  />
+                ) : (
+                  <ForceGraph 
+                    {...this.props}
+                    {...this.state}
+                    graphData={this.state.graphData}
+                    handleNodeClick={this.handleNodeClick}
+                    handleNodeHover={this.handleNodeHover}
+                  />
+                )}  
+              </div> 
+            ) : null }
           </div>
         </div>
       </Loading>

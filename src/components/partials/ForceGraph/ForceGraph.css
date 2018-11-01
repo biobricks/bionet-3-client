@@ -1,0 +1,8 @@
+a-scene
+ {
+  border: 5px solid red;
+  width: 100%;
+  height: calc(100vh - 60px - 60px);
+  position: relative;
+	display: block;
+}

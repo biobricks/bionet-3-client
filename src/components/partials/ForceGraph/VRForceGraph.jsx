@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import FadeIn from 'react-fade-in';
 //import Graph from '../../../modules/Graph';
-import { ForceGraph3D } from 'react-force-graph';
+import { ForceGraphVR } from 'react-force-graph';
 import './ForceGraph.css';
 
-class ForceGraph extends Component {
+class VRForceGraph extends Component {
   
   constructor(props) {
     super(props);
@@ -17,7 +17,7 @@ class ForceGraph extends Component {
   }
 
   setWidth() {
-    let width = window.$('#graph').innerWidth();
+    let width = window.$('#vr-graph').innerWidth();
     this.setState({ width });
   }
 
@@ -55,38 +55,40 @@ class ForceGraph extends Component {
       // console.log('labs', this.props.labs);
       //console.log('view mode', this.props.viewMode);
       this.setWidth();
-      // window.$(window).resize(() => {
-      //   this.setWidth();
-      // });    
+      window.$(window).resize(() => {
+        this.setWidth();
+      });  
+      this.forceUpdate();  
     }
   }
 
   render() {
     const documentReady = this.props.ready;
-    const viewMode = this.props.viewMode;
     const graphData = this.props.graphData;
     return (
       <div className="ForceGraph">
         {documentReady ? (
           <FadeIn>
-            <div id="graph" className="graph-container pt-3">
-              <ForceGraph3D
-                ref={el => { this.fg = el; }}
-                height={window.innerHeight - 60 - 60}
-                width={this.state.width}
+
+            <div id="vr-graph" className="graph-container pt-3">
+              <ForceGraphVR
+                //ref={el => { this.fg = el; }}
+                // height={window.innerHeight - 60 - 60}
+                // width={this.state.width}
                 graphData={graphData}
-                nodeLabel="name"
-                nodeAutoColorBy="group"
-                numDimensions={viewMode === '3D' ? 3 : 2}
-                linkDirectionalParticles={2}
-                linkDirectionalParticleSpeed={0.001}
-                linkDirectionalParticleWidth={1}
+                //nodeLabel="name"
+                //nodeAutoColorBy="group"
+                //numDimensions={viewMode === '3D' ? 3 : 2}
+                // linkDirectionalParticles={2}
+                // linkDirectionalParticleSpeed={0.001}
+                // linkDirectionalParticleWidth={1}
                 // linkDirectionalParticleColor="green"
-                onNodeClick={this.handleClick}
-                onNodeHover={this.props.handleNodeHover}
-                onLinkHover={this.handleLinkHover}
+                //onNodeClick={this.handleClick}
+                //onNodeHover={this.props.handleNodeHover}
+                //onLinkHover={this.handleLinkHover}
               />
             </div>  
+           
           </FadeIn>
         ) : null }  
       </div>
@@ -95,4 +97,4 @@ class ForceGraph extends Component {
 
 }
 
-export default ForceGraph;  
+export default VRForceGraph;  
