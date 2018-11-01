@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // import shortid from 'shortid';
-import AlertCard from '../partials/AlertCard';
+import AlertCard from './../partials/AlertCard';
 
 const ExampleMessage = () => {
   return(
@@ -10,13 +10,13 @@ const ExampleMessage = () => {
       <div className="card-header bg-dark text-light">
         <h4 className="card-title mb-0">
           {/* {this.props.alertType} */}
-          this is the alert title
+          this is the whatever title
         </h4>
       </div>
       <div className="card-body">
         <p className="card-text">
           {/* {this.props.alertMessage} */}
-          this is the alert message
+          this is the whatever message
         </p>
       </div> 
     </div>
@@ -29,6 +29,7 @@ class Toasty extends Component {
     // render as component; set to default; options: toast.success, error, info 
     toast(<ExampleMessage/>);
     toast(<AlertCard/>);
+    // traditional toast
     this.props.setAlert("success", `The thing was successfull.`);
     this.props.setAlert("error", `Noooooooooope.`);
     this.props.setAlert("info", `This is informative.`);
