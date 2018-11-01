@@ -131,8 +131,11 @@ class Landing extends Component {
       return state;
     } else if (isLoggedIn && paramsExist) {
       console.log('params', params);
-    } else { 
       state.graphData = Graph.getLabsByUser(this.props.currentUser, state.users, state.labs);
+      return state;
+    } else { 
+      state.graphData = Graph.getOverview(this.props.currentUser, this.state.itemSelected, state.users, state.labs, state.virtuals, state.containers, state.physicals);
+      return state;
     }
     
   }
