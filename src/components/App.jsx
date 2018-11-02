@@ -100,6 +100,7 @@ class App extends Component {
   }
 
   refresh() {
+    this.loginCurrentUser();
     this.forceUpdate();
   }
 

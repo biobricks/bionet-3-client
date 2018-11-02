@@ -152,6 +152,7 @@ class LabProfile extends Component {
     .then((updatedLab) => {
       console.log(updatedLab);
       this.setState({ lab: updatedLab });
+      this.props.refresh();
     });;   
   }
 
