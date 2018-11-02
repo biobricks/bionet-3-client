@@ -114,7 +114,7 @@ class LabProfile extends Component {
 
                     </div> 
                   ) : null }
-                  {(!currentUserIsMember && !currentUserPendingApproval) ? (
+                  {(this.props.isLoggedIn && !currentUserIsMember && !currentUserPendingApproval) ? (
                     <div className="btn-group" role="group">
                       <button  
                         className="btn btn-success rounded-0"
