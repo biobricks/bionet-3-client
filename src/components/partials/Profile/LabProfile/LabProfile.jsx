@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import shortid from 'shortid';
 import Api from '../../../../modules/Api';
 import './LabProfile.css';
 
@@ -13,6 +14,9 @@ class LabProfile extends Component {
     this.updateLab = this.updateLab.bind(this);
     this.onRequestLabMembership = this.onRequestLabMembership.bind(this);
     this.onCancelRequestLabMembership = this.onCancelRequestLabMembership.bind(this);
+    this.onAcceptRequestLabMembership = this.onAcceptRequestLabMembership.bind(this);
+    this.onDenyRequestLabMembership = this.onDenyRequestLabMembership.bind(this);
+    this.onRevokeLabMembership = this.onRevokeLabMembership.bind(this);
   }
 
   async updateLab(lab) {
@@ -79,6 +83,78 @@ class LabProfile extends Component {
     });;
   }
 
+  onAcceptRequestLabMembership(e) {
+    let acceptedRequestId = e.target.getAttribute('userid');
+    let lab = this.state.lab;
+    let users = [];
+    let joinRequests = [];
+    for(let i = 0; i < lab.users.length; i++){
+      let user = lab.users[i];
+      users.push(user._id);
+    };
+    users.push(acceptedRequestId);
+    for(let i = 0; i < lab.joinRequests.length; i++){
+      let request = lab.joinRequests[i];
+      if (acceptedRequestId !== request._id){
+        joinRequests.push(request._id);
+      }
+    };
+    lab.users = users;
+    lab.joinRequests = joinRequests;
+    this.updateLab(lab)
+    .then((updatedLab) => {
+      console.log(updatedLab);
+      this.setState({ lab: updatedLab });
+    });;
+  }
+
+  onDenyRequestLabMembership(e) {
+    let deniedRequestId = e.target.getAttribute('userid');
+    let lab = this.state.lab;
+    let users = [];
+    let joinRequests = [];
+    for(let i = 0; i < lab.users.length; i++){
+      let user = lab.users[i];
+      users.push(user._id);
+    };
+    for(let i = 0; i < lab.joinRequests.length; i++){
+      let request = lab.joinRequests[i];
+      if (deniedRequestId !== request._id){
+        joinRequests.push(request._id);
+      }
+    };
+    lab.users = users;
+    lab.joinRequests = joinRequests;
+    this.updateLab(lab)
+    .then((updatedLab) => {
+      console.log(updatedLab);
+      this.setState({ lab: updatedLab });
+    });;
+  }
+
+  onRevokeLabMembership(e) {
+    let lab = this.state.lab;
+    let users = [];
+    let joinRequests = [];
+    for(let i = 0; i < lab.users.length; i++){
+      let user = lab.users[i];
+      if (user._id !== this.props.currentUser._id){
+        users.push(user._id);
+      }  
+    };
+    for(let i = 0; i < lab.joinRequests.length; i++){
+      let request = lab.joinRequests[i];
+      joinRequests.push(request._id);
+    };
+    lab.users = users;
+    lab.joinRequests = joinRequests;
+    this.updateLab(lab)
+    .then((updatedLab) => {
+      console.log(updatedLab);
+      this.setState({ lab: updatedLab });
+    });;   
+  }
+
   componentDidMount() {
     this.setState({
       lab: this.props.itemSelected
@@ -103,6 +179,36 @@ class LabProfile extends Component {
         }
       }      
     }
+
+    const membershipRequests = lab.joinRequests.map((user, index) => {
+      return (
+        <div 
+          key={shortid.generate()}
+          className="card-body"
+        >
+          <p className="card-text">{user.username} is requesting to join {this.state.lab.name}.</p>
+          {currentUserIsMember ? (
+            <div className="btn-group">
+              <button          
+                className="btn btn-success"
+                userid={user._id}
+                onClick={this.onAcceptRequestLabMembership}
+              >
+                Accept
+              </button>
+              <button          
+                className="btn btn-danger"
+                userid={user._id}
+                onClick={this.onDenyRequestLabMembership}
+              >
+                Deny
+              </button>
+            </div> 
+          ) : null }   
+        </div>
+      )
+    });
+
     return (
       <div className="LabProfile">
         <div className="card mt-3 rounded-0">
@@ -223,6 +329,11 @@ class LabProfile extends Component {
               </div>
             </div>
           </div>
+          {(currentUserIsMember) ? (
+            <div>
+              {membershipRequests}
+            </div>
+          ) : null }
           <div className="card-body">
             <p className="card-text">
               {lab.description}
