@@ -34,6 +34,7 @@ class App extends Component {
     this.setAlert = this.setAlert.bind(this);
     this.setReady = this.setReady.bind(this);
     this.setViewMode = this.setViewMode.bind(this);
+    this.refresh = this.refresh.bind(this);
   }
 
   setAlert(alertType, alertMessage) {
@@ -96,6 +97,10 @@ class App extends Component {
   setViewMode(viewMode) {
     //this.forceUpdate();
     this.setState({ viewMode });
+  }
+
+  refresh() {
+    this.forceUpdate();
   }
 
   loginCurrentUser() {
@@ -191,7 +196,8 @@ class App extends Component {
                   logoutCurrentUser={this.logoutCurrentUser}
                   setAlert={this.setAlert}
                   setReady={this.setReady}
-                  setViewMode={this.setViewMode}      
+                  setViewMode={this.setViewMode}
+                  refresh={this.refresh}
                 />
               </FadeIn>
             ) : null }

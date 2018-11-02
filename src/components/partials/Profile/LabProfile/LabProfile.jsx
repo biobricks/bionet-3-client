@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import Api from '../../../../modules/Api';
 import './LabProfile.css';
 
 class LabProfile extends Component {
@@ -7,6 +8,61 @@ class LabProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.updateLab = this.updateLab.bind(this);
+    this.onRequestLabMembership = this.onRequestLabMembership.bind(this);
+  }
+
+  async updateLab(lab) {
+    let postLabUpdate =  await Api.updateLab(lab);
+    if (postLabUpdate.success) {
+      return postLabUpdate.result;
+    } else {
+      this.props.setAlert('error', `${postLabUpdate.message}: ${postLabUpdate.error.code} - ${postLabUpdate.error.message}`);
+      return [];
+    }
+  }
+
+  onRequestLabMembership(e) {
+    let lab = this.props.itemSelected;
+    let users = [];
+    let joinRequests = [];
+    for(let i = 0; i < lab.users.length; i++){
+      let user = lab.users[i];
+      users.push(user._id);
+    };
+    for(let i = 0; i < lab.joinRequests.length; i++){
+      let request = lab.joinRequests[i];
+      joinRequests.push(request._id);
+    };
+    joinRequests.push(this.props.currentUser._id);
+    lab.users = users;
+    lab.joinRequests = joinRequests;
+    //console.log(lab);
+    this.updateLab(lab)
+    .then((result) => {
+      console.log(result);
+      this.props.refresh();
+    });;
+    
+  }
+
+  onCancelRequestLabMembership(e) {
+    let lab = this.state.lab;
+    let users = [];
+    let joinRequests = [];
+    for(let i = 0; i < lab.users.length; i++){
+      let user = lab.users[i];
+      users.push(user._id);
+    };
+    for(let i = 0; i < lab.joinRequests.length; i++){
+      let request = lab.joinRequests[i];
+      if (this.props.currentUser._id !== request._id){
+        joinRequests.push(request._id);
+      }
+    };
+    lab.users = users;
+    lab.joinRequests = joinRequests;
+    this.updateLab(lab);
   }
 
   render() {
@@ -21,7 +77,7 @@ class LabProfile extends Component {
         }
       }
       for(let i = 0; i < lab.joinRequests.length; i++) {
-        let requesterId = lab._idjoinRequests[i]._id;
+        let requesterId = lab.joinRequests[i]._id;
         if (requesterId === this.props.currentUser._id) {
           currentUserPendingApproval = true;
         }
@@ -42,7 +98,7 @@ class LabProfile extends Component {
                     <button 
                       id="add-button" 
                       type="button" 
-                      className="btn btn-success dropdown-toggle rounded-0"
+                      className="btn btn-sm btn-success dropdown-toggle rounded-0"
                       data-toggle="dropdown"
                       aria-haspopup="true"
                       aria-expanded="false"
@@ -77,7 +133,7 @@ class LabProfile extends Component {
                       <button 
                         id="settings-button" 
                         type="button" 
-                        className="btn btn-primary dropdown-toggle rounded-0"
+                        className="btn btn-sm btn-primary dropdown-toggle rounded-0"
                         data-toggle="dropdown"
                         aria-haspopup="true"
                         aria-expanded="false"
