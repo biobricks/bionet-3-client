@@ -31,18 +31,17 @@ class LabProfile extends Component {
     console.log('onRequestLabMembershipStart', lab);
     let users = [];
     let joinRequests = [];
-    if (lab.users.length > 0){
-      for(let i = 0; i < lab.users.length; i++){
-        let user = lab.users[i];
-        users.push(user._id);
-      };
-    }
-    if (lab.joinRequests.length > 0){
-      for(let i = 0; i < lab.joinRequests.length; i++){
-        let request = lab.joinRequests[i];
-        joinRequests.push(request._id);
-      };
-    }  
+   
+    for(let i = 0; i < lab.users.length; i++){
+      let user = lab.users[i];
+      users.push(user._id);
+    };
+
+    for(let i = 0; i < lab.joinRequests.length; i++){
+      let request = lab.joinRequests[i];
+      joinRequests.push(request._id);
+    };
+  
     joinRequests.push(this.props.currentUser._id);
     lab.users = users;
     lab.joinRequests = joinRequests;
