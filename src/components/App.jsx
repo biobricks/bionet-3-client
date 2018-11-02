@@ -3,7 +3,7 @@ import moment from "moment";
 import axios from "axios";
 import FadeIn from 'react-fade-in';
 
-import { toast, ToastContainer } from 'react-toastify';
+import { toast, ToastContainer, Flip } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // import Alert from './partials/Alert/Alert';
@@ -14,6 +14,8 @@ import Router from './Router';
 import Footer from './partials/Footer';
 import appConfig from '../configuration.js';
 import './App.css';
+
+import { css } from 'glamor';
 
 class App extends Component {
 
@@ -26,10 +28,6 @@ class App extends Component {
       isLoggedIn: false,
       currentUser: {},
       viewMode: "3D",
-
-      //set default to see in tests 
-      alertType: "This is an alert type",
-      alertMessage: "This is the message"
     };
     this.loginCurrentUser = this.loginCurrentUser.bind(this);
     this.logoutCurrentUser = this.logoutCurrentUser.bind(this);
@@ -39,15 +37,56 @@ class App extends Component {
   }
 
   setAlert(alertType, alertMessage) {
+    const Message = () => {
+      return(
+        <div>
+            <h4>{alertType}</h4>
+            <p>{alertMessage}</p>
+        </div>
+      )
+    }
     switch(alertType){
       case "success":
-        toast.success(alertMessage);
+        toast(<Message/>, {
+          className: css({
+            color: '#5cb85c',
+            borderStyle: 'solid',
+            borderWidth: '2px',
+            borderColor: '#5cb85c',
+            backgroundColor: 'black',
+            borderRadius: '5px',
+            padding: '1.25rem',
+            fontFamily: "Helvetica"
+          }),
+        });
         break;
       case "error":
-        toast.error(alertMessage);
+        toast(<Message/>, {
+          className: css({
+            color: '#d9534f',
+            borderStyle: 'solid',
+            borderWidth: '2px',
+            borderColor: '#d9534f',
+            backgroundColor: 'black',
+            borderRadius: '5px',
+            padding: '1.25rem',
+            fontFamily: "Helvetica"
+          }),
+        });
         break;
       case "default":
-        toast(alertMessage);
+        toast(<Message/>, {
+          className: css({
+            color: 'white',
+            borderStyle: 'solid',
+            borderWidth: '2px',
+            borderColor: 'white',
+            backgroundColor: 'black',
+            borderRadius: '5px',
+            padding: '1.25rem',
+            fontFamily: "Helvetica"
+          }),
+        });
         break;  
       default:
         toast.info(alertMessage);
@@ -138,7 +177,12 @@ class App extends Component {
             logoutCurrentUser={this.logoutCurrentUser}          
           />
           <div className="viewport-container">
-            <ToastContainer/>
+            <ToastContainer
+              transition={Flip}
+              pauseOnFocusLoss={true}
+              draggable={true}
+              autoClose={3000}
+            />
             {this.state.userValidated ? (
               <FadeIn>
                 <Router 

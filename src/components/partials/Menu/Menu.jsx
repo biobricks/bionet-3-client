@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import shortid from 'shortid';
-import moment from 'moment';
 import './Menu.css';
 import UserProfile from '../Profile/UserProfile/UserProfile';
 import LabProfile from '../Profile/LabProfile/LabProfile';
@@ -44,44 +42,27 @@ class Menu extends Component {
         title = "Loading";  
     }
 
-    let item = this.props.itemIsClicked || this.props.itemIsHovered ? this.props.itemSelected : null;
-    let itemAttrArray = item ? Object.keys(item) : [];
     let itemType = this.props.itemIsClicked ? this.props.itemTypeClicked : this.props.itemIsHovered ? this.props.itemTypeHovered : null;
-    let itemIconClasses, itemTitle;
     let itemComponent = null;
     switch(itemType) {
-      case 'BioNet':
-        itemTitle = 'BioNet API';
-        itemIconClasses = 'mdi mdi-file-tree mr-2';
-        break;
+    
       case 'User':
-        itemTitle = item.username;
-        itemIconClasses = 'mdi mdi-account mr-2';
         itemComponent = <UserProfile {...this.props} {...this.state} />;
         break;
       case 'Lab':
-        itemTitle = item.name;
-        itemIconClasses = 'mdi mdi-teach mr-2';
         itemComponent = <LabProfile {...this.props} {...this.state} />;
         break;  
       case 'Container':
-        itemTitle = item.name;
-        itemIconClasses = 'mdi mdi-grid mr-2';
         itemComponent = <ContainerProfile {...this.props} {...this.state} />;
         break;
       case 'Physical':
-        itemTitle = item.name;
-        itemIconClasses = 'mdi mdi-flask mr-2';
         itemComponent = <PhysicalProfile {...this.props} {...this.state} />;
         break;
       case 'Virtual':
-        itemTitle = item.name;
-        itemIconClasses = 'mdi mdi-dna mr-2';
         itemComponent = <VirtualProfile {...this.props} {...this.state} />;
         break;  
       default: 
-        itemTitle = 'Navigate';
-        itemIconClasses = 'mdi mdi-map-outline mr-2';
+
     } 
 
     return (

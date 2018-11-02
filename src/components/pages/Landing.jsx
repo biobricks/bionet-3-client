@@ -89,7 +89,7 @@ class Landing extends Component {
         }
         break;
       default:
-        // response = null;         
+        // response = null;   
     }
     return response;    
   }
@@ -138,6 +138,9 @@ class Landing extends Component {
             state.users = await this.getAll('users');
             state.labs  = await this.getAll('labs');
             state.graphData = Graph.getLabsByUser(this.props.currentUser, state.users, state.labs);
+            break;
+          default:
+              
         }
       }
       return state;
