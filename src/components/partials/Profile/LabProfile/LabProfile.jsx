@@ -7,12 +7,16 @@ class LabProfile extends Component {
   
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      lab: props.itemSelected || {}
+    };
     this.updateLab = this.updateLab.bind(this);
     this.onRequestLabMembership = this.onRequestLabMembership.bind(this);
+    this.onCancelRequestLabMembership = this.onCancelRequestLabMembership.bind(this);
   }
 
   async updateLab(lab) {
+    console.log('updateLab', lab)
     let postLabUpdate =  await Api.updateLab(lab);
     if (postLabUpdate.success) {
       return postLabUpdate.result;
@@ -23,24 +27,30 @@ class LabProfile extends Component {
   }
 
   onRequestLabMembership(e) {
-    let lab = this.props.itemSelected;
+    let lab = this.state.lab;
+    console.log('onRequestLabMembershipStart', lab);
     let users = [];
     let joinRequests = [];
-    for(let i = 0; i < lab.users.length; i++){
-      let user = lab.users[i];
-      users.push(user._id);
-    };
-    for(let i = 0; i < lab.joinRequests.length; i++){
-      let request = lab.joinRequests[i];
-      joinRequests.push(request._id);
-    };
+    if (lab.users.length > 0){
+      for(let i = 0; i < lab.users.length; i++){
+        let user = lab.users[i];
+        users.push(user._id);
+      };
+    }
+    if (lab.joinRequests.length > 0){
+      for(let i = 0; i < lab.joinRequests.length; i++){
+        let request = lab.joinRequests[i];
+        joinRequests.push(request._id);
+      };
+    }  
     joinRequests.push(this.props.currentUser._id);
     lab.users = users;
     lab.joinRequests = joinRequests;
     //console.log(lab);
     this.updateLab(lab)
-    .then((result) => {
-      console.log(result);
+    .then((updatedLab) => {
+      console.log(updatedLab);
+      this.setState({ lab: updatedLab });
       this.props.refresh();
     });;
     
@@ -62,11 +72,22 @@ class LabProfile extends Component {
     };
     lab.users = users;
     lab.joinRequests = joinRequests;
-    this.updateLab(lab);
+    this.updateLab(lab)
+    .then((lab) => {
+      console.log(lab);
+      this.setState({ lab });
+      this.props.refresh();
+    });;
+  }
+
+  componentDidMount() {
+    this.setState({
+      lab: this.props.itemSelected
+    });
   }
 
   render() {
-    const lab = this.props.itemSelected;
+    const lab = this.state.lab;
     let currentUserIsMember = false;
     let currentUserPendingApproval = false;
     if (this.props.isLoggedIn) {
@@ -77,7 +98,7 @@ class LabProfile extends Component {
         }
       }
       for(let i = 0; i < lab.joinRequests.length; i++) {
-        let requesterId = lab.joinRequests[i]._id;
+          let requesterId = lab.joinRequests[i]._id;
         if (requesterId === this.props.currentUser._id) {
           currentUserPendingApproval = true;
         }
