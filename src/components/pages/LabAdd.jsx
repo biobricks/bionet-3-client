@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import appConfig from '../../configuration.js';
 import axios from 'axios';
 import shortid from 'shortid';
-import AlertCard from '../partials/AlertCard';
 import Grid from '../partials/Grid';
 // import TestGrid from '../partials/TestGrid';
 import ContainerNewForm from '../partials/ContainerNewForm';
@@ -186,12 +185,7 @@ class LabAdd extends Component {
 
               </div>
             ) : (
-              <div className="col-12 col-md-7 ml-auto mr-auto text-center">
-                <AlertCard 
-                  title="Lab Membership Required"
-                  message="You must be logged in and a member of this lab to view this content."
-                />
-              </div>
+              null
             ) }  
             
 
