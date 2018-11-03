@@ -3,9 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 import Auth from '../../modules/Auth';
 import appConfig from '../../configuration.js';
 import axios from 'axios';
-
 import Grid from '../partials/Grid';
-import AlertCard from '../partials/AlertCard';
 import FadeIn from 'react-fade-in';
 
 class LabNew extends Component {
@@ -188,14 +186,7 @@ class LabNew extends Component {
                 </div>
               </div>
             ) : (
-              <div className="row">
-                <div className="col-12 col-md-7 ml-auto mr-auto text-center">
-                  <AlertCard 
-                    title="Login Required"
-                    message="You must be logged to view this content."
-                  />
-                </div>
-              </div>
+              null
             )}
         </div>
       </FadeIn>
