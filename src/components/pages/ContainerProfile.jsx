@@ -4,13 +4,11 @@ import { Link } from 'react-router-dom';
 import appConfig from '../../configuration.js';
 import axios from 'axios';
 import shortid from 'shortid';
-import AlertCard from '../partials/AlertCard';
 import Grid from '../partials/Grid';
 
 import './LabProfile.css';
 import Loading from '../partials/Loading/Loading';
 import Breadcrumbs from '../partials/Breadcrumbs';
-import Alert from '../partials/Alert';
 import FadeIn from 'react-fade-in';
 
 class ContainerProfile extends Component {
@@ -193,9 +191,6 @@ class ContainerProfile extends Component {
       )
     });
 
-    const alertMessage = this.props.alertMessage;
-    const alertExists = alertMessage && alertMessage.length > 0;
-
     return (
       <div className="container-fluid pb-3">
         {(isLoaded) ? (
@@ -203,16 +198,13 @@ class ContainerProfile extends Component {
             <div className="row">  
               { (this.props.isLoggedIn) ? (
                 <div className="col-12 col-lg-7">
-
                   <div className="card rounded-0 mt-3">
                     <div className="card-header bg-dark text-light rounded-0">
                       <div className="card-title mb-0 text-center text-lg-left">
-                        
                         <span><i className="mdi mdi-xl mdi-grid" /> {this.state.container.name}</span>
                           <div id="heading-toolbar" className="btn-group" role="group">
                             {(currentUserIsMember) ? (
                               <div className="btn-group" role="group">                           
-
                                 <button 
                                   id="add-button" 
                                   type="button" 
@@ -313,20 +305,14 @@ class ContainerProfile extends Component {
             
                       </div>
                     </div>
-                    
-                    {(alertExists) ? (
-                      <Alert 
-                        type={this.props.alertType}
-                        message={this.props.alertMessage}
-                      />
-                    ) : 
+  
                     <Breadcrumbs 
                     {...this.props}
                       path={this.state.path}
                       lab={this.state.lab}
                       item={this.state.container}
                     />
-                  }  
+                 
 
                     { (Object.keys(this.state.container).length > 0) ? (
                       <div className="card-body text-center text-lg-left">
@@ -359,12 +345,7 @@ class ContainerProfile extends Component {
 
                 </div>
               ) : (
-                <div className="col-12 col-lg-7 text-center">
-                  <AlertCard 
-                    title="Login Required"
-                    message="You must be logged in to view this content."
-                  />
-                </div>
+                null
               ) }  
               
               { (this.props.isLoggedIn) ? (
