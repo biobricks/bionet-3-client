@@ -3,7 +3,6 @@ import Auth from "../../modules/Auth";
 import { Link, Redirect } from 'react-router-dom';
 import appConfig from '../../configuration.js';
 import axios from 'axios';
-
 import Grid from '../partials/Grid';
 import Loading from '../partials/Loading/Loading';
 import FadeIn from 'react-fade-in';
