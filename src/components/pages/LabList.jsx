@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import appConfig from '../../configuration.js';
-import AlertCard from '../partials/AlertCard';
 import shortid from 'shortid';
 
 class LabList extends Component {
@@ -110,12 +109,6 @@ class LabList extends Component {
       <div className="container-fluid">
         <div className="row">
           <div className="col col-md-7 col-lg-5 ml-md-auto mr-md-auto text-center">
-            {(!this.props.isLoggedIn) ? (
-              <AlertCard 
-                title="Login Required"
-                message="You must be logged in to view this content."
-              /> 
-            ) : null }
             {(this.props.isLoggedIn) ? (
               <div className="card mt-3 rounded-0">
                 <div className="card-header bg-dark text-light rounded-0">
