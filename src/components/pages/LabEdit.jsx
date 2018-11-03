@@ -3,7 +3,6 @@ import Auth from "../../modules/Auth";
 import { Link, Redirect } from 'react-router-dom';
 import appConfig from '../../configuration.js';
 import axios from 'axios';
-import AlertCard from '../partials/AlertCard';
 import Grid from '../partials/Grid';
 import Loading from '../partials/Loading/Loading';
 import FadeIn from 'react-fade-in';
@@ -207,12 +206,7 @@ class LabEdit extends Component {
 
                 </div>
               ) : (
-                <div className="col-12 col-lg-7 text-center">
-                  <AlertCard 
-                    title="Lab Membership Required"
-                    message="You must be logged in and a member of this lab to view this content."
-                  />
-                </div>
+                null
               ) }  
               
               { (this.props.isLoggedIn && currentUserIsMember) ? (
