@@ -266,7 +266,6 @@ class LabProfile extends Component {
                         aria-expanded="false"
                       >
                         <i className="mdi mdi-lg mdi-settings-box mr-1" />
-                        Settings&nbsp;
                       </button>
                       <div
                         className="dropdown-menu"

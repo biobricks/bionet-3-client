@@ -115,10 +115,10 @@ class App extends Component {
       .then(res => {
         let createdDate = new Date(res.data.user.createdAt);
         let currentUser = res.data.user;
+        currentUser["createdFromNow"] = moment(createdDate).fromNow();
         axios
           .get(`${appConfig.apiBaseUrl}/labs`, config)
           .then(res => {
-            currentUser["createdFromNow"] = moment(createdDate).fromNow();
             let userLabs = [];
             let labCoMembers = [];
             let labs = res.data.data;
@@ -147,6 +147,20 @@ class App extends Component {
               // viewMode: "VR"
             });
         });    
+      })
+      .catch((error) => {
+        console.log('Error', error);
+        axios
+          .get(`${appConfig.apiBaseUrl}/labs`, config)
+          .then(res => {
+            this.setState({
+              userValidated: true,
+              isLoggedIn: false,
+              currentUser: {}
+              //viewMode: currentUser.settings.display.mode
+              // viewMode: "VR"
+            });
+        });  
       });
   }
 
