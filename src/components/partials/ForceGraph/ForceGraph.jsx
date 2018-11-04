@@ -91,7 +91,7 @@ class ForceGraph extends Component {
               />
             </div>  
           </FadeIn>
-        ) : null }  
+        ) : null }
       </div>
     );
   }

@@ -4,11 +4,9 @@ import { Link } from 'react-router-dom';
 import appConfig from '../../configuration.js';
 import axios from 'axios';
 import shortid from 'shortid';
-import AlertCard from '../partials/AlertCard';
 import Grid from '../partials/Grid';
 //import TestGrid from '../partials/TestGrid';
 import Loading from '../partials/Loading/Loading';
-import Alert from '../partials/Alert';
 import FadeIn from 'react-fade-in';
 
 import './LabProfile.css';
@@ -250,9 +248,6 @@ class LabProfile extends Component {
       )
     }); 
 
-    const alertMessage = this.props.alertMessage;
-    const alertExists = alertMessage && alertMessage.length > 0;
-
     return (
       <div className="container-fluid pb-3">
         {(isLoaded) ? (
@@ -261,13 +256,6 @@ class LabProfile extends Component {
               { (this.props.isLoggedIn) ? (
               <div className="col-12 col-lg-7">
                 <div className="card rounded-0 mt-3">
-                  {
-                    (alertExists) ? (
-                        <Alert 
-                        type={this.props.alertType}
-                        message={this.props.alertMessage}
-                        />
-                    ) :
                     <div className="card-header bg-dark text-light rounded-0">
                       <div className="card-title mb-0 text-center text-lg-left">  
                         <span><i className="mdi mdi-xl mdi-teach" /> {this.state.lab.name}</span>
@@ -380,7 +368,7 @@ class LabProfile extends Component {
                           </div>  
                       </div>
                     </div>
-                  }
+                  
 
                   <div className="card-body text-center text-lg-left">
                     <p className="card-text">
@@ -433,12 +421,7 @@ class LabProfile extends Component {
 
               </div>
             ) : (
-              <div className="col-12 col-lg-7 text-center">
-                <AlertCard 
-                  title="Login Required"
-                  message="You must be logged in to view this content."
-                />
-              </div>
+              null
             ) }  
             
             { (this.props.isLoggedIn) ? (

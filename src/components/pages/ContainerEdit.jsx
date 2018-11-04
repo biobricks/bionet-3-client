@@ -3,9 +3,7 @@ import Auth from "../../modules/Auth";
 import { Link, Redirect } from 'react-router-dom';
 import appConfig from '../../configuration.js';
 import axios from 'axios';
-import AlertCard from '../partials/AlertCard';
 import Grid from '../partials/Grid';
-
 import './LabProfile.css';
 import Loading from '../partials/Loading/Loading';
 
@@ -240,12 +238,7 @@ class ContainerEdit extends Component {
 
               </div>
             ) : (
-              <div className="col-12 col-lg-7 text-center">
-                <AlertCard 
-                  title="Lab Membership Required"
-                  message="You must be logged in and a member of this Lab to view this content."
-                />
-              </div>
+              null
             ) }  
             
             { (this.props.isLoggedIn && currentUserIsMember) ? (
