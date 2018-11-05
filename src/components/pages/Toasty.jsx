@@ -71,7 +71,6 @@ class Toasty extends Component {
 
   handleChange = e => {
     const nameText = e.target.value;
-    console.log(nameText)
     this.setState({ nameText });
   };
 
@@ -90,11 +89,11 @@ class Toasty extends Component {
   submitIfValidated = () => {
     if (this.state.nameText.length > 0) {
       return (
-        <button class="btn btn-primary" type="submit">Submit form</button>
+        <button className="btn btn-primary" type="submit">Submit form</button>
       )
     } else {
       return (
-        <button class="btn btn-primary" type="submit" disabled>Submit form</button>
+        <button className="btn btn-primary" type="submit" disabled>Submit form</button>
       )
     }
   } 
