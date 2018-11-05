@@ -64,12 +64,19 @@ class Toasty extends Component {
   constructor(props){
     super(props)
     this.state = {
-      nameValid: false
+      nameValid: false,
+      nameText: ""
     }
   }
 
+  handleChange = e => {
+    const nameText = e.target.value;
+    console.log(nameText)
+    this.setState({ nameText });
+  };
+
   viewValidationState = () => {
-    if (this.state.nameValid === true) {
+    if (this.state.nameText.length > 0) {
       return (
         <p className="valid">Looks Good</p>
       )
@@ -81,7 +88,7 @@ class Toasty extends Component {
   }
 
   submitIfValidated = () => {
-    if (this.state.nameValid === true) {
+    if (this.state.nameText.length > 0) {
       return (
         <button class="btn btn-primary" type="submit">Submit form</button>
       )
@@ -101,9 +108,12 @@ class Toasty extends Component {
     return (
         <form className="needs-validation">
           <div className="form-row">
-            <div class="col-md-4 mb-3">
-              <label for="validationCustom">FirstName</label>
-              <input type="text" className="form-control" id="validationCustom"/>
+            <div className="col-md-4 mb-3">
+              <label>FirstName</label>
+              <input type="text" 
+                className="form-control" 
+                onChange={this.handleChange}
+              />
               {this.viewValidationState()}
             </div>
           </div>
