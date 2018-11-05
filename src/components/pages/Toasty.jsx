@@ -11,8 +11,8 @@ class Toasty extends Component {
     const Message = () => {
       return(
         <div>
-            <h4>{alertType}</h4>
-            <p>{alertMessage}</p>
+          <h4>{alertType}</h4>
+          <p>{alertMessage}</p>
         </div>
       )
     }
@@ -65,29 +65,48 @@ class Toasty extends Component {
     super(props)
     this.state = {
       nameValid: false,
-      nameText: ""
+      nameText: "",
+      emailText: ""
     }
   }
 
-  handleChange = e => {
+  handleNameChange = e => {
     const nameText = e.target.value;
     this.setState({ nameText });
   };
 
-  viewValidationState = () => {
+  handleEmailChange = e => {
+    const emailText = e.target.value;
+    console.log(emailText);
+    this.setState({ emailText });
+  };
+
+  viewNameValidationState = () => {
     if (this.state.nameText.length > 0) {
       return (
         <p className="valid">Looks Good</p>
       )
     } else {
       return (
-        <p className="notValid">Must provide a name</p>
+        <p className="notValid">Must have a name</p>
+      )
+    }
+  }
+
+  viewEmailValidationState = () => {
+    if ( this.state.emailText.includes("@") ) {
+      return (
+        <p className="valid">Looks Good</p>
+      )
+    } else {
+      return (
+        <p className="notValid">Must have '@'</p>
       )
     }
   }
 
   submitIfValidated = () => {
-    if (this.state.nameText.length > 0) {
+    if (this.state.nameText.length > 0 && this.state.emailText.includes("@")) {
       return (
         <button className="btn btn-primary" type="submit">Submit form</button>
       )
@@ -111,9 +130,19 @@ class Toasty extends Component {
               <label>FirstName</label>
               <input type="text" 
                 className="form-control" 
-                onChange={this.handleChange}
+                onChange={this.handleNameChange}
               />
-              {this.viewValidationState()}
+              {this.viewNameValidationState()}
+            </div>
+          </div>
+          <div className="form-row">
+          <div className="col-md-4 mb-3">
+            <label>Email</label>
+              <input type="email" 
+                className="form-control" 
+                onChange={this.handleEmailChange}
+              />
+              {this.viewEmailValidationState()}
             </div>
           </div>
           {this.submitIfValidated()}
