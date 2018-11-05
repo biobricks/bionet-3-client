@@ -64,7 +64,7 @@ class Toasty extends Component {
   constructor(props){
     super(props)
     this.state = {
-      nameValid: true
+      nameValid: false
     }
   }
 
@@ -79,6 +79,18 @@ class Toasty extends Component {
       )
     }
   }
+
+  submitIfValidated = () => {
+    if (this.state.nameValid === true) {
+      return (
+        <button class="btn btn-primary" type="submit">Submit form</button>
+      )
+    } else {
+      return (
+        <button class="btn btn-primary" type="submit" disabled>Submit form</button>
+      )
+    }
+  } 
 
   componentDidMount() {
     // this.setCardAlert("success", "Holy cow it worked")
@@ -95,7 +107,7 @@ class Toasty extends Component {
               {this.viewValidationState()}
             </div>
           </div>
-          <button class="btn btn-primary" type="submit">Submit form</button>
+          {this.submitIfValidated()}
         </form>
     );
   }
