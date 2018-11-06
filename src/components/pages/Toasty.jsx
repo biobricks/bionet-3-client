@@ -3,7 +3,6 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { css } from 'glamor';
 import './Toasty.css';
-// import AlertCard from './../partials/AlertCard';
 
 class Toasty extends Component {
 
@@ -105,15 +104,15 @@ class Toasty extends Component {
     }
   }
 
-  hello = (e) => {
+  handleSubmit = (e) => {
     e.preventDefault();
-    this.setCardAlert("success", "Holy cow it worked")
+    this.setCardAlert("success", "You did the thing!!!")
   }
 
   submitIfValidated = () => {
     if (this.state.nameText.length > 0 && this.state.emailText.includes("@")) {
       return (
-        <button className="btn btn-primary" type="submit" onClick={this.hello}>Submit form</button>
+        <button className="btn btn-primary" type="submit" onClick={this.handleSubmit}>Submit form</button>
       )
     } else {
       return (
@@ -131,7 +130,7 @@ class Toasty extends Component {
     return (
         <form className="needs-validation col-md-4">
           <div className="form-row">
-              <label>FirstName</label>
+              <label className="label">FirstName</label>
               <input type="text" 
                 className="form-control" 
                 onChange={this.handleNameChange}
@@ -139,7 +138,7 @@ class Toasty extends Component {
               {this.viewNameValidationState()}
           </div>
           <div className="form-row">
-            <label>Email</label>
+            <label className="label">Email</label>
               <input type="email" 
                 className="form-control" 
                 onChange={this.handleEmailChange}
