@@ -105,10 +105,15 @@ class Toasty extends Component {
     }
   }
 
+  hello = (e) => {
+    e.preventDefault();
+    this.setCardAlert("success", "Holy cow it worked")
+  }
+
   submitIfValidated = () => {
     if (this.state.nameText.length > 0 && this.state.emailText.includes("@")) {
       return (
-        <button className="btn btn-primary" type="submit">Submit form</button>
+        <button className="btn btn-primary" type="submit" onClick={this.hello}>Submit form</button>
       )
     } else {
       return (
@@ -124,29 +129,25 @@ class Toasty extends Component {
   }
   render() { 
     return (
-        <form className="needs-validation">
+        <form className="needs-validation col-md-4">
           <div className="form-row">
-            <div className="col-md-4 mb-3">
               <label>FirstName</label>
               <input type="text" 
                 className="form-control" 
                 onChange={this.handleNameChange}
               />
               {this.viewNameValidationState()}
-            </div>
           </div>
           <div className="form-row">
-          <div className="col-md-4 mb-3">
             <label>Email</label>
               <input type="email" 
                 className="form-control" 
                 onChange={this.handleEmailChange}
               />
               {this.viewEmailValidationState()}
-            </div>
           </div>
-          {this.submitIfValidated()}
-        </form>
+        {this.submitIfValidated()}
+      </form>
     );
   }
 }
