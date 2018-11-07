@@ -30,7 +30,7 @@ class InputText extends Component {
     } else if (this.props.type === 'email') {
       if (this.props.text.includes('@')){
         return (
-          <p className="valid">Looks Good</p>
+          <label className="valid">Looks Good</label>
         )        
       } else {
         return (
@@ -45,7 +45,7 @@ class InputText extends Component {
       <label className="label">{this.props.inputName}</label>
     )
   }
-  
+
   render() {
     return (
       <div>
