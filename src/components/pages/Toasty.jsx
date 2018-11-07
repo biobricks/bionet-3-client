@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { css } from 'glamor';
 import './Toasty.css';
+import InputText from '../../UIComponentLibrary/Text/InputText';
 
 class Toasty extends Component {
 
@@ -80,30 +81,6 @@ class Toasty extends Component {
     this.setState({ emailText });
   };
 
-  viewNameValidationState = () => {
-    if (this.state.nameText.length > 0) {
-      return (
-        <p className="valid">Looks Good</p>
-      )
-    } else {
-      return (
-        <p className="notValid">Must have a name</p>
-      )
-    }
-  }
-
-  viewEmailValidationState = () => {
-    if ( this.state.emailText.includes("@") ) {
-      return (
-        <p className="valid">Looks Good</p>
-      )
-    } else {
-      return (
-        <p className="notValid">Must have '@'</p>
-      )
-    }
-  }
-
   handleSubmit = (e) => {
     e.preventDefault();
     this.setCardAlert("success", "You did the thing!!!")
@@ -126,25 +103,24 @@ class Toasty extends Component {
     // this.setCardAlert("error", "Holy cow it worked")
     // this.setCardAlert("default", "Holy cow it worked") 
   }
+
   render() { 
     return (
-        <form className="needs-validation col-md-4">
-          <div className="form-row">
-              <label className="label">FirstName</label>
-              <input type="text" 
-                className="form-control" 
-                onChange={this.handleNameChange}
-              />
-              {this.viewNameValidationState()}
-          </div>
-          <div className="form-row">
-            <label className="label">Email</label>
-              <input type="email" 
-                className="form-control" 
-                onChange={this.handleEmailChange}
-              />
-              {this.viewEmailValidationState()}
-          </div>
+      <form className="col-md-4">
+          <InputText 
+            inputName={"Name"}
+            type={"text"}
+            placeholder={"Please enter name"}
+            retrieveText={this.handleNameChange}
+            text={this.state.nameText}
+          />
+          <InputText 
+            inputName={"Email"}
+            type={"email"}
+            placeholder={"Please enter email"}
+            retrieveText={this.handleEmailChange}
+            text={this.state.emailText}
+          />
         {this.submitIfValidated()}
       </form>
     );
