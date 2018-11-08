@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { css } from 'glamor';
 import './Toasty.css';
 import InputText from '../../UIComponentLibrary/Text/InputText';
+import Form from '../../UIComponentLibrary/Form/Form';
 
 class Toasty extends Component {
 
@@ -106,23 +107,24 @@ class Toasty extends Component {
 
   render() { 
     return (
-      <form className="col-md-4">
-          <InputText 
-            inputName={"Name"}
-            type={"text"}
-            placeholder={"Please enter name"}
-            retrieveText={this.handleNameChange}
-            text={this.state.nameText}
-          />
-          <InputText 
-            inputName={"Email"}
-            type={"email"}
-            placeholder={"Please enter email"}
-            retrieveText={this.handleEmailChange}
-            text={this.state.emailText}
-          />
+      // <form className="col-md-4">
+      <Form sm={'12'} md={'4'} lg={'4'} >
+        <InputText 
+          inputName={"Name"}
+          type={"text"}
+          placeholder={"Please enter name"}
+          retrieveText={this.handleNameChange}
+          text={this.state.nameText}
+        />
+        <InputText 
+          inputName={"Email"}
+          type={"email"}
+          placeholder={"Please enter email"}
+          retrieveText={this.handleEmailChange}
+          text={this.state.emailText}
+        />
         {this.submitIfValidated()}
-      </form>
+      </Form>
     );
   }
 }
