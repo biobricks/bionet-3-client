@@ -17,7 +17,10 @@ class InputText extends Component {
   }
 
   showMessage = () => {
-    if(this.props.type === 'text'){
+    let textType = this.props.type
+    
+    switch(textType){
+      case 'text':
       if(this.props.text.length > 0){
         return (
           <label className="valid">{this.props.inputName} looks good!</label>
@@ -26,17 +29,21 @@ class InputText extends Component {
         return (
           <label className="notValid">{this.props.inputName} is required!</label>
         )
-      }
-    } else if (this.props.type === 'email') {
+      } 
+      case 'email':
       if (this.props.text.includes('@')){
         return (
-          <label className="valid">Looks Good</label>
+          <label className="valid">{this.props.inputName} looks Good</label>
         )        
       } else {
         return (
-          <label className="notValid">{this.props.inputName} is required!</label>
+          <label className="notValid">@ is required!</label>
         )
       }
+      default:
+        return (
+          <label/>
+        )
     }
   }
 
@@ -52,9 +59,7 @@ class InputText extends Component {
         {this.showName()}
         <input type="text" 
           className="form-control" 
-          onChange={
-            this.props.retrieveText
-          }
+          onChange={this.props.retrieveText}
           placeholder={this.props.placeholder}
         />
         {this.showMessage()}
