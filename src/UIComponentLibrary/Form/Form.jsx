@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 
 class Form extends Component {
-  state = {  }
   render() {
     return ( 
-      <form className={`col-md-${this.props.md}`}>
+      <form className={`
+        col-sm-${this.props.sm} 
+        col-md-${this.props.md} 
+        col-lg-${this.props.lg}
+        `}>
         {this.props.children}
       </form>
-     );
+    );
   }
 }
- 
 export default Form;

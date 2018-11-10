@@ -10,12 +10,10 @@ class InputText extends Component {
     }
     this.handleTextChange = this.handleTextChange.bind(this)
   }
-
   handleTextChange = e => {
     const text = e.target.value
     this.setState({text})
   }
-
   showMessage = () => {
     let textType = this.props.type
     
@@ -46,20 +44,18 @@ class InputText extends Component {
         )
     }
   }
-
   showName = () => {
     return(
       <label className="label">{this.props.inputName}</label>
     )
   }
-
   render() {
     return (
       <div>
         {this.showName()}
         <input type="text" 
           className="form-control" 
-          onChange={this.props.retrieveText}
+          onChange={this.props.handleChange}
           placeholder={this.props.placeholder}
         />
         {this.showMessage()}
@@ -67,5 +63,5 @@ class InputText extends Component {
     );
   }
 }
- 
+
 export default InputText;
