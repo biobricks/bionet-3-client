@@ -10,3 +10,7 @@
 .preLoader {
   transform: rotate(90deg);
 }
+
+.stretch-viewport {
+  height: calc(100vh - 60px - 60px - 8px - 29px)
+}

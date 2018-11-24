@@ -1,171 +1,84 @@
-import React, { Component } from 'react';
-import moment from "moment";
-import axios from "axios";
-import FadeIn from 'react-fade-in';
-
-import { toast, ToastContainer, Flip } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-// import Alert from './partials/Alert/Alert';
-
-import Auth from "../modules/Auth";
-import Navigation from './partials/Navigation';
-import Router from './Router';
-import Footer from './partials/Footer';
-import appConfig from '../configuration.js';
+import React, { Component, Suspense, lazy } from 'react';
+import { Route, Switch } from "react-router-dom";
+import Crypto from 'crypto-js';
 import './App.css';
 
-import { css } from 'glamor';
+import Navigation from './Navigation/Navigation';
+//import Landing from './components/Landing';
+import Loading from './partials/Loading/Loading';
+import Signup from './Signup';
+import Login from './Login';
+import Footer from './Footer/Footer';
+
+import { RouteBoundary } from './Helpers';
+
+import { loginCurrentUser, fetchAll, sortUserLabs } from '../modules/Api';
+
+const Landing = lazy(() => import('./Landing'));
+
+function RouteWrapper(props) {
+  return (
+    <RouteBoundary>
+      <Suspense fallback={<div><Loading /></div>}>
+        {props.children}
+      </Suspense>
+    </RouteBoundary>
+  );
+}
 
 class App extends Component {
-
+  
   constructor(props) {
     super(props);
     this.state = {
-      ready: false,
-      userValidated: false,
-      redirectHome: false,
+      isLoaded: false,
       isLoggedIn: false,
       currentUser: {},
-      viewMode: "3D",
+      labs: [],
+      virtuals: [],
+      physicals: []
     };
-    this.loginCurrentUser = this.loginCurrentUser.bind(this);
     this.logoutCurrentUser = this.logoutCurrentUser.bind(this);
-    this.setAlert = this.setAlert.bind(this);
-    this.setReady = this.setReady.bind(this);
-    this.setViewMode = this.setViewMode.bind(this);
-    this.refresh = this.refresh.bind(this);
+    this.setCurrentUser = this.setCurrentUser.bind(this);
+    this.getCurrentUserLabs = this.getCurrentUserLabs.bind(this);
+  }
+  
+  async getCurrentUserLabs(currentUser) {
+    let res, data, labs, virtuals, physicals; // eslint-disable-line 
+    res = await fetchAll('labs');
+    labs = res.data;
+    res = await fetchAll('virtuals');
+    virtuals = res.data;
+    res = await fetchAll('physicals');
+    physicals = res.data;
+    currentUser = sortUserLabs(currentUser, labs);
+    this.setState({
+      isLoaded: true,
+      isLoggedIn: true,
+      currentUser,
+      labs,
+      virtuals,
+      physicals
+    });
   }
 
-  setAlert(alertType, alertMessage) {
-    const Message = () => {
-      return(
-        <div>
-            <h4>{alertType}</h4>
-            <p>{alertMessage}</p>
-        </div>
-      )
-    }
-    switch(alertType){
-      case "success":
-        toast(<Message/>, {
-          className: css({
-            color: '#5cb85c',
-            borderStyle: 'solid',
-            borderWidth: '2px',
-            borderColor: '#5cb85c',
-            backgroundColor: 'black',
-            borderRadius: '5px',
-            padding: '1.25rem',
-            fontFamily: "Helvetica"
-          }),
-        });
-        break;
-      case "error":
-        toast(<Message/>, {
-          className: css({
-            color: '#d9534f',
-            borderStyle: 'solid',
-            borderWidth: '2px',
-            borderColor: '#d9534f',
-            backgroundColor: 'black',
-            borderRadius: '5px',
-            padding: '1.25rem',
-            fontFamily: "Helvetica"
-          }),
-        });
-        break;
-      case "default":
-        toast(<Message/>, {
-          className: css({
-            color: 'white',
-            borderStyle: 'solid',
-            borderWidth: '2px',
-            borderColor: 'white',
-            backgroundColor: 'black',
-            borderRadius: '5px',
-            padding: '1.25rem',
-            fontFamily: "Helvetica"
-          }),
-        });
-        break;  
-      default:
-        toast.info(alertMessage);
-    }
-  }
-
-  setViewMode(viewMode) {
-    //this.forceUpdate();
-    this.setState({ viewMode });
-  }
-
-  refresh() {
-    this.loginCurrentUser();
-    this.forceUpdate();
-  }
-
-  loginCurrentUser() {
-    let config = {
-      headers: {
-        authorization: `Bearer ${Auth.getToken()}`
-      }
-    };
-    axios
-      .get(`${appConfig.apiBaseUrl}/dashboard`, config)
-      .then(res => {
-        let createdDate = new Date(res.data.user.createdAt);
-        let currentUser = res.data.user;
-        currentUser["createdFromNow"] = moment(createdDate).fromNow();
-        axios
-          .get(`${appConfig.apiBaseUrl}/labs`, config)
-          .then(res => {
-            let userLabs = [];
-            let labCoMembers = [];
-            let labs = res.data.data;
-            for(let i = 0; i < labs.length; i++){
-              let lab = labs[i];
-              for(let j = 0; j < lab.users.length; j++){
-                let labUser = lab.users[j];
-                if (labUser._id === currentUser._id){
-                  userLabs.push(lab);
-                }
-                for(let k = 0; k < labCoMembers.length; k++){
-                  let labCoMember = labCoMembers[k];
-                  if( labCoMembers.indexOf(labCoMember) === -1 ){
-                    labCoMembers.push(labCoMember);
-                  }
-                }
-              }
-            }
-            currentUser['labs'] = userLabs;
-            currentUser['labCoMembers'] = labCoMembers;
-            this.setState({
-              userValidated: true,
-              isLoggedIn: true,
-              currentUser,
-              //viewMode: currentUser.settings.display.mode
-              // viewMode: "VR"
-            });
-        });    
-      })
-      .catch((error) => {
-        console.log('Error', error);
-        axios
-          .get(`${appConfig.apiBaseUrl}/labs`, config)
-          .then(res => {
-            this.setState({
-              userValidated: true,
-              isLoggedIn: false,
-              currentUser: {}
-              //viewMode: currentUser.settings.display.mode
-              // viewMode: "VR"
-            });
-        });  
-      });
+  async setCurrentUser() {
+    //Auth.deauthenticateUser();
+    let res, data, user, currentUser, virtuals, physicals; // eslint-disable-line
+    if (localStorage.getItem('token') !== null) {
+      res = await loginCurrentUser();
+      currentUser = res.user;
+      currentUser['gravatarUrl'] = `https://www.gravatar.com/avatar/${Crypto.MD5(currentUser.email).toString()}?s=100`;
+      await this.getCurrentUserLabs(currentUser);
+    } else {
+      virtuals = { data } = await fetchAll('virtuals');
+      physicals = { data } = await fetchAll('physicals');
+      this.setState({ virtuals, physicals, isLoaded: true });  
+    }  
   }
 
   logoutCurrentUser() {
-    Auth.deauthenticateUser();
+    localStorage.removeItem('token');
     this.setState({
       redirectHome: true,
       isLoggedIn: false,
@@ -173,51 +86,25 @@ class App extends Component {
     });
   }
 
-  setReady(bool) {
-    this.setState({ ready: bool });
-  }
-
   componentDidMount() {
-    //Auth.deauthenticateUser();
-    if (Auth.isUserAuthenticated()) {
-      this.loginCurrentUser();
-    } else {
-      this.setState({
-        userValidated: true
-      });
-    }
+    this.setCurrentUser()
+    .then(() => {
+      // nothing
+    });
   }
 
   render() {
     return (
       <div className="App">
-          <Navigation 
-            {...this.state}
-            loginCurrentUser={this.loginCurrentUser}
-            logoutCurrentUser={this.logoutCurrentUser}          
-          />
-          <div className="viewport-container">
-            <ToastContainer
-              transition={Flip}
-              pauseOnFocusLoss={true}
-              draggable={true}
-              autoClose={3000}
-            />
-            {this.state.userValidated ? (
-              <FadeIn>
-                <Router 
-                  {...this.state}
-                  loginCurrentUser={this.loginCurrentUser}
-                  logoutCurrentUser={this.logoutCurrentUser}
-                  setAlert={this.setAlert}
-                  setReady={this.setReady}
-                  setViewMode={this.setViewMode}
-                  refresh={this.refresh}
-                />
-              </FadeIn>
-            ) : null }
-          </div>
-          <Footer />
+        <Navigation {...this.state} logoutCurrentUser={this.logoutCurrentUser}/>
+        <main className="viewport-container">
+          <Switch>
+            <Route path="/signup" exact render={(props) => (<Signup {...props} {...this.state}/>)}/>
+            <Route path="/login" exact render={(props) => (<Login {...props} {...this.state} setCurrentUser={this.setCurrentUser}/>)}/>
+            <Route path="/" exact render={(props) => ( <RouteWrapper><Landing {...props} {...this.state}/></RouteWrapper> )}/>
+          </Switch>        
+        </main>
+        <Footer />
       </div>
     );
   }
