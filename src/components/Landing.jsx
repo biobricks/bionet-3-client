@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ContainerFluid, Row, Column } from './Bootstrap/layout';
-import { Card, CardHeader, CardTitle, CardBody, CardText } from './Bootstrap/components';
+import { Card, CardHeader, CardTitle, CardBody} from './Bootstrap/components';
 
 import Loading from './partials/Loading/Loading';
 import Welcome from './partials/Welcome';
@@ -51,6 +51,18 @@ class Landing extends Component {
       links: []
     };
     const labs = this.props.labs;
+    const physicals = this.props.physicals;
+    const virtuals = this.props.virtuals;
+    for(let i = 0; i < virtuals.length; i++){
+      let virtual = virtuals[i];
+      let virtualNode = {
+        id: virtual._id,
+        name: virtual.name,
+        value: 5,
+        color: "gold"
+      };
+      graphData.nodes.push(virtualNode);
+    }  
     for(let i = 0; i < labs.length; i++){
       let lab = labs[i];
       let labNode = {
@@ -64,6 +76,26 @@ class Landing extends Component {
         source: "bionet",
         target: lab._id
       });
+      for(let j = 0; j < physicals.length; j++){
+        let physical = physicals[j];
+        let physicalNode = {
+          id: physical._id,
+          name: physical.name,
+          value: 5,
+          color: "lightBlue"          
+        };
+        if (physical.lab._id === lab._id) {
+          graphData.nodes.push(physicalNode);
+          graphData.links.push({
+            source: lab._id,
+            target: physical._id
+          });
+          graphData.links.push({
+            source: physical.virtual._id,
+            target: physical._id
+          });
+        }
+      }
     }
     return (
       <ContainerFluid>
@@ -93,12 +125,14 @@ class Landing extends Component {
                     graphData={graphData}
                   />
                   <CardBody>
-                    <CardText>
-                      <div className="color-block blue mr-2"></div>
-                      <div className="color-label mr-4">BioNet API</div>
-                      <div className="color-block green mr-2"></div>
-                      <div className="color-label mr-2">Lab</div>
-                    </CardText>
+                    <div className="color-block blue mr-2"></div>
+                    <div className="color-label mr-4">BioNet API</div>
+                    <div className="color-block green mr-2"></div>
+                    <div className="color-label mr-4">Lab</div>
+                    <div className="color-block gold mr-2"></div>
+                    <div className="color-label mr-4">Virtual Sample</div>
+                    <div className="color-block light-blue mr-2"></div>
+                    <div className="color-label mr-4">Physical Sample</div>
                   </CardBody>
                 </Card>  
               </Column>

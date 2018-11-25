@@ -30,6 +30,10 @@
 	float: left;
 }
 
+.color-label {
+	line-height: 30px;
+}
+
 .color-block {
 	position: relative;
 	float: left;
@@ -43,4 +47,12 @@
 
 .color-block.green {
 	background-color: green;
+}
+
+.color-block.gold {
+	background-color: gold;
+}
+
+.color-block.light-blue {
+	background-color: lightblue;
 }
