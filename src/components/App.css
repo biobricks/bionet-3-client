@@ -24,3 +24,23 @@
 .bg-green-darkest {
 	background-color: rgb(23,43,47) !important;
 }
+
+.color-block, .color-label {
+	position: relative;
+	float: left;
+}
+
+.color-block {
+	position: relative;
+	float: left;
+	height: 30px;
+	width: 30px;	
+}
+
+.color-block.blue {
+	background-color: blue;
+}
+
+.color-block.green {
+	background-color: green;
+}

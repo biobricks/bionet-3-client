@@ -4,5 +4,10 @@ a-scene
   width: 100%;
   height: calc(100vh - 60px - 60px);
   position: relative;
-	display: block;
+  display: block;
+}
+.scene-nav-info {
+  font-size: 22px;
+  background: black;
+  color: #EEE
 }

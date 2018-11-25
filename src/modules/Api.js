@@ -4,15 +4,15 @@ export const fetchAll = async (query) => {
   try {  
     let req = new Request(`${appConfig.apiBaseUrl}/${query}`, {
       method: 'GET',
-      headers: new Headers({
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      })
+      // headers: new Headers({
+      //   'Authorization': `Bearer ${localStorage.getItem('token')}`
+      // })
     });
     let res = await fetch(req);
     let response = res.json();
     return response;
   } catch (error) {
-    console.log('fetchLabs', error);
+    console.log('fetchAll', error);
     throw error;
   } 
 };

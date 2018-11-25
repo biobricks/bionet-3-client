@@ -50,48 +50,41 @@ class ForceGraph extends Component {
   }
 
   componentDidMount() {
-    if (this.props.ready) {
-      // console.log('users', this.props.users);
-      // console.log('labs', this.props.labs);
-      //console.log('view mode', this.props.viewMode);
       this.setWidth();
-      // window.$(window).resize(() => {
-      //   this.setWidth();
-      // });    
-    }
+      window.$(window).resize(() => {
+        this.setWidth();
+      });    
   }
 
   render() {
-    const documentReady = this.props.ready;
     const viewMode = this.props.viewMode;
     const graphData = this.props.graphData;
     return (
       <div className="ForceGraph">
-        {documentReady ? (
-          <FadeIn>
-            <div id="graph" className="graph-container pt-3">
-              <ForceGraph3D
-                ref={el => { this.fg = el; }}
-                height={window.innerHeight - 60 - 60}
-                width={this.state.width}
-                graphData={graphData}
-                nodeLabel="name"
-                nodeAutoColorBy="group"
-                numDimensions={viewMode === '3D' ? 3 : 2}
-                //nodeOpacity={.9}
-                linkWidth={1.3}
-                //linkOpacity={.35}
-                linkDirectionalParticles={2}
-                linkDirectionalParticleSpeed={0.001}
-                linkDirectionalParticleWidth={1}
-                // linkDirectionalParticleColor="green"
-                onNodeClick={this.handleClick}
-                onNodeHover={this.props.handleNodeHover}
-                onLinkHover={this.handleLinkHover}
-              />
-            </div>  
-          </FadeIn>
-        ) : null }
+        <FadeIn>
+          <div id="graph" className="graph-container">
+            <ForceGraph3D
+              ref={el => { this.fg = el; }}
+              height={window.innerHeight - 60 - 60 - 150}
+              width={this.state.width}
+              graphData={graphData}
+              nodeLabel="name"
+              nodeAutoColorBy="group"
+              numDimensions={viewMode === '3D' ? 3 : 2}
+              //nodeOpacity={.9}
+              linkWidth={1.3}
+              //linkOpacity={.35}
+              linkDirectionalParticles={2}
+              linkDirectionalParticleSpeed={0.001}
+              linkDirectionalParticleWidth={1}
+              // linkDirectionalParticleColor="green"
+              //onNodeClick={this.handleClick}
+              //onNodeHover={this.props.handleNodeHover}
+              //onLinkHover={this.handleLinkHover}
+              dagMode="td"
+            />
+          </div>  
+        </FadeIn>
       </div>
     );
   }

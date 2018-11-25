@@ -41,11 +41,13 @@ class App extends Component {
     this.logoutCurrentUser = this.logoutCurrentUser.bind(this);
     this.setCurrentUser = this.setCurrentUser.bind(this);
     this.getCurrentUserLabs = this.getCurrentUserLabs.bind(this);
+    this.setCurrentUser = this.setCurrentUser.bind(this);
   }
   
   async getCurrentUserLabs(currentUser) {
     let res, data, labs, virtuals, physicals; // eslint-disable-line 
     res = await fetchAll('labs');
+    console.log('res1', res);
     labs = res.data;
     res = await fetchAll('virtuals');
     virtuals = res.data;
@@ -64,16 +66,20 @@ class App extends Component {
 
   async setCurrentUser() {
     //Auth.deauthenticateUser();
-    let res, data, user, currentUser, virtuals, physicals; // eslint-disable-line
+    let res, data, user, currentUser, virtuals, physicals, labs; // eslint-disable-line
     if (localStorage.getItem('token') !== null) {
       res = await loginCurrentUser();
       currentUser = res.user;
       currentUser['gravatarUrl'] = `https://www.gravatar.com/avatar/${Crypto.MD5(currentUser.email).toString()}?s=100`;
       await this.getCurrentUserLabs(currentUser);
     } else {
-      virtuals = { data } = await fetchAll('virtuals');
-      physicals = { data } = await fetchAll('physicals');
-      this.setState({ virtuals, physicals, isLoaded: true });  
+      res = await fetchAll('labs');
+      labs = res.data;
+      res = await fetchAll('virtuals');
+      virtuals = res.data;
+      res = await fetchAll('physicals');
+      physicals = res.data;
+      this.setState({ virtuals, physicals, labs, isLoaded: true });  
     }  
   }
 
@@ -101,7 +107,7 @@ class App extends Component {
           <Switch>
             <Route path="/signup" exact render={(props) => (<Signup {...props} {...this.state}/>)}/>
             <Route path="/login" exact render={(props) => (<Login {...props} {...this.state} setCurrentUser={this.setCurrentUser}/>)}/>
-            <Route path="/" exact render={(props) => ( <RouteWrapper><Landing {...props} {...this.state}/></RouteWrapper> )}/>
+            <Route path="/" exact render={(props) => ( <RouteWrapper><Landing {...props} {...this.state} labs={this.state.labs}/></RouteWrapper> )}/>
           </Switch>        
         </main>
         <Footer />
