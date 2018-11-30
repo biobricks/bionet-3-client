@@ -87,28 +87,24 @@ class Login extends Component {
                   {this.state.successMessage && <div className="alert alert-success">{ this.state.successMessage }</div>}
                   {this.state.errors.summary && <div className="alert alert-danger">{ this.state.errors.summary }</div>}
                   <div className="form-group">
-                    <label htmlFor="username">Username</label>
-                    <input 
-                      type="text" 
-                      name="username" 
-                      className="form-control" 
-                      onChange={ this.changeUser } 
-                      value={ this.state.user.username }
-                      placeholder="username" 
+                    <TextInput
+                      inputTitle={'Username'}
+                      type={'text'}
+                      name={'username'}
+                      placeholder={'username'}
+                      handleChange={this.changeUser}
+                      text={this.state.user.username}
                     />
-                    {this.state.errors.username && <small className="text-danger">{this.state.errors.username}</small>}
                   </div>
                   <div className="form-group">
-                    <label htmlFor="password">Password</label>
-                    <input 
-                      type="password" 
-                      name="password" 
-                      className="form-control" 
-                      onChange={ this.changeUser } 
-                      value={ this.state.user.password }
-                      placeholder="password"  
+                    <TextInput
+                      inputTitle={'Password'}
+                      type={'password'}
+                      name={'password'}
+                      placeholder={'password'}
+                      handleChange={this.changeUser}
+                      text={this.state.user.password}
                     />
-                    {this.state.errors.password && <small className="text-danger">{this.state.errors.password}</small>}
                   </div>
                   <div className="form-group text-center">
                     <button type="submit" className="btn btn-success mt-3">
