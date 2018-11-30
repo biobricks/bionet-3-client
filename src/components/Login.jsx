@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import appConfig from '../configuration.js';
 import {TextInput} from 'biokit'
 
+
 class Login extends Component {
 
   constructor(props) {
@@ -69,6 +70,22 @@ class Login extends Component {
     });
   }
 
+  submitIfValid(){
+    if (this.state.user.username.length > 0 && this.state.user.password.length > 0){
+      return(
+        <button type="submit" className="btn btn-success mt-3">
+          Login
+        </button>
+      )
+    } else {
+      return(
+        <button type="submit" className="btn btn-success mt-3" disabled>
+          Login
+        </button>
+      )
+    }
+  }
+
   render() {
     if(this.state.redirect){ 
       console.log(`Redirecting to /`);
@@ -107,9 +124,7 @@ class Login extends Component {
                     />
                   </div>
                   <div className="form-group text-center">
-                    <button type="submit" className="btn btn-success mt-3">
-                      Login
-                    </button>
+                    {this.submitIfValid()}
                   </div>                    
                 </form>
               </div>
