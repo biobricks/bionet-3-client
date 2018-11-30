@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import Auth from '../modules/Auth';
-import { Redirect } from 'react-router-dom';
-import appConfig from '../configuration.js';
+import React, { Component } from 'react'
+import Auth from '../modules/Auth'
+import { Redirect } from 'react-router-dom'
+import appConfig from '../configuration.js'
 import {TextInput, Card} from 'biokit'
-import FadeIn from 'react-fade-in/lib/FadeIn';
+import FadeIn from 'react-fade-in/lib/FadeIn'
 
 class Login extends Component {
   constructor(props) {
     super(props);
-    const storedMessage = localStorage.getItem('successMessage');
-    let successMessage = '';
+    const storedMessage = localStorage.getItem('successMessage')
+    let successMessage = ''
     if(storedMessage) {
       successMessage = storedMessage;
-      localStorage.removeItem('successMessage');
+      localStorage.removeItem('successMessage')
     }
     this.state = {
       redirect: false,
@@ -22,51 +22,50 @@ class Login extends Component {
         username: '',
         password: ''
       }
-    };
-    this.processForm = this.processForm.bind(this);
-    this.changeUser = this.changeUser.bind(this);
+    }
+    this.processForm = this.processForm.bind(this)
+    this.changeUser = this.changeUser.bind(this)
   }
 
   processForm(e) {
     e.preventDefault();
 
-    const username = encodeURIComponent(this.state.user.username);
-    const password = encodeURIComponent(this.state.user.password);
-    const formData = `username=${username}&password=${password}`;
+    const username = encodeURIComponent(this.state.user.username)
+    const password = encodeURIComponent(this.state.user.password)
+    const formData = `username=${username}&password=${password}`
 
     const xhr = new XMLHttpRequest();
-    xhr.open('post', `${appConfig.apiBaseUrl}/login`);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.responseType = 'json';
+    xhr.open('post', `${appConfig.apiBaseUrl}/login`)
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
+    xhr.responseType = 'json'
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
         //this.props.setAlert("success", "You have been succesfully logged in");
-        Auth.authenticateUser(xhr.response.token);       
+        Auth.authenticateUser(xhr.response.token)      
         this.props.setCurrentUser()
         this.setState({
           redirect: true,
           errors: {}
         });
-    
       } else {
-        const errors = xhr.response.errors ? xhr.response.errors : {};
-        errors.summary = xhr.response.message;
+        const errors = xhr.response.errors ? xhr.response.errors : {}
+        errors.summary = xhr.response.message
         this.setState({
           errors
         });
       }
     });
-    xhr.send(formData);    
+    xhr.send(formData)    
   }
 
   changeUser(e) {
-    const field = e.target.name;
-    const user = this.state.user;
-    user[field] = e.target.value;
+    const field = e.target.name
+    const user = this.state.user
+    user[field] = e.target.value
 
     this.setState({
       user
-    });
+    })
   }
 
   submitIfValid(){
@@ -87,7 +86,7 @@ class Login extends Component {
 
   render() {
     if(this.state.redirect){ 
-      console.log(`Redirecting to /`);
+      console.log(`Redirecting to /`)
       return( <Redirect to={`/`} /> ) 
     }
     return (
@@ -126,8 +125,8 @@ class Login extends Component {
         </div>
       </div>
       </FadeIn>
-    );
+    )
   }
 }
 
-export default Login;
+export default Login
