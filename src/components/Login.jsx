@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Auth from '../modules/Auth';
 import { Redirect } from 'react-router-dom';
 import appConfig from '../configuration.js';
-import {TextInput} from 'biokit'
+import {TextInput, Card} from 'biokit'
 
 
 class Login extends Component {
@@ -95,15 +95,14 @@ class Login extends Component {
       <div className="container-fluid">
         <div className="row">
           <div className="col col-md-7 col-lg-5 ml-md-auto mr-md-auto text-center">
-            <div className="card rounded-0 mt-3">
-              <div className="card-header bg-dark text-light rounded-0">
-                <h4 className="card-title mb-0">Login</h4>
-              </div>
-              <div className="card-body">
+              <Card
+                rounded={'0'}
+                spacing={'mt-3'}
+                // icon={<i className='mdi mdi-account-box mr-2'/>} option for adding icons
+                title={'Login'}>
                 <form onSubmit={ this.processForm }>
                   {this.state.successMessage && <div className="alert alert-success">{ this.state.successMessage }</div>}
                   {this.state.errors.summary && <div className="alert alert-danger">{ this.state.errors.summary }</div>}
-                  <div className="form-group">
                     <TextInput
                       inputTitle={'Username'}
                       type={'text'}
@@ -112,8 +111,6 @@ class Login extends Component {
                       handleChange={this.changeUser}
                       text={this.state.user.username}
                     />
-                  </div>
-                  <div className="form-group">
                     <TextInput
                       inputTitle={'Password'}
                       type={'password'}
@@ -122,16 +119,11 @@ class Login extends Component {
                       handleChange={this.changeUser}
                       text={this.state.user.password}
                     />
-                  </div>
-                  <div className="form-group text-center">
-                    {this.submitIfValid()}
-                  </div>                    
+                    {this.submitIfValid()}                    
                 </form>
-              </div>
-            </div>
+              </Card>
           </div>
         </div>
-
       </div>
     );
   }
