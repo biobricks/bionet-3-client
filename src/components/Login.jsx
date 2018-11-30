@@ -5,9 +5,7 @@ import appConfig from '../configuration.js';
 import {TextInput, Card} from 'biokit'
 import FadeIn from 'react-fade-in/lib/FadeIn';
 
-
 class Login extends Component {
-
   constructor(props) {
     super(props);
     const storedMessage = localStorage.getItem('successMessage');
