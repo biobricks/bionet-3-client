@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Auth from '../modules/Auth';
 import { Redirect } from 'react-router-dom';
 import appConfig from '../configuration.js';
+import {TextInput} from 'biokit'
 
 class Login extends Component {
 
