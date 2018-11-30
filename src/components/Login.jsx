@@ -3,6 +3,7 @@ import Auth from '../modules/Auth';
 import { Redirect } from 'react-router-dom';
 import appConfig from '../configuration.js';
 import {TextInput, Card} from 'biokit'
+import FadeIn from 'react-fade-in/lib/FadeIn';
 
 
 class Login extends Component {
@@ -92,6 +93,7 @@ class Login extends Component {
       return( <Redirect to={`/`} /> ) 
     }
     return (
+      <FadeIn>
       <div className="container-fluid">
         <div className="row">
           <div className="col col-md-7 col-lg-5 ml-md-auto mr-md-auto text-center">
@@ -125,6 +127,7 @@ class Login extends Component {
           </div>
         </div>
       </div>
+      </FadeIn>
     );
   }
 }
