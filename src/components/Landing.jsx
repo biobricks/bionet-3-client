@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardBody} from './Bootstrap/components';
 import Loading from './partials/Loading/Loading';
 import Welcome from './partials/Welcome';
 import ForceGraph from './partials/ForceGraph/ForceGraph';
+import FadeIn from 'react-fade-in/lib/FadeIn';
 
 
 class Landing extends Component {
@@ -99,8 +100,8 @@ class Landing extends Component {
     }
     return (
       <ContainerFluid>
-        
           {(isLoaded) ? (
+            <FadeIn>
             <Row>
               <Column col="12" colLg="5">
                 {(isLoggedIn) ? (
@@ -137,8 +138,8 @@ class Landing extends Component {
                 </Card>  
               </Column>
             </Row>
+            </FadeIn>
           ) : <Loading /> }
-      
       </ContainerFluid>
     );
   }

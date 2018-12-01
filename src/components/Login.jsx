@@ -105,7 +105,7 @@ class Login extends Component {
                       />
                       <TextInput
                         inputTitle={'Password'}
-                        type={'password'} //email checks for '@'
+                        type={'password'}
                         name={'password'}
                         placeholder={'password'}
                         handleChange={this.changeUser}
