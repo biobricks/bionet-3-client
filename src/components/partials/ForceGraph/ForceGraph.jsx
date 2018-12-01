@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import FadeIn from 'react-fade-in';
 //import Graph from '../../../modules/Graph';
 import { ForceGraph3D } from 'react-force-graph';
 import './ForceGraph.css';
@@ -60,7 +59,6 @@ class ForceGraph extends Component {
     const viewMode = this.props.viewMode;
     const graphData = this.props.graphData;
     return (
-      <FadeIn>
       <div className="ForceGraph">
           <div id="graph" className="graph-container">
             <ForceGraph3D
@@ -85,7 +83,6 @@ class ForceGraph extends Component {
             />
           </div>  
       </div>
-      </FadeIn>
     );
   }
 
