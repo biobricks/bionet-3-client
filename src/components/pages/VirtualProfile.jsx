@@ -26,19 +26,19 @@ class VirtualProfile extends Component {
   getVirtual() {
     axios.get(`${appConfig.apiBaseUrl}/virtuals/${this.props.match.params.virtualId}`)
     .then(res => {
-      console.log("response", res.data);
+      console.log("response", res.data)
       this.setState({
         loaded: true,
         virtual: res.data.data
-      });        
+      })        
     })
     .catch(error => {
-      console.error(error);        
+      console.error(error)        
     });    
   }
 
   componentDidMount() {
-    this.getVirtual();
+    this.getVirtual()
   }
 
   render() { 

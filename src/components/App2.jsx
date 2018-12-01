@@ -184,7 +184,7 @@ class App extends Component {
     } else {
       this.setState({
         userValidated: true
-      });
+      })
     }
   }
 
