@@ -69,7 +69,6 @@ class VRForceGraph extends Component {
       <div className="ForceGraph">
         {documentReady ? (
           <FadeIn>
-
             <div id="vr-graph" className="graph-container pt-3">
               <ForceGraphVR
                 //ref={el => { this.fg = el; }}

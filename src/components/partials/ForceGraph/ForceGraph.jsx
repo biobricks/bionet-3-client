@@ -60,8 +60,8 @@ class ForceGraph extends Component {
     const viewMode = this.props.viewMode;
     const graphData = this.props.graphData;
     return (
+      <FadeIn>
       <div className="ForceGraph">
-        <FadeIn>
           <div id="graph" className="graph-container">
             <ForceGraph3D
               ref={el => { this.fg = el; }}
@@ -84,8 +84,8 @@ class ForceGraph extends Component {
               dagMode="td"
             />
           </div>  
-        </FadeIn>
       </div>
+      </FadeIn>
     );
   }
 
