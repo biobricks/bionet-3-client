@@ -77,6 +77,14 @@ class Login extends Component {
       )
     }
   }
+
+  passwordPresent(){
+    if (this.state.user.password.length > 0){
+      return (true)
+    } else {
+      return false
+    }
+  }
   render() {
     if(this.state.redirect){ 
       console.log(`Redirecting to /`)
@@ -110,6 +118,7 @@ class Login extends Component {
                         placeholder={'password'}
                         handleChange={this.changeUser}
                         text={this.state.user.password}
+                        trueWhen={this.passwordPresent()}
                       />
                       {this.enableIfValid()}                    
                   </form>
