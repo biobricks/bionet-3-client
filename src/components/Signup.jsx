@@ -79,9 +79,6 @@ class Signup extends Component {
     if(this.state.redirect){ return( <Redirect to="/login" /> ) }
     return (
       <FadeIn>
-
-
-
         <div className="container-fluid">
           <div className="row">
             <div className="col col-md-7 col-lg-5 ml-md-auto mr-md-auto text-center">
@@ -93,50 +90,52 @@ class Signup extends Component {
                 <p className="card-text">
                   Please fill out the fields below to register for a new account.
                 </p>
-                <TextInput
-                  inputTitle={'Name'}
-                  type={'text'}
-                  name={'name'}
-                  placeholder={'Your Full Name'}
-                  handleChange={this.changeUser}
-                  text={this.state.user.name}
-                />
-                <TextInput
-                  inputTitle={'Email'}
-                  type={'email'}
-                  name={'email'}
-                  placeholder={'email@example.com'}
-                  handleChange={this.changeUser}
-                  text={this.state.user.email}
-                />
-                <TextInput
-                  inputTitle={'Username'}
-                  type={'text'}
-                  name={'username'}
-                  placeholder={'username'}
-                  handleChange={this.changeUser}
-                  text={this.state.user.username}
-                />
-                <TextInput
-                  inputTitle={'Password'}
-                  type={'password'}
-                  name={'password'}
-                  placeholder={'Please repeat password'}
-                  handleChange={this.changeUser}
-                  text={this.state.user.password}
-                  trueWhen={this.validPw(this.state.user.password)}
-                  falseMessage={'capitol, lowercase, number, 6 charecture min'}
-                />
-                <TextInput
-                  inputTitle={'Password'}
-                  type={'password'}
-                  name={'passwordConfirm'}
-                  placeholder={'Please repeat password'}
-                  handleChange={this.changeUser}
-                  text={this.state.user.passwordConfirm}
-                  trueWhen={this.pwMatch()}
-                  falseMessage={'password does not match first'}
-                />
+                <form onSubmit={ this.processForm }>
+                  <TextInput
+                    inputTitle={'Name'}
+                    type={'text'}
+                    name={'name'}
+                    placeholder={'Your Full Name'}
+                    handleChange={this.changeUser}
+                    text={this.state.user.name}
+                  />
+                  <TextInput
+                    inputTitle={'Email'}
+                    type={'email'}
+                    name={'email'}
+                    placeholder={'email@example.com'}
+                    handleChange={this.changeUser}
+                    text={this.state.user.email}
+                  />
+                  <TextInput
+                    inputTitle={'Username'}
+                    type={'text'}
+                    name={'username'}
+                    placeholder={'username'}
+                    handleChange={this.changeUser}
+                    text={this.state.user.username}
+                  />
+                  <TextInput
+                    inputTitle={'Password'}
+                    type={'password'}
+                    name={'password'}
+                    placeholder={'Please repeat password'}
+                    handleChange={this.changeUser}
+                    text={this.state.user.password}
+                    trueWhen={this.validPw(this.state.user.password)}
+                    falseMessage={'capitol, lowercase, number, 6 charecture min'}
+                  />
+                  <TextInput
+                    inputTitle={'Password'}
+                    type={'password'}
+                    name={'passwordConfirm'}
+                    placeholder={'Please repeat password'}
+                    handleChange={this.changeUser}
+                    text={this.state.user.passwordConfirm}
+                    trueWhen={this.pwMatch()}
+                    falseMessage={'password does not match first'}
+                  />
+                </form>
                 {(
                   this.state.user.name.length > 0 && 
                   this.state.user.email.length > 0 && 
