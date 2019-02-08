@@ -23,7 +23,7 @@ class Navigation extends Component {
     return (
       <Navbar dark type="dark" className="bg-dark-green">
         <NavbarBrand imgSrc={logo} imgAlt="BioNet Logo" width="40">
-          BioNet
+          Bionet
         </NavbarBrand>
         <NavbarNav>
 
