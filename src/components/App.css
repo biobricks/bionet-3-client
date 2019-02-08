@@ -1,0 +1,58 @@
+.App .viewport-container {
+	display:table;
+	width:100%;
+	background: linear-gradient( rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.0) ), url('../images/biobricks-bkg.jpg');
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+  min-height: calc(100vh - 60px - 60px - 5px);
+  padding: 16px 0;
+}
+
+.card {
+  border-color: rgb(23,43,47);
+}
+
+.card-text {
+  font-size: 1.3em;
+}
+
+.bg-green {
+	background-color: rgb(2,96,107) !important;
+}
+
+.bg-green-darkest {
+	background-color: rgb(23,43,47) !important;
+}
+
+.color-block, .color-label {
+	position: relative;
+	float: left;
+}
+
+.color-label {
+	line-height: 30px;
+}
+
+.color-block {
+	position: relative;
+	float: left;
+	height: 30px;
+	width: 30px;	
+}
+
+.color-block.blue {
+	background-color: blue;
+}
+
+.color-block.green {
+	background-color: green;
+}
+
+.color-block.gold {
+	background-color: gold;
+}
+
+.color-block.light-blue {
+	background-color: lightblue;
+}

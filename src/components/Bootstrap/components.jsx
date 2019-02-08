@@ -182,6 +182,10 @@ export const CardHeader = class CardHeader extends Component {
   render() {
     let classes = "card-header rounded-0";
     if (this.props.dark) { classes += ` bg-dark text-light` }
+<<<<<<< HEAD
+=======
+    if (this.props.green) { classes += ` bg-green text-light` }
+>>>>>>> 33ec7c4c5ddd8f53b73e7dc83423a0a8c2c8c1de
     if (this.props.className) { classes += ` ${this.props.className}` }
     return (
       <div
@@ -339,7 +343,11 @@ export const NavbarNav = class NavbarNav extends Component {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className={classes} id="navbarNav">
+<<<<<<< HEAD
           <ul className="navbar-nav ml-auto">
+=======
+          <ul className="navbar-nav">
+>>>>>>> 33ec7c4c5ddd8f53b73e7dc83423a0a8c2c8c1de
             {this.props.children}
           </ul>
         </div>
