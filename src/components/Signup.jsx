@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import appConfig from '../configuration.js';
-<<<<<<< HEAD
-=======
-import FadeIn from 'react-fade-in/lib/FadeIn';
-import {TextInput, Card} from 'biokit' 
->>>>>>> 33ec7c4c5ddd8f53b73e7dc83423a0a8c2c8c1de
 
 class Signup extends Component {
 
@@ -64,27 +59,10 @@ class Signup extends Component {
     });
     xhr.send(formData);
   }
-<<<<<<< HEAD
-=======
-  
-  pwMatch = () => {
-    if (this.state.user.password === this.state.user.passwordConfirm){
-      return true
-    } else {
-      return false
-    }
-  }
-
-  validPw = (pw) => {
-    var re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{6,}$/;
-    return re.test(pw)
-  }
->>>>>>> 33ec7c4c5ddd8f53b73e7dc83423a0a8c2c8c1de
 
   render() {
     if(this.state.redirect){ return( <Redirect to="/login" /> ) }
     return (
-<<<<<<< HEAD
       <div className="container-fluid">
         
         <div className="row">
@@ -94,22 +72,10 @@ class Signup extends Component {
                 <h4 className="card-title mb-0">Sign Up</h4>
               </div>
               <div className="card-body">
-=======
-      <FadeIn>
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col col-md-7 col-lg-5 ml-md-auto mr-md-auto text-center">
-            <Card
-              rounded={'0'}
-              spacing={'mt-0'}
-              // icon={<i className='mdi mdi-account-box mr-2'/>} option for icon
-              title={'Sign Up'}>
->>>>>>> 33ec7c4c5ddd8f53b73e7dc83423a0a8c2c8c1de
                 <p className="card-text">
                   Please fill out the fields below to register for a new account.
                 </p>
                 <form onSubmit={ this.processForm }>
-<<<<<<< HEAD
                   {this.state.errors.summary && <div className="alert alert-danger">{ this.state.errors.summary }</div>}
                   <div className="form-group">
                     <label htmlFor="name">Name</label>
@@ -199,74 +165,6 @@ class Signup extends Component {
         </div>
 
       </div>
-=======
-                  <TextInput
-                    inputTitle={'Name'}
-                    type={'text'}
-                    name={'name'}
-                    placeholder={'Your Full Name'}
-                    handleChange={this.changeUser}
-                    text={this.state.user.name}
-                  />
-                  <TextInput
-                    inputTitle={'Email'}
-                    type={'email'}
-                    name={'email'}
-                    placeholder={'email@example.com'}
-                    handleChange={this.changeUser}
-                    text={this.state.user.email}
-                  />
-                  <TextInput
-                    inputTitle={'Username'}
-                    type={'text'}
-                    name={'username'}
-                    placeholder={'username'}
-                    handleChange={this.changeUser}
-                    text={this.state.user.username}
-                  />
-                  <TextInput
-                    inputTitle={'Password'}
-                    type={'password'}
-                    name={'password'}
-                    placeholder={'Please repeat password'}
-                    handleChange={this.changeUser}
-                    text={this.state.user.password}
-                    trueWhen={this.validPw(this.state.user.password)}
-                    falseMessage={'capitol, lowercase, number, 6 charecture min'}
-                  />
-                  <TextInput
-                    inputTitle={'Password'}
-                    type={'password'}
-                    name={'passwordConfirm'}
-                    placeholder={'Please repeat password'}
-                    handleChange={this.changeUser}
-                    text={this.state.user.passwordConfirm}
-                    trueWhen={this.pwMatch()}
-                    falseMessage={'password does not match first'}
-                  />
-                </form>
-                {(
-                  this.state.user.name.length > 0 && 
-                  this.state.user.email.length > 0 && 
-                  this.state.user.username.length > 0 && 
-                  this.state.user.password.length > 0 &&
-                  this.state.user.passwordConfirm.length > 0 &&
-                  this.state.user.password === this.state.user.passwordConfirm
-                ) ? (
-                  <div className="form-group text-center">
-                    <button type="submit" className="btn btn-success mt-3">Submit</button>
-                  </div>
-                ) : 
-                  <div className="form-group text-center">
-                    <button type="submit" className="btn btn-success mt-3" disabled>Submit</button>
-                  </div>
-                } 
-              </Card>
-            </div>
-          </div>
-        </div>
-      </FadeIn>
->>>>>>> 33ec7c4c5ddd8f53b73e7dc83423a0a8c2c8c1de
     );
   }
 }
