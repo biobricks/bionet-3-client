@@ -33,56 +33,68 @@ function GridContainer(props) {
         onCellDrop={props.onCellDrop}
         onCellDragOver={props.onCellDragOver}
         //onCellDragEnd={props.onCellDragEnd}
-      />);
+      />
+    );
+  }
+
+  // add containers
+  console.log('grid.containers', props.containers);
+  const containers = props.containers || [];
+  for(let i = 0; i < containers.length; i++){
+    console.log(`grid container ${i}`, containers[i]);
   }
   // add cells with containers 
-  for(let i = 0; i < props.containers.length; i++){
-    let container = props.containers[i];
-    //console.log('grid', container)
-    for(let j = 0; j < container.locations.length; j++){
-      let locationArray = container.locations[j];
-      let column = locationArray[0];
-      let row = locationArray[1];
-      //console.log(`${container.name} - ${column}, ${row}`)
-      gridCells.push(
-        <Cell 
-          key={shortid.generate()} 
-          row={row} 
-          column={column} 
-          demo={props.demo === true} 
-          routePrefix="/containers"
-          cellType="Container"
-          item={container}
-          onCellDragStart={props.onCellDragStart}
-          //onCellDragEnd={props.onCellDragEnd}
-        />
-      );
-    }
-  } 
+  // for(let i = 0; i < props.containers.length; i++){
+  //   let container = props.containers[i];
+  //   console.log('grid', container)
+  //   for(let j = 0; j < container.locations.length; j++){
+  //     let locationArray = container.locations[j];
+  //     let column = locationArray[0];
+  //     let row = locationArray[1];
+  //     //console.log(`${container.name} - ${column}, ${row}`)
+  //     gridCells.push(
+  //       <Cell 
+  //         key={shortid.generate()} 
+  //         row={row} 
+  //         column={column} 
+  //         demo={props.demo === true} 
+  //         routePrefix="/containers"
+  //         cellType="Container"
+  //         item={container}
+  //         onCellDragStart={props.onCellDragStart}
+  //         //onCellDragEnd={props.onCellDragEnd}
+  //       />
+  //     );
+  //   }
+  // } 
+
+
   // add cells with physicals
-  for(let i = 0; i < props.physicals.length; i++){
-    let physical = props.physicals[i];
-    //console.log('grid.addPhysicalCells.physical', physical)
-    for(let j = 0; j < physical.locations.length; j++){
-      let locationArray = physical.locations[j];
-      let column = locationArray[0];
-      let row = locationArray[1];
-      //console.log(`${physical.name} - ${column}, ${row}`)
-      gridCells.push(
-        <Cell 
-          key={shortid.generate()} 
-          row={row} 
-          column={column} 
-          demo={props.demo === true} 
-          routePrefix="/physicals"
-          cellType="Physical"
-          item={physical}
-          onCellDragStart={props.onCellDragStart}
-          //onCellDragEnd={props.onCellDragEnd}
-        />
-      );
-    }
-  } 
+  // for(let i = 0; i < props.physicals.length; i++){
+  //   let physical = props.physicals[i];
+  //   //console.log('grid.addPhysicalCells.physical', physical)
+  //   for(let j = 0; j < physical.locations.length; j++){
+  //     let locationArray = physical.locations[j];
+  //     let column = locationArray[0];
+  //     let row = locationArray[1];
+  //     //console.log(`${physical.name} - ${column}, ${row}`)
+  //     gridCells.push(
+  //       <Cell 
+  //         key={shortid.generate()} 
+  //         row={row} 
+  //         column={column} 
+  //         demo={props.demo === true} 
+  //         routePrefix="/physicals"
+  //         cellType="Physical"
+  //         item={physical}
+  //         onCellDragStart={props.onCellDragStart}
+  //         //onCellDragEnd={props.onCellDragEnd}
+  //       />
+  //     );
+  //   }
+  // } 
+
+
   return (
     <>
       <div className="grid-container dropdown" style={gridContainerStyles}>

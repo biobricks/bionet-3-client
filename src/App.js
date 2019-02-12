@@ -154,9 +154,13 @@ class App extends React.Component {
     if (Auth.isUserAuthenticated()) {
       this.loginCurrentUser()
       .then((res) => {
-        let currentUser = res.user;
-        currentUser['gravatarUrl'] = `https://www.gravatar.com/avatar/${Crypto.MD5(currentUser.email).toString()}?s=100`;
-        this.getCurrentUserLabs(currentUser);
+        if (res && res.user) {
+          let currentUser = res.user;
+          currentUser['gravatarUrl'] = `https://www.gravatar.com/avatar/${Crypto.MD5(currentUser.email).toString()}?s=100`;
+          this.getCurrentUserLabs(currentUser);
+        } else {
+          this.logoutCurrentUser();
+        }  
       });
     } else {
       this.getVirtuals()
