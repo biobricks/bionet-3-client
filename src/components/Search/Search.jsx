@@ -52,16 +52,25 @@ class Search extends React.Component {
     const virtualSelected = this.state.selected;
 
     const physicals = this.state.physicals.map((physical) => {
-      return (
-        <CardListLink 
-          key={shortid.generate()}
-          dark
-          type="info"
-          to={`/containers/${physical.parent._id}`}
-        >
-          <i className="mdi mdi-flask mr-2"/>{physical.name}
-        </CardListLink>
-      );
+      const hasParentAttr = Object.keys(physical).indexOf('parent') > -1;
+      const hasLabParent = hasParentAttr && physical.parent === null;
+      const hasContainerParent = hasParentAttr && !hasLabParent && physical.parent.length > 0;
+      const parentIsValid = hasLabParent || hasContainerParent;
+      const parentRoute = hasLabParent ? `/labs/${physical.lab._id}` : `/containers/${physical.parent._id}`;
+      if (parentIsValid) {
+        return (
+          <CardListLink 
+            key={shortid.generate()}
+            dark
+            type="info"
+            to={parentRoute}
+          >
+            <i className="mdi mdi-flask mr-2"/>{physical.name}
+          </CardListLink>
+        );
+      } else {
+        return null;
+      } 
     });
 
     return (
