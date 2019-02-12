@@ -14,35 +14,157 @@ function GridContainer(props) {
     'width': record ? `${record.columns * 40}px` : '0px',
   };
   //console.log(props)
-  // create empty cells in json
   let gridCellCount = record.columns * record.rows;
   let gridCells = [];
-  let positionCounter = 1;
-  for(let pos = positionCounter; pos <= gridCellCount; pos++){
-    let row = pos > record.columns ? (pos % record.columns === 0) ? parseInt(pos / record.columns) : parseInt(pos / record.columns) + 1 : 1;
-    let column = pos > record.columns ? pos % record.columns : pos;
-    if (column === 0) { column = record.columns }
+  let filledCells = [];
+
+  // create empty cells
+  // let positionCounter = 1;
+  // for(let pos = positionCounter; pos <= gridCellCount; pos++){
+  //   let row = pos > record.columns ? (pos % record.columns === 0) ? parseInt(pos / record.columns) : parseInt(pos / record.columns) + 1 : 1;
+  //   let column = pos > record.columns ? pos % record.columns : pos;
+  //   if (column === 0) { column = record.columns }
+  //   gridCells.push(
+  //     <EmptyCell 
+  //       key={shortid.generate()} 
+  //       row={row} 
+  //       column={column} 
+  //       selectLocations={props.selectLocations === true}
+  //       newItemLocations={props.newItemLocations || []}
+  //       selectCell={props.selectLocations === true ? props.selectCell : null}
+  //       onCellDrop={props.onCellDrop}
+  //       onCellDragOver={props.onCellDragOver}
+  //       //onCellDragEnd={props.onCellDragEnd}
+  //     />
+  //   );
+  // }
+
+  // 1. add containers
+  //console.log('grid.containers', props.containers);
+  const containers = props.containers || [];
+  for(let i = 0; i < containers.length; i++){
+    let container = containers[i];
+    // console.log(`grid container ${i}`, container);
+    // console.log('row', container.row);
+    // console.log('rowSpan', container.rowSpan);
+    // console.log('column', container.column);
+    // console.log('columnSpan', container.columnSpan);
+    
+    filledCells.push({
+      row: container.row,
+      rowSpan: container.rowSpan,
+      column: container.column,
+      columnSpan: container.columnSpan
+    });
+
     gridCells.push(
-      <EmptyCell 
+      <Cell 
         key={shortid.generate()} 
-        row={row} 
-        column={column} 
-        selectLocations={props.selectLocations === true}
-        newItemLocations={props.newItemLocations || []}
-        selectCell={props.selectLocations === true ? props.selectCell : null}
-        onCellDrop={props.onCellDrop}
-        onCellDragOver={props.onCellDragOver}
+        row={container.row} 
+        column={container.column} 
+        demo={props.demo === true} 
+        routePrefix="/containers"
+        cellType="Container"
+        item={container}
+        onCellDragStart={props.onCellDragStart}
         //onCellDragEnd={props.onCellDragEnd}
       />
     );
   }
 
-  // add containers
-  console.log('grid.containers', props.containers);
-  const containers = props.containers || [];
-  for(let i = 0; i < containers.length; i++){
-    console.log(`grid container ${i}`, containers[i]);
+  // 2. add physicals
+  //console.log('grid.physicals', props.physicals);
+  const physicals = props.physicals || [];
+  for(let i = 0; i < physicals.length; i++){
+    let physical = physicals[i];
+    // console.log(`grid physical ${i}`, physical);
+    // console.log('row', physical.row);
+    // console.log('rowSpan', physical.rowSpan);
+    // console.log('column', physical.column);
+    // console.log('columnSpan', physical.columnSpan);
+    
+    filledCells.push({
+      row: physical.row,
+      rowSpan: physical.rowSpan,
+      column: physical.column,
+      columnSpan: physical.columnSpan
+    });
+
+    gridCells.push(
+      <Cell 
+        key={shortid.generate()} 
+        row={physical.row} 
+        column={physical.column} 
+        demo={props.demo === true} 
+        routePrefix="/containers"
+        cellType="Container"
+        item={physical}
+        onCellDragStart={props.onCellDragStart}
+        //onCellDragEnd={props.onCellDragEnd}
+      />
+    );
   }
+
+  // 3. add empty cells 
+  let positionCounter = 1;
+  for(let pos = positionCounter; pos <= gridCellCount; pos++){
+    let row = pos > record.columns ? (pos % record.columns === 0) ? parseInt(pos / record.columns) : parseInt(pos / record.columns) + 1 : 1;
+    let column = pos > record.columns ? pos % record.columns : pos;
+    if (column === 0) { column = record.columns }
+    
+    let cellIsEmpty = true;
+    for(let i = 0; i < filledCells.length; i++){
+      let filledCell = filledCells[i];
+      let cellMatchesRow = row === filledCell.row;
+      let cellMatchesColumn = column === filledCell.column;
+      // console.log('cellMatchesRow', cellMatchesRow);
+      // console.log('cellMatchesColumn', cellMatchesColumn);      
+      if (cellMatchesRow && cellMatchesColumn) {
+        cellIsEmpty = false;
+      }
+      for(let j = 0; j < filledCell.rowSpan; j++) {
+        let thisRow = filledCell.row + (j + 1);
+        for(let k = 0; k < filledCell.colSpan; k++) {
+          let thisColumn = filledCell.column + (k + 1);
+          if (thisRow === row && thisColumn === column){
+            cellIsEmpty = false;
+          }
+        }  
+      }
+    }
+    if (cellIsEmpty) { 
+      console.log(`Add empty cell to row: ${row}, column: ${column}`);
+      gridCells.push(
+        <EmptyCell 
+          key={shortid.generate()} 
+          row={row} 
+          column={column} 
+          selectLocations={props.selectLocations === true}
+          newItemLocations={props.newItemLocations || []}
+          selectCell={props.selectLocations === true ? props.selectCell : null}
+          onCellDrop={props.onCellDrop}
+          onCellDragOver={props.onCellDragOver}
+          //onCellDragEnd={props.onCellDragEnd}
+        />
+      );  
+    }
+
+    // gridCells.push(
+    //   <EmptyCell 
+    //     key={shortid.generate()} 
+    //     row={row} 
+    //     column={column} 
+    //     selectLocations={props.selectLocations === true}
+    //     newItemLocations={props.newItemLocations || []}
+    //     selectCell={props.selectLocations === true ? props.selectCell : null}
+    //     onCellDrop={props.onCellDrop}
+    //     onCellDragOver={props.onCellDragOver}
+    //     //onCellDragEnd={props.onCellDragEnd}
+    //   />
+    // );
+  }
+
+
   // add cells with containers 
   // for(let i = 0; i < props.containers.length; i++){
   //   let container = props.containers[i];
@@ -53,17 +175,17 @@ function GridContainer(props) {
   //     let row = locationArray[1];
   //     //console.log(`${container.name} - ${column}, ${row}`)
   //     gridCells.push(
-  //       <Cell 
-  //         key={shortid.generate()} 
-  //         row={row} 
-  //         column={column} 
-  //         demo={props.demo === true} 
-  //         routePrefix="/containers"
-  //         cellType="Container"
-  //         item={container}
-  //         onCellDragStart={props.onCellDragStart}
-  //         //onCellDragEnd={props.onCellDragEnd}
-  //       />
+        // <Cell 
+        //   key={shortid.generate()} 
+        //   row={row} 
+        //   column={column} 
+        //   demo={props.demo === true} 
+        //   routePrefix="/containers"
+        //   cellType="Container"
+        //   item={container}
+        //   onCellDragStart={props.onCellDragStart}
+        //   //onCellDragEnd={props.onCellDragEnd}
+        // />
   //     );
   //   }
   // } 
@@ -79,17 +201,17 @@ function GridContainer(props) {
   //     let row = locationArray[1];
   //     //console.log(`${physical.name} - ${column}, ${row}`)
   //     gridCells.push(
-  //       <Cell 
-  //         key={shortid.generate()} 
-  //         row={row} 
-  //         column={column} 
-  //         demo={props.demo === true} 
-  //         routePrefix="/physicals"
-  //         cellType="Physical"
-  //         item={physical}
-  //         onCellDragStart={props.onCellDragStart}
-  //         //onCellDragEnd={props.onCellDragEnd}
-  //       />
+        // <Cell 
+        //   key={shortid.generate()} 
+        //   row={row} 
+        //   column={column} 
+        //   demo={props.demo === true} 
+        //   routePrefix="/physicals"
+        //   cellType="Physical"
+        //   item={physical}
+        //   onCellDragStart={props.onCellDragStart}
+        //   //onCellDragEnd={props.onCellDragEnd}
+        // />
   //     );
   //   }
   // } 
