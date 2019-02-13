@@ -90,19 +90,19 @@ function GridContainer(props) {
       columnSpan: physical.columnSpan
     });
 
-    gridCells.push(
-      <Cell 
-        key={shortid.generate()} 
-        row={physical.row} 
-        column={physical.column} 
-        demo={props.demo === true} 
-        routePrefix="/containers"
-        cellType="Container"
-        item={physical}
-        onCellDragStart={props.onCellDragStart}
-        //onCellDragEnd={props.onCellDragEnd}
-      />
-    );
+    // gridCells.push(
+    //   <Cell 
+    //     key={shortid.generate()} 
+    //     row={physical.row} 
+    //     column={physical.column} 
+    //     demo={props.demo === true} 
+    //     routePrefix="/containers"
+    //     cellType="Container"
+    //     item={physical}
+    //     onCellDragStart={props.onCellDragStart}
+    //     //onCellDragEnd={props.onCellDragEnd}
+    //   />
+    // );
   }
 
   // 3. add empty cells 
@@ -133,7 +133,7 @@ function GridContainer(props) {
       }
     }
     if (cellIsEmpty) { 
-      console.log(`Add empty cell to row: ${row}, column: ${column}`);
+      //console.log(`Add empty cell to row: ${row}, column: ${column}`);
       gridCells.push(
         <EmptyCell 
           key={shortid.generate()} 

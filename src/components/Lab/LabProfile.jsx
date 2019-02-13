@@ -44,6 +44,7 @@ class LabProfile extends React.Component {
       });
       let labRes = await fetch(labRequest);
       let labResponse = labRes.json();
+      console.log('getLabRes', labResponse);
       return labResponse;
     } catch (error) {
       console.log('LabProfile.getLab', error);

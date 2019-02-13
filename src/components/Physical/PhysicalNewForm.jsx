@@ -110,8 +110,9 @@ class PhysicalNewForm extends Component {
   onFormSubmit(e) {
     e.preventDefault();
     let formData = this.state.form;
-    //console.log(formData);
-    formData.locations = this.props.newItemLocations;
+    console.log('physical form data', formData);
+    formData.row = this.props.newItemLocations[0][0];
+    formData.column = this.props.newItemLocations[0][1];
     let isContainer = this.props.parentType && this.props.parentType === "Container";
     formData.lab = isContainer ? this.props.container.lab._id : this.props.lab._id;
     formData.parent = isContainer ? this.props.container._id : null;    

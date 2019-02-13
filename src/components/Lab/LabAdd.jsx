@@ -66,9 +66,7 @@ class LabAdd extends React.Component {
     .then((res) => {
       console.log('LabAdd.getData.res', res);
       this.setState({
-        lab: res.data,
-        containers: res.children,
-        physicals: res.physicals
+        lab: res.data
       });
     });
   }
@@ -158,35 +156,43 @@ class LabAdd extends React.Component {
       }
     }
 
-    let labPhysicals = [];
-    if (this.props.physicals && this.props.physicals.length){
-      for(let i = 0; i < this.props.physicals.length; i++){
-        let physical = this.props.physicals[i];
-        if (physical.lab){
-          //console.log('Physical Match', physical.lab._id, lab._id);
-          if (physical.lab._id === lab._id && physical.parent === null){
-            //console.log('match',physical.lab._id, lab._id);
-            labPhysicals.push(physical);
-          } else {
-            //console.log('no match', physical.lab._id, lab._id);
-          }
-        }  
-      }
-    }
+    const labExists = lab && Object.keys(lab).length > 0;
+    const labChildrenExist = labExists && Object.keys(lab).indexOf('children') > -1;
+    const labContainersExist = labChildrenExist && Object.keys(lab.children).indexOf('containers') > -1;
+    const labPhysicalsExist = labChildrenExist && Object.keys(lab.children).indexOf('physicals') > -1;
 
-    let labContainers = [];
-    if (this.state.containers && this.state.containers.length){
-      for(let i = 0; i < this.state.containers.length; i++){
-        let container = this.state.containers[i];
-        if (container.lab){
-          console.log(container.lab._id, lab._id);
-          if (container.lab._id === lab._id && container.parent === null){
-            console.log('match',container.lab._id, lab._id);
-            labContainers.push(container);
-          }
-        }  
-      }
-    }
+    const labContainers = labExists && labChildrenExist && labContainersExist ? lab.children.containers : [];
+    const labPhysicals = labExists && labChildrenExist && labPhysicalsExist ? lab.children.physicals : [];
+
+    // let labPhysicals = [];
+    // if (this.props.physicals && this.props.physicals.length){
+    //   for(let i = 0; i < this.props.physicals.length; i++){
+    //     let physical = this.props.physicals[i];
+    //     if (physical.lab){
+    //       //console.log('Physical Match', physical.lab._id, lab._id);
+    //       if (physical.lab._id === lab._id && physical.parent === null){
+    //         //console.log('match',physical.lab._id, lab._id);
+    //         labPhysicals.push(physical);
+    //       } else {
+    //         //console.log('no match', physical.lab._id, lab._id);
+    //       }
+    //     }  
+    //   }
+    // }
+
+    // let labContainers = [];
+    // if (this.state.containers && this.state.containers.length){
+    //   for(let i = 0; i < this.state.containers.length; i++){
+    //     let container = this.state.containers[i];
+    //     if (container.lab){
+    //       console.log(container.lab._id, lab._id);
+    //       if (container.lab._id === lab._id && container.parent === null){
+    //         console.log('match',container.lab._id, lab._id);
+    //         labContainers.push(container);
+    //       }
+    //     }  
+    //   }
+    // }
 
     return (
       <div className="LabProfile container-fluid">
