@@ -7,18 +7,32 @@ class LabToolbar extends React.Component {
     const isLoggedIn = this.props.isLoggedIn;
     const currentUser = this.props.currentUser;
     const lab = this.props.lab;
+    const labUsers = lab.users || [];
+    const joinRequests = lab.joinRequests || [];
     let userIsMember = false;
     let userIsRequestingMembership = false;
+
     if (isLoggedIn) {
-      for (let i = 0; i < currentUser.labs.length; i++) {
-        let userLab = currentUser.labs[i];
-        if (userLab._id === lab._id) { userIsMember = true; }
+      for (let i = 0; i < labUsers.length; i++) {
+        let labUser = labUsers[i];
+        console.log(`Lab user ${i}: `, labUser);
+        console.log('CurrentUser', currentUser);
+        if (String(labUser._id) === String(currentUser._id)) { 
+          console.log('User is member of Lab');
+          userIsMember = true; 
+        }
       }
-      for (let i = 0; i < currentUser.labsRequested.length; i++) {
-        let userLab = currentUser.labsRequested[i];
-        if (userLab._id === lab._id) { userIsRequestingMembership = true; }
+      for (let i = 0; i < joinRequests.length; i++) {
+        let requester = joinRequests[i];
+        console.log(`Requester ${i}: `, requester);
+        console.log('CurrentUser', currentUser);     
+        if (String(requester._id) === String(currentUser._id)) { 
+          console.log('User is requesting membership to Lab');
+          userIsRequestingMembership = true; 
+        }
       }
-    } 
+    }
+     
     const routePrefix = this.props.type === "Lab" ? "labs" : "containers";
     const routeParam = this.props.type === "Lab" ? this.props.match.params.labId : this.props.match.params.containerId;
     return (

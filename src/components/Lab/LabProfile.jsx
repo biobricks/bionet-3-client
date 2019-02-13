@@ -44,7 +44,7 @@ class LabProfile extends React.Component {
       });
       let labRes = await fetch(labRequest);
       let labResponse = labRes.json();
-      console.log('getLabRes', labResponse);
+      //console.log('getLabRes', labResponse);
       return labResponse;
     } catch (error) {
       console.log('LabProfile.getLab', error);
@@ -184,7 +184,7 @@ class LabProfile extends React.Component {
     let labId = this.props.match.params.labId;
     this.getLab(labId)
     .then((res) => {
-      console.log('getData.res', res);
+      //console.log('getData.res', res);
       this.setState({
         lab: res.data,
         virtuals: res.virtuals
@@ -227,7 +227,7 @@ class LabProfile extends React.Component {
     };
     lab.users = users;
     lab.joinRequests = joinRequests;
-    console.log('LabProfile.onCancelRequestLabMembership.lab', lab);
+    //console.log('LabProfile.onCancelRequestLabMembership.lab', lab);
     this.updateLab(lab);
   }
 
@@ -300,9 +300,9 @@ class LabProfile extends React.Component {
   updateLab(lab) {
     this.postLab(lab)
     .then((res) => {
-      console.log(res);
+      console.log('updateLab.res', res);
       this.getData();
-      this.props.refresh(this.props.currentUser);
+      //this.props.refresh(this.props.currentUser);
     });
   }
 
