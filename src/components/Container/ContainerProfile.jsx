@@ -385,6 +385,15 @@ class ContainerProfile extends React.Component {
     });
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const containerId = this.props.match.params.containerId;
+    //console.log('Container ID', containerId);
+    const prevContainerId = prevProps.match.params.containerId;
+    //console.log('Previous Container ID', prevContainerId);
+    const containerIdHasChanged = String(containerId) !== String(prevContainerId);
+    if (containerIdHasChanged) { this.getData() }
+  }
+
   componentDidMount() {
     this.getData();
   }
