@@ -11,6 +11,7 @@ import Footer from './components/Footer/Footer';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import LabProfile from './components/Lab/LabProfile';
+import ContainerProfile from './components/Container/ContainerProfile';
 
 const Landing = lazy(() => import('./components/Landing'));
 
@@ -20,7 +21,7 @@ const LabAdd = lazy(() => import('./components/Lab/LabAdd'));
 const LabEdit = lazy(() => import('./components/Lab/LabEdit'));
 const LabDelete = lazy(() => import('./components/Lab/LabDelete'));
 
-const ContainerProfile = lazy(() => import('./components/Container/ContainerProfile'));
+// const ContainerProfile = lazy(() => import('./components/Container/ContainerProfile'));
 const ContainerAdd = lazy(() => import('./components/Container/ContainerAdd'));
 const ContainerEdit = lazy(() => import('./components/Container/ContainerEdit'));
 const ContainerDelete = lazy(() => import('./components/Container/ContainerDelete'));
@@ -235,7 +236,15 @@ class App extends React.Component {
             <Route path='/containers/:containerId/add/:itemType' component={WaitForComponent(ContainerAdd, this.state, this.getCurrentUserLabs)}/>
             <Route path="/containers/:containerId/edit" exact component={WaitForComponent(ContainerEdit, this.state, this.getCurrentUserLabs)}/>
             <Route path='/containers/:containerId/delete' component={WaitForComponent(ContainerDelete, this.state, this.getCurrentUserLabs)}/>
-            <Route path="/containers/:containerId" exact component={WaitForComponent(ContainerProfile, this.state, this.getCurrentUserLabs)}/>
+            {/* <Route path="/containers/:containerId" exact component={WaitForComponent(ContainerProfile, this.state, this.getCurrentUserLabs)}/> */}
+            <Route path="/containers/:containerId" render={(props) => (
+              <ContainerProfile 
+                {...props}
+                {...this.state}
+                {...this.props}
+                getCurrentUserLabs={this.getCurrentUserLabs}
+              />
+            )}/>            
           </Switch>  
 
           <Switch>

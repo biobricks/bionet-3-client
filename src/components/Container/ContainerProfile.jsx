@@ -244,12 +244,12 @@ class ContainerProfile extends React.Component {
     let containerId = this.props.match.params.containerId;
     this.getContainer(containerId)
     .then((res) => {
-      //console.log('ContainerProfile.getData.res', res);
+      console.log('ContainerProfile.getData.res', res);
       let lab; 
       lab = res.data.lab;
       let container = res.data;
-      let containers = res.containers;
-      let physicals = res.physicals;
+      let containers = res.data.children.containers || [];
+      let physicals = res.data.children.physicals || [];
       this.getPath(lab._id, container._id)
       .then((res) => {
         //console.log('ContainerProfile.getPath.res', res);
