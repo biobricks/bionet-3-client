@@ -77,7 +77,9 @@ class ContainerNewForm extends Component {
     e.preventDefault();
     let formData = this.state.form;
     //console.log(formData);
-    formData.locations = this.props.newItemLocations;
+    //formData.locations = this.props.newItemLocations;
+    formData.row = this.props.newItemLocations[0][1];
+    formData.column = this.props.newItemLocations[0][0];
     let isContainer = this.props.parentType && this.props.parentType === "Container";
     formData.lab = isContainer ? this.props.container.lab._id : this.props.lab._id;
     formData.parent = isContainer ? this.props.container._id : null;
