@@ -111,8 +111,8 @@ class PhysicalNewForm extends Component {
     e.preventDefault();
     let formData = this.state.form;
     console.log('physical form data', formData);
-    formData.row = this.props.newItemLocations[0][0];
-    formData.column = this.props.newItemLocations[0][1];
+    formData.row = this.props.newItemLocations[0][1];
+    formData.column = this.props.newItemLocations[0][0];
     let isContainer = this.props.parentType && this.props.parentType === "Container";
     formData.lab = isContainer ? this.props.container.lab._id : this.props.lab._id;
     formData.parent = isContainer ? this.props.container._id : null;    
@@ -121,6 +121,8 @@ class PhysicalNewForm extends Component {
       // if virtual exists add to form and proceed
       console.log('virtual exists. form:', formData);
       formData.virtual = this.state.virtual._id;
+      
+      console.log('Form Submitted', formData);
       this.submitForm(formData);
     } else {
       // if virtual does not exist, create and on response add id to form and proceed

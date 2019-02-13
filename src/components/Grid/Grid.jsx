@@ -90,19 +90,20 @@ function GridContainer(props) {
       columnSpan: physical.columnSpan
     });
 
-    // gridCells.push(
-    //   <Cell 
-    //     key={shortid.generate()} 
-    //     row={physical.row} 
-    //     column={physical.column} 
-    //     demo={props.demo === true} 
-    //     routePrefix="/containers"
-    //     cellType="Container"
-    //     item={physical}
-    //     onCellDragStart={props.onCellDragStart}
-    //     //onCellDragEnd={props.onCellDragEnd}
-    //   />
-    // );
+    gridCells.push(
+      <Cell 
+        key={shortid.generate()} 
+        row={physical.row} 
+        column={physical.column} 
+        demo={props.demo === true} 
+        routePrefix="/physicals"
+        cellType="Physical"
+        item={physical}
+        onCellDragStart={props.onCellDragStart}
+        //onCellDragEnd={props.onCellDragEnd}
+      />
+    );
+
   }
 
   // 3. add empty cells 
