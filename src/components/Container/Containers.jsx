@@ -138,12 +138,11 @@ class Containers extends Component {
   }  
 
   render() {
+    const isLoggedIn = this.props.isLoggedIn;
     const mode = this.state.mode;
     const containers = this.props.containers || [];
     const container = this.state.container;
-    // const currentParent = this.state.currentParent;
-    // const newParent = this.state.newParent;
-
+    const userIsMember = this.props.userIsMember;
     let title;
     let titleClasses = "mdi mdi-grid mr-2";
     switch(mode) {
@@ -196,13 +195,14 @@ class Containers extends Component {
                 onClick={this.onChangeMode}
               >View Details
               </Link>
-              <div 
-                id={thisContainer._id}
-                mode='Move Step 1'
-                className="btn btn-sm btn-primary rounded-0"
-                onClick={this.onChangeMode}
-              >Move
-              </div>
+              {isLoggedIn && userIsMember && (
+                <div 
+                  id={thisContainer._id}
+                  mode='Move Step 1'
+                  className="btn btn-sm btn-primary rounded-0"
+                  onClick={this.onChangeMode}
+                >Move</div>
+              )}
             </div>  
           </h4>
         </div>        

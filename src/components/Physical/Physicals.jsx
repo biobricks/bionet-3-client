@@ -275,11 +275,13 @@ class Physicals extends Component {
   }  
 
   render() {
+    const isLoggedIn = this.props.isLoggedIn;
     const mode = this.state.mode;
     const physicals = this.props.physicals || [];
     const physical = this.state.physical;
     const virtual = this.state.virtual;
     const containers = this.props.containers || [];
+    const userIsMember = this.props.userIsMember;
 
     let title;
     let titleClasses = "mdi mdi-flask mr-2";
@@ -323,12 +325,14 @@ class Physicals extends Component {
                 className="btn btn-sm btn-info rounded-0"
                 onClick={this.onChangeMode}
               >View Details</div>
-              <div 
-                id={thisPhysical._id}
-                mode='Move Step 1'
-                className="btn btn-sm btn-primary rounded-0"
-                onClick={this.onChangeMode}
-              >Move</div>
+              {isLoggedIn && userIsMember && (
+                <div 
+                  id={thisPhysical._id}
+                  mode='Move Step 1'
+                  className="btn btn-sm btn-primary rounded-0"
+                  onClick={this.onChangeMode}
+                >Move</div>
+              )}  
             </div>  
           </h4>
         </div>        

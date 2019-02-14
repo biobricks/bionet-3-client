@@ -432,11 +432,17 @@ class ContainerProfile extends React.Component {
     const isLoggedIn = this.props.isLoggedIn;
     const currentUser = this.props.currentUser;
     const lab = this.state.lab;
+    const labUsers = lab.users || [];
     let userIsMember = false;
     if (isLoggedIn) {
-      for (let i = 0; i < currentUser.labs.length; i++) {
-        let userLab = currentUser.labs[i];
-        if (userLab._id === lab._id) { userIsMember = true; }
+      for (let i = 0; i < labUsers.length; i++) {
+        let labUser = labUsers[i];
+        console.log(`Lab user ${i}: `, labUser);
+        console.log('CurrentUser', currentUser);
+        if (String(labUser._id) === String(currentUser._id)) { 
+          console.log('User is member of Containers Lab');
+          userIsMember = true; 
+        }
       }
     }
     let labPhysicals = [];
@@ -534,6 +540,8 @@ class ContainerProfile extends React.Component {
             </div>
 
               <Containers 
+                isLoggedIn={isLoggedIn}
+                userIsMember={userIsMember}
                 containers={this.state.containers} 
                 currentUser={this.props.currentUser}
                 refresh={this.props.refresh}
@@ -541,6 +549,8 @@ class ContainerProfile extends React.Component {
               /> 
               
               <Physicals 
+                isLoggedIn={isLoggedIn}
+                userIsMember={userIsMember}
                 containers={this.state.containers} 
                 physicals={this.state.physicals} 
                 currentUser={this.props.currentUser}

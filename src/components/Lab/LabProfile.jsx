@@ -314,52 +314,26 @@ class LabProfile extends React.Component {
     const isLoggedIn = this.props.isLoggedIn;
     const currentUser = this.props.currentUser;
     const lab = this.state.lab;
+    const labUsers = lab.users || [];
     let userIsMember = false;
     if (isLoggedIn) {
-      for (let i = 0; i < currentUser.labs.length; i++) {
-        let userLab = currentUser.labs[i];
-        if (userLab._id === lab._id) { userIsMember = true; }
+      for (let i = 0; i < labUsers.length; i++) {
+        let labUser = labUsers[i];
+        console.log(`Lab user ${i}: `, labUser);
+        console.log('CurrentUser', currentUser);
+        if (String(labUser._id) === String(currentUser._id)) { 
+          console.log('User is member of Lab');
+          userIsMember = true; 
+        }
       }
     }
-
+    
     const labExists = lab && Object.keys(lab).length > 0;
     const labChildrenExist = labExists && Object.keys(lab).indexOf('children') > -1;
     const labContainersExist = labChildrenExist && Object.keys(lab.children).indexOf('containers') > -1;
     const labPhysicalsExist = labChildrenExist && Object.keys(lab.children).indexOf('physicals') > -1;
-
     const labContainers = labExists && labChildrenExist && labContainersExist ? lab.children.containers : [];
     const labPhysicals = labExists && labChildrenExist && labPhysicalsExist ? lab.children.physicals : [];
-
-    // let labPhysicals = [];
-    // if (this.props.physicals && this.props.physicals.length){
-    //   for(let i = 0; i < this.props.physicals.length; i++){
-    //     let physical = this.props.physicals[i];
-    //     if (physical.lab){
-    //       //console.log('Physical Match', physical.lab._id, lab._id);
-    //       if (physical.lab._id === lab._id && physical.parent === null){
-    //         //console.log('match',physical.lab._id, lab._id);
-    //         labPhysicals.push(physical);
-    //       } else {
-    //         //console.log('no match', physical.lab._id, lab._id);
-    //       }
-    //     }  
-    //   }
-    // }
-
-    // let labContainers = [];
-    // if (this.state.containers && this.state.containers.length){
-    //   for(let i = 0; i < this.state.containers.length; i++){
-    //     let container = this.state.containers[i];
-    //     if (container.lab){
-    //       //console.log(container.lab._id, lab._id);
-    //       if (container.lab._id === lab._id && container.parent === null){
-    //         //console.log('match',container.lab._id, lab._id);
-    //         labContainers.push(container);
-    //       }
-    //     }  
-    //   }
-    // }
-
     const membershipRequests = isLoggedIn && lab.joinRequests ? lab.joinRequests.map((user, index) => {
       return (
         <div 
@@ -386,6 +360,7 @@ class LabProfile extends React.Component {
         </div>
       )
     }) : [];
+
     return (
       <div className="LabProfile container-fluid">
         
@@ -437,6 +412,8 @@ class LabProfile extends React.Component {
             </div>
 
               <Containers 
+                isLoggedIn={isLoggedIn}
+                userIsMember={userIsMember}
                 containers={labContainers} 
                 currentUser={this.props.currentUser}
                 refresh={this.props.refresh}
@@ -444,6 +421,8 @@ class LabProfile extends React.Component {
               /> 
 
               <Physicals 
+                isLoggedIn={isLoggedIn}
+                userIsMember={userIsMember}
                 containers={labContainers} 
                 physicals={labPhysicals} 
                 currentUser={this.props.currentUser}
