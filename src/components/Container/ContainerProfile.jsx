@@ -111,6 +111,23 @@ class ContainerProfile extends React.Component {
     }  
   }
 
+  async getLab(labId) {
+    try {  
+      let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${labId}`, {
+        method: 'GET',
+        headers: new Headers({
+          'Authorization': `Bearer ${Auth.getToken()}`
+        })
+      });
+      let labRes = await fetch(labRequest);
+      let labResponse = labRes.json();
+      //console.log('getLabRes', labResponse);
+      return labResponse;
+    } catch (error) {
+      console.log('ContainerProfile.getLab', error);
+    }  
+  }
+
   async postLab(lab) {
     try {  
       let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${lab._id}/membership`, {
@@ -240,34 +257,40 @@ class ContainerProfile extends React.Component {
     // }); 
   }
 
-  getData() {
-    let containerId = this.props.match.params.containerId;
-    this.getContainer(containerId)
-    .then((res) => {
-      console.log('ContainerProfile.getData.res', res);
-      let lab; 
-      lab = res.data.lab;
-      let container = res.data;
-      let containers = res.data.children.containers || [];
-      let physicals = res.data.children.physicals || [];
-      this.getPath(lab._id, container._id)
-      .then((res) => {
-        //console.log('ContainerProfile.getPath.res', res);
-        let pathArray = res.data;
-        let path = [];
-        for(let i = 0; i < pathArray.length; i++){
-          if (pathArray[i] !== null) {
-            path.push(pathArray[i]);
-          }
+  async getDataAsync() {
+    try {
+      const containerId = this.props.match.params.containerId;
+      const getContainerRes = await this.getContainer(containerId);
+      let container = getContainerRes.data;
+      const containers = container.children.containers || [];
+      const physicals = container.children.physicals || [];
+      const labId = container.lab._id;
+      const getLabRes = await this.getLab(labId);
+      const lab = getLabRes.data;
+      const getPathRes = await this.getPath(lab._id, container._id);
+      let pathArray = getPathRes.data || [];
+      let path = [];
+      for(let i = 0; i < pathArray.length; i++){
+        if (pathArray[i] !== null) {
+          path.push(pathArray[i]);
         }
-        this.setState({
-          path,
-          lab,
-          container,
-          containers,
-          physicals
-        });
-      });  
+      }
+      return {
+        path,
+        lab,
+        container,
+        containers,
+        physicals
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  getData() {
+    this.getDataAsync()
+    .then((res) => {
+      this.setState(res);
     });
   }
 
@@ -396,6 +419,13 @@ class ContainerProfile extends React.Component {
 
   componentDidMount() {
     this.getData();
+    this.getDataAsync()
+    .then((res) => {
+      console.log('getDataAsync.res', res);
+    })
+    .catch((error) => {
+      throw error;
+    });
   }
 
   render() {
