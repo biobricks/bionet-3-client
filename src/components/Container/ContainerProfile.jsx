@@ -490,48 +490,47 @@ class ContainerProfile extends React.Component {
               <div className="card-header rounded-0 bg-dark text-light">
                 <div className="card-title mb-0 text-capitalize">
                   <span><i className="mdi mdi-xl mdi-grid" />{this.state.container.name}</span>
-                  
-                  <LabToolbar 
-                    {...this.props}
-                    type="Container"
-                    lab={this.state.lab}
-                    onRevokeLabMembership={this.onRevokeLabMembership}
-                    onRequestLabMembership={this.onRequestLabMembership}
-                    onCancelRequestLabMembership={this.onCancelRequestLabMembership}
-                  />
-
+                  {isLoggedIn && (
+                    <LabToolbar 
+                      {...this.props}
+                      type="Container"
+                      lab={this.state.lab}
+                      onRevokeLabMembership={this.onRevokeLabMembership}
+                      onRequestLabMembership={this.onRequestLabMembership}
+                      onCancelRequestLabMembership={this.onCancelRequestLabMembership}
+                    />
+                  )}
                 </div>
               </div>
-              {(isLoggedIn) ? (
-                <>
-                  {(this.state.path.length > 0) ? (
-                    <Breadcrumbs 
-                      path={this.state.path}
-                      lab={this.state.lab}
-                      item={this.state.container}
-                    />
-                  ) : null }
-                  <div className="card-body">
-                    {(this.state.error.length > 0) ? (
-                      <p className="card-text text-danger">
-                        {this.state.error}
-                      </p>
-                    ) : null}
-                    
-                      {this.state.container.description && this.state.container.description.length > 0 ? (
-                        <p className="card-text">{this.state.container.description}</p>
-                      ) : (
-                        <p className="card-text">No description provided.</p>
-                      )}
-                    {(userIsMember && lab && lab.joinRequests && lab.joinRequests.length > 0) ? (
-                      <>
-                      <h5>Membership Requests</h5> 
-                      {membershipRequests}
-                      </>
-                    ) : null }
-                  </div>
-                </>
-              ) : null}   
+
+
+              {(this.state.path.length > 0) ? (
+                <Breadcrumbs 
+                  path={this.state.path}
+                  lab={this.state.lab}
+                  item={this.state.container}
+                />
+              ) : null }
+              <div className="card-body">
+                {(this.state.error.length > 0) ? (
+                  <p className="card-text text-danger">
+                    {this.state.error}
+                  </p>
+                ) : null}
+                
+                  {this.state.container.description && this.state.container.description.length > 0 ? (
+                    <p className="card-text">{this.state.container.description}</p>
+                  ) : (
+                    <p className="card-text">No description provided.</p>
+                  )}
+                {(isLoggedIn && userIsMember && lab && lab.joinRequests && lab.joinRequests.length > 0) ? (
+                  <>
+                  <h5>Membership Requests</h5> 
+                  {membershipRequests}
+                  </>
+                ) : null }
+              </div>
+ 
             </div>
 
               <Containers 
@@ -550,24 +549,24 @@ class ContainerProfile extends React.Component {
 
           </div>
 
-          {(isLoggedIn) ? (
-            <div className="col-12 col-lg-5">
-              <Grid 
-                demo={false}
-                selectLocations={false}
-                recordType="Lab"
-                record={this.state.container}
-                containers={this.state.containers}
-                physicals={this.state.physicals}
-                dragging={this.state.dragging}
-                onCellDragStart={this.onCellDragStart}
-                onCellDragOver={this.onCellDragOver}
-                onCellDrop={this.onCellDrop}
-                onCellDragEnd={this.onCellDragEnd}
-                {...this.state}
-              />
-            </div>
-          ) : null }
+
+          <div className="col-12 col-lg-5">
+            <Grid 
+              demo={false}
+              selectLocations={false}
+              recordType="Lab"
+              record={this.state.container}
+              containers={this.state.containers}
+              physicals={this.state.physicals}
+              dragging={this.state.dragging}
+              onCellDragStart={this.onCellDragStart}
+              onCellDragOver={this.onCellDragOver}
+              onCellDrop={this.onCellDrop}
+              onCellDragEnd={this.onCellDragEnd}
+              {...this.state}
+            />
+          </div>
+
         </div>
       </div>
     );

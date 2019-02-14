@@ -396,46 +396,44 @@ class LabProfile extends React.Component {
               <div className="card-header rounded-0 bg-dark text-light">
                 <div className="card-title mb-0 text-capitalize">
                   <span><i className="mdi mdi-xl mdi-teach" /> {lab.name}</span>
-                  
-                  <LabToolbar 
-                    {...this.props}
-                    type="Lab"
-                    lab={this.state.lab}
-                    onRevokeLabMembership={this.onRevokeLabMembership}
-                    onRequestLabMembership={this.onRequestLabMembership}
-                    onCancelRequestLabMembership={this.onCancelRequestLabMembership}
-                  />
-
+                  {isLoggedIn && ( 
+                    <LabToolbar 
+                      {...this.props}
+                      type="Lab"
+                      lab={this.state.lab}
+                      onRevokeLabMembership={this.onRevokeLabMembership}
+                      onRequestLabMembership={this.onRequestLabMembership}
+                      onCancelRequestLabMembership={this.onCancelRequestLabMembership}
+                    />
+                  )}
                 </div>
               </div>
-              {(isLoggedIn) ? (
-                <>
-                  <div className="card-body">
-                    {(this.state.error.length > 0) ? (
-                      <p className="card-text text-danger">
-                        {this.state.error}
-                      </p>
-                    ) : null}
-                    
-                      {(lab.description && lab.description.length > 0) ? (
-                        <p className="card-text">
-                          {lab.description}
-                        </p>
-                      ) : (
-                        <p className="card-text">
-                          No description provided.
-                        </p>
-                      )}
-                    
-                    {(userIsMember && lab && lab.joinRequests && lab.joinRequests.length > 0) ? (
-                      <>
-                      <h5>Membership Requests</h5> 
-                      {membershipRequests}
-                      </>
-                    ) : null }
-                  </div>
-                </>
-              ) : null}   
+            
+              <div className="card-body">
+                {(this.state.error.length > 0) ? (
+                  <p className="card-text text-danger">
+                    {this.state.error}
+                  </p>
+                ) : null}
+                
+                  {(lab.description && lab.description.length > 0) ? (
+                    <p className="card-text">
+                      {lab.description}
+                    </p>
+                  ) : (
+                    <p className="card-text">
+                      No description provided.
+                    </p>
+                  )}
+                
+                {(isLoggedIn && userIsMember && lab && lab.joinRequests && lab.joinRequests.length > 0) ? (
+                  <>
+                  <h5>Membership Requests</h5> 
+                  {membershipRequests}
+                  </>
+                ) : null }
+              </div>
+    
             </div>
 
               <Containers 
