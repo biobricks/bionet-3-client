@@ -1,11 +1,10 @@
 import React from 'react';
 import shortid from 'shortid';
-import Auth from "../../modules/Auth";
-import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
 import Containers from '../Container/Containers';
 import Physicals from '../Physical/Physicals';
 import LabToolbar from '../Lab/LabToolbar';
+import Api from '../../modules/Api';
 
 class LabProfile extends React.Component {
 
@@ -18,8 +17,6 @@ class LabProfile extends React.Component {
       containers: [],
       virtuals: []
     };
-    this.getLab = this.getLab.bind(this);
-    this.postLab = this.postLab.bind(this);
     this.getData = this.getData.bind(this);
     this.onRequestLabMembership = this.onRequestLabMembership.bind(this);
     this.onCancelRequestLabMembership = this.onCancelRequestLabMembership.bind(this);
@@ -32,96 +29,25 @@ class LabProfile extends React.Component {
     this.onCellDragEnd = this.onCellDragEnd.bind(this);
     this.onCellDrop = this.onCellDrop.bind(this);
     this.moveItem = this.moveItem.bind(this);
-  }
-
-  async getLab(labId) {
-    try {  
-      let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${labId}`, {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let labRes = await fetch(labRequest);
-      let labResponse = labRes.json();
-      //console.log('getLabRes', labResponse);
-      return labResponse;
-    } catch (error) {
-      console.log('LabProfile.getLab', error);
-    }  
-  }
-
-  async postLab(lab) {
-    try {  
-      let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${lab._id}/membership`, {
-        method: 'POST',
-        //mode: "cors",
-        body: JSON.stringify(lab),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let labRes = await fetch(labRequest);
-      let labResponse = labRes.json();
-      return labResponse;
-    } catch (error) {
-      console.log('LabProfile.postLab', error);
-    }   
-  }
-
-  async postContainer(container) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/containers/${container._id}/edit`, {
-        method: 'POST',
-        //mode: "cors",
-        body: JSON.stringify(container),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('LabProfile.postContainer', error);
-    }   
-  }
-
-  async postPhysical(physical) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/physicals/${physical._id}/edit`, {
-        method: 'POST',
-        //mode: "cors",
-        body: JSON.stringify(physical),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('LabProfile.postPhysical', error);
-    }   
   } 
 
   moveItem(item) {
     let itemType = Object.keys(item).indexOf('virtual') > -1 ? "Physical" : "Container";
     if (itemType === "Physical") {
-      this.postPhysical(item)
+      Api.post(`physicals/${item._id}/edit`, item)
       .then((res) => {
-        this.props.refresh(this.props.currentUser);
+        this.props.refresh(this.props.currentUser);      
+      })
+      .catch((error) => {
+        throw error;
       });
     } else {
-      this.postContainer(item)
+      Api.post(`containers/${item._id}/edit`, item)
       .then((res) => {
-        this.props.refresh(this.props.currentUser);
+        this.props.refresh(this.props.currentUser);    
+      })
+      .catch((error) => {
+        throw error;
       });
     }
   }
@@ -182,13 +108,15 @@ class LabProfile extends React.Component {
 
   getData() {
     let labId = this.props.match.params.labId;
-    this.getLab(labId)
+    Api.get(`labs/${labId}`)
     .then((res) => {
-      //console.log('getData.res', res);
       this.setState({
         lab: res.data,
         virtuals: res.virtuals
-      });
+      });      
+    })
+    .catch((error) => {
+      throw error;
     });
   }
 
@@ -298,11 +226,12 @@ class LabProfile extends React.Component {
   }
   
   updateLab(lab) {
-    this.postLab(lab)
+    Api.post(`labs/${lab._id}/membership`, lab)
     .then((res) => {
-      console.log('updateLab.res', res);
-      this.getData();
-      //this.props.refresh(this.props.currentUser);
+      this.getData();      
+    })
+    .catch((error) => {
+      throw error;
     });
   }
 
