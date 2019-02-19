@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import Auth from "../../modules/Auth";
-import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
+import Api from '../../modules/Api';
 
 class LabEdit extends React.Component {
 
@@ -11,8 +10,6 @@ class LabEdit extends React.Component {
     this.state = {
       redirect: false,
       lab: {},
-      containers: [],
-      physicals: [],
       form: {
         name: "",
         description: "",
@@ -20,46 +17,9 @@ class LabEdit extends React.Component {
         columns: 0
       }
     };
-    this.getLab = this.getLab.bind(this);
-    this.postUpdateLab = this.postUpdateLab.bind(this);
     this.updateField = this.updateField.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
-  }
-
-  async getLab(labId) {
-    try {  
-      let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${labId}`, {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let labRes = await fetch(labRequest);
-      let labResponse = labRes.json();
-      return labResponse;
-    } catch (error) {
-      console.log('LabEdit.getLab', error);
-    }  
-  }
-
-  async postUpdateLab(formData) {
-    try {  
-      let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${this.state.lab._id}/edit`, {
-        method: 'POST',
-        body: JSON.stringify(formData),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let labRes = await fetch(labRequest);
-      let labResponse = labRes.json();
-      return labResponse;
-    } catch (error) {
-      console.log('LabEdit.postUpdateLab', error);
-    }   
   }
 
   updateField(e) {
@@ -76,29 +36,10 @@ class LabEdit extends React.Component {
   }
 
   submitForm(formData) {
-    // if(formData.name.length > 0){
-    //   let config = {
-    //     'headers': {
-    //       'authorization': `Bearer ${Auth.getToken()}`
-    //     },
-    //     'json': true
-    //   };  
-    //   axios.post(`${appConfig.apiBaseUrl}/labs/new`, formData, config)
-    //   .then(res => {     
-    //     this.setState({ 
-    //       lab: res.data.data,
-    //       redirect: true 
-    //     });
-    //     this.props.setAlert("success", `${this.state.lab.name} was successfully created.`);
-    //   })
-    //   .catch(error => {
-    //     console.error(error);
-    //     this.setState({ form: formData });
-    //   });      
-    // }
-    this.postUpdateLab(formData)
+    let labId = this.props.match.params.labId;
+    Api.post(`labs/${labId}/edit`, formData)
     .then((res) => {
-      console.log(res);
+      this.props.debugging && console.log('update lab res', res);
       this.setState({
         redirect: true
       });
@@ -113,14 +54,12 @@ class LabEdit extends React.Component {
   }
 
   componentDidMount() {
-    let labId = this.props.match.params.labId;
-    this.getLab(labId)
+    const labId = this.props.match.params.labId;
+    Api.get(`labs/${labId}`)
     .then((res) => {
-      console.log('getData.res', res);
+      this.props.debugging && console.log('getData.res', res);
       this.setState({
         lab: res.data,
-        containers: res.children,
-        physicals: res.physicals,
         form: res.data
       });
     });
@@ -130,6 +69,16 @@ class LabEdit extends React.Component {
     const isLoggedIn = this.props.isLoggedIn;
     let form = this.state.form;
     let formValid = form.name.length > 0 && form.rows > 1 && form.columns > 1;
+    
+    const lab = this.state.lab;
+    const labExists = lab && Object.keys(lab).length > 0;
+    const labChildrenExist = labExists && Object.keys(lab).indexOf('children') > -1;
+    const labContainersExist = labChildrenExist && Object.keys(lab.children).indexOf('containers') > -1;
+    const labPhysicalsExist = labChildrenExist && Object.keys(lab.children).indexOf('physicals') > -1;
+
+    const labContainers = labExists && labChildrenExist && labContainersExist ? lab.children.containers : [];
+    const labPhysicals = labExists && labChildrenExist && labPhysicalsExist ? lab.children.physicals : [];
+
     if (this.state.redirect === true) {
       return ( <Redirect to={`/labs/${this.props.match.params.labId}`}/> )
     }
@@ -238,8 +187,8 @@ class LabEdit extends React.Component {
                 selectLocations={false}
                 recordType="Lab"
                 record={this.state.form}
-                containers={this.state.containers}
-                physicals={this.state.physicals}
+                containers={labContainers}
+                physicals={labPhysicals}
               />
             </div>
           ) : null }
