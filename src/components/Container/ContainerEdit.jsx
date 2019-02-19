@@ -3,6 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 import Auth from "../../modules/Auth";
 import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
+import Api from '../../modules/Api';
 
 class ContainerEdit extends React.Component {
 
@@ -11,6 +12,7 @@ class ContainerEdit extends React.Component {
     this.state = {
       redirect: false,
       lab: {},
+      container: {},
       containers: [],
       physicals: [],
       form: {
@@ -76,7 +78,8 @@ class ContainerEdit extends React.Component {
   }
 
   submitForm(formData) {
-    this.postUpdateContainer(formData)
+    const containerId = this.props.match.params.containerId;
+    Api.post(`containers/${containerId}/edit`, formData)
     .then((res) => {
       console.log(res);
       this.setState({
@@ -94,14 +97,12 @@ class ContainerEdit extends React.Component {
 
   componentDidMount() {
     let containerId = this.props.match.params.containerId;
-    this.getContainer(containerId)
+    Api.get(`containers/${containerId}`)
     .then((res) => {
-      console.log('getContainer.res', res);
+      //console.log('getContainer.res', res);
       this.setState({
         lab: res.data.lab,
         container: res.data,
-        containers: res.containers,
-        physicals: res.physicals,
         form: res.data
       });
     });
@@ -109,8 +110,16 @@ class ContainerEdit extends React.Component {
 
   render() {
     const isLoggedIn = this.props.isLoggedIn;
-    let form = this.state.form;
-    //let formValid = form.name.length > 0 && form.rows > 1 && form.columns > 1;
+    const form = this.state.form;
+    const container = this.state.container;
+    const containerExists = container && Object.keys(container).length > 0;
+    const containerChildrenExist = containerExists && Object.keys(container).indexOf('children') > -1;
+    const containerContainersExist = containerChildrenExist && Object.keys(container.children).indexOf('containers') > -1;
+    const containerPhysicalsExist = containerChildrenExist && Object.keys(container.children).indexOf('physicals') > -1;
+
+    const containerContainers = containerChildrenExist && containerContainersExist ? container.children.containers : [];
+    const containerPhysicals = containerChildrenExist && containerPhysicalsExist ? container.children.physicals : [];
+
     if (this.state.redirect === true) {
       return ( <Redirect to={`/containers/${this.props.match.params.containerId}`}/> )
     }
@@ -211,9 +220,9 @@ class ContainerEdit extends React.Component {
                 formData={this.state.form}
                 selectLocations={false}
                 recordType="Container"
-                record={this.state.form}
-                containers={this.state.containers}
-                physicals={this.state.physicals}
+                record={this.state.container}
+                containers={containerContainers}
+                physicals={containerPhysicals}
               />
             </div>
           ) : null }
