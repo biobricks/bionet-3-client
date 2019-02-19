@@ -12,7 +12,7 @@ class ContainerNewForm extends Component {
       redirect: false,
       redirectTo: "",
       form: {
-        creator: this.props.currentUser._id || "",
+        createdBy: "",
         lab: "",
         parent: "",
         name: "",
