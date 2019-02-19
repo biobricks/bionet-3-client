@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import Auth from "../../modules/Auth";
-import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
 import Api from '../../modules/Api';
 
@@ -22,46 +20,9 @@ class ContainerEdit extends React.Component {
         columns: 0
       }
     };
-    this.getContainer = this.getContainer.bind(this);
-    this.postUpdateContainer = this.postUpdateContainer.bind(this);
     this.updateField = this.updateField.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
-  }
-
-  async getContainer(containerId) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/containers/${containerId}`, {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('ContainerEdit.getContainer', error);
-    }  
-  }
-
-  async postUpdateContainer(formData) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/containers/${this.state.container._id}/edit`, {
-        method: 'POST',
-        body: JSON.stringify(formData),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('ContainerEdit.postUpdateContainer', error);
-    }   
   }
 
   updateField(e) {
