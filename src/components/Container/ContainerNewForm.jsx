@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import Auth from '../../modules/Auth';
-import appConfig from '../../configuration.js';
 import { generateRandomName } from '../../modules/Wu';
 import GridSmall from '../Grid/GridSmall';
 import Api from '../../modules/Api';
@@ -12,6 +10,7 @@ class ContainerNewForm extends Component {
     super(props);
     this.state = {
       redirect: false,
+      redirectTo: "",
       form: {
         creator: this.props.currentUser._id || "",
         lab: "",
@@ -25,30 +24,10 @@ class ContainerNewForm extends Component {
         locations: []
       }
     };
-    this.postContainerNew = this.postContainerNew.bind(this);
     this.updateField = this.updateField.bind(this);
     this.wuGenerate = this.wuGenerate.bind(this);
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.submitForm = this.submitForm.bind(this);
-  }
-
-  async postContainerNew(formData) {
-    try {  
-      let containerRequest = new Request(`${appConfig.apiBaseUrl}/containers/new`, {
-        method: 'POST',
-        body: JSON.stringify(formData),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let containerRes = await fetch(containerRequest);
-      let containerResponse = containerRes.json();
-      return containerResponse;
-    } catch (error) {
-      console.log('ContainerNewForm.postContainerNew', error);
-    }   
   }
 
   updateField(e) {
@@ -77,32 +56,23 @@ class ContainerNewForm extends Component {
   onFormSubmit(e) {
     e.preventDefault();
     let formData = this.state.form;
-    //console.log(formData);
-    //formData.locations = this.props.newItemLocations;
     formData.createdBy = this.props.currentUser._id;
     formData.row = this.props.newItemLocations[0][1];
     formData.column = this.props.newItemLocations[0][0];
     let isContainer = this.props.parentType && this.props.parentType === "Container";
     formData.lab = isContainer ? this.props.container.lab._id : this.props.lab._id;
     formData.parent = isContainer ? this.props.container._id : null;
-    //console.log(formData);
     this.submitForm(formData);
   }
 
   submitForm(formData) {
-    // this.postContainerNew(formData)
-    // .then((res) => {
-    //   //console.log(res);
-    //   this.setState({
-    //     redirect: true
-    //   });
-    //   this.props.refresh(this.props.currentUser);
-    // });
+    let parentIsContainer = this.props.parentType && this.props.parentType === "Container";
     Api.post('containers/new', formData)
     .then((res) => {
       this.props.debugging && console.log('post new container res', res);
       this.setState({
-        redirect: true
+        redirect: true,
+        redirectTo: parentIsContainer ? `/containers/${formData.parent}` : `/labs/${formData.lab}`
       });
       this.props.refresh(this.props.currentUser);
     });
@@ -110,7 +80,7 @@ class ContainerNewForm extends Component {
 
   render() { 
     if (this.state.redirect === true) {
-      return ( <Redirect to={`/labs/${this.props.lab._id}`}/> )
+      return ( <Redirect to={this.state.redirectTo}/> )
     }    
     return (
       <div className="row">
