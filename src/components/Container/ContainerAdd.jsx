@@ -68,8 +68,8 @@ class ContainerAdd extends React.Component {
       this.setState({
         lab: res.data.lab,
         container: res.data,
-        containers: res.containers,
-        physicals: res.physicals
+        // containers: res.containers,
+        // physicals: res.physicals
       });
     });
   }
@@ -123,25 +123,6 @@ class ContainerAdd extends React.Component {
     });
   }
 
-  // onRequestLabMembership(e) {
-  //   let lab = this.state.lab;
-  //   let users = [];
-  //   let joinRequests = [];
-  //   for(let i = 0; i < lab.users.length; i++){
-  //     let user = lab.users[i];
-  //     users.push(user._id);
-  //   };
-  //   for(let i = 0; i < lab.joinRequests.length; i++){
-  //     let request = lab.joinRequests[i];
-  //     joinRequests.push(request._id);
-  //   };
-  //   joinRequests.push(this.props.currentUser._id);
-  //   lab.users = users;
-  //   lab.joinRequests = joinRequests;
-  //   //console.log(lab);
-  //   this.updateLab(lab);
-  // }
-
   componentDidMount() {
     this.getData();
   }
@@ -150,6 +131,7 @@ class ContainerAdd extends React.Component {
     const isLoggedIn = this.props.isLoggedIn;
     const currentUser = this.props.currentUser;
     const lab = this.state.lab;
+    const container = this.state.container;
     const itemType = this.props.match.params.itemType || "container";
     const itemIconClasses = itemType === "container" ? "mdi mdi-grid mr-2" : "mdi mdi-flask mr-2";
 
@@ -161,6 +143,13 @@ class ContainerAdd extends React.Component {
       }
     }
 
+    const containerExists = container && Object.keys(container).length > 0;
+    const containerChildrenExist = containerExists && Object.keys(container).indexOf('children') > -1;
+    const containerContainersExist = containerChildrenExist && Object.keys(container.children).indexOf('containers') > -1;
+    const containerPhysicalsExist = containerChildrenExist && Object.keys(container.children).indexOf('physicals') > -1;
+
+    const containerContainers = containerChildrenExist && containerContainersExist ? container.children.containers : [];
+    const containerPhysicals = containerChildrenExist && containerPhysicalsExist ? container.children.physicals : [];
 
     return (
       <div className="ContainerAdd container-fluid">
@@ -218,8 +207,8 @@ class ContainerAdd extends React.Component {
                   removeLocation={this.removeLocation}
                   recordType="Container"
                   record={this.state.container}
-                  containers={this.state.containers}
-                  physicals={this.state.physicals}
+                  containers={containerContainers}
+                  physicals={containerPhysicals}
                 />
               </div>
             </>

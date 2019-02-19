@@ -1,12 +1,8 @@
 import React from 'react';
-// import { Link } from 'react-router-dom';
-// import shortid from 'shortid';
-import Auth from "../../modules/Auth";
-import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
 import ContainerNewForm from '../Container/ContainerNewForm';
 import PhysicalNewForm from '../Physical/PhysicalNewForm';
-//import './LabProfile.css';
+import Api from '../../modules/Api';
 
 class LabAdd extends React.Component {
 
@@ -24,45 +20,9 @@ class LabAdd extends React.Component {
     this.removeLocation = this.removeLocation.bind(this);
   }
 
-  async getLab(labId) {
-    try {  
-      let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${labId}`, {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let labRes = await fetch(labRequest);
-      let labResponse = labRes.json();
-      return labResponse;
-    } catch (error) {
-      console.log('LabProfile.getLab', error);
-    }  
-  }
-
-  async postLab(lab) {
-    try {  
-      let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${lab._id}/membership`, {
-        method: 'POST',
-        //mode: "cors",
-        body: JSON.stringify(lab),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let labRes = await fetch(labRequest);
-      let labResponse = labRes.json();
-      return labResponse;
-    } catch (error) {
-      console.log('LabProfile.postLab', error);
-    }   
-  }
-
   getData() {
     let labId = this.props.match.params.labId;
-    this.getLab(labId)
+    Api.get(`labs/${labId}`)
     .then((res) => {
       console.log('LabAdd.getData.res', res);
       this.setState({
@@ -72,7 +32,7 @@ class LabAdd extends React.Component {
   }
 
   updateLab(lab) {
-    this.postLab(lab)
+    Api.post(`labs/${lab._id}/edit`, lab)
     .then((res) => {
       console.log(res);
       this.getData();
@@ -81,7 +41,6 @@ class LabAdd extends React.Component {
   }
 
   addLocation(newLocationArray) {
-    //console.log('add location called');
     let locations = this.state.newItemLocations;
     let locationExists = false;
     for(let i = 0; i < locations.length; i++){
@@ -117,25 +76,6 @@ class LabAdd extends React.Component {
       newItemLocations: updatedLocations
     });
   }
-
-  // onRequestLabMembership(e) {
-  //   let lab = this.state.lab;
-  //   let users = [];
-  //   let joinRequests = [];
-  //   for(let i = 0; i < lab.users.length; i++){
-  //     let user = lab.users[i];
-  //     users.push(user._id);
-  //   };
-  //   for(let i = 0; i < lab.joinRequests.length; i++){
-  //     let request = lab.joinRequests[i];
-  //     joinRequests.push(request._id);
-  //   };
-  //   joinRequests.push(this.props.currentUser._id);
-  //   lab.users = users;
-  //   lab.joinRequests = joinRequests;
-  //   //console.log(lab);
-  //   this.updateLab(lab);
-  // }
 
   componentDidMount() {
     this.getData();
@@ -224,12 +164,14 @@ class LabAdd extends React.Component {
                         <ContainerNewForm 
                           {...this.props} 
                           {...this.state}
+                          parentType="Lab"
                         />
                       ) : null } 
                       {(itemType === 'physical') ? (
                         <PhysicalNewForm 
                           {...this.props} 
                           {...this.state}
+                          parentType="Lab"
                         />
                       ) : null }     
                     </div>
