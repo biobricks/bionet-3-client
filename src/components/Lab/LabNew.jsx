@@ -12,6 +12,7 @@ class LabNew extends React.Component {
       redirect: false,
       lab: {},
       form: {
+        createdBy: "",
         name: "",
         description: "",
         rows: 1, 
@@ -28,7 +29,6 @@ class LabNew extends React.Component {
     try {  
       let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/new`, {
         method: 'POST',
-        //mode: "cors",
         body: JSON.stringify(lab),
         headers: new Headers({
           'Accept': 'application/json',
@@ -58,7 +58,7 @@ class LabNew extends React.Component {
   }
 
   submitForm(formData) {
-    console.log(formData);
+    formData.createdBy = this.props.currentUser._id;
     this.postNewLab(formData)
     .then((res) => {
       console.log('post new lab res', res);

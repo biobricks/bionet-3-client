@@ -7,10 +7,8 @@ async function get(endpoint) {
     let request = new Request(`${Config.apiBaseUrl}/${endpoint}`, { method: 'GET' });
     let response = await fetch(request);
     let result = response.json();
-    //console.log('Api.get.result', result);
     return result;
   } catch (error) {
-    console.log('Api.get', error);
     throw error;
   }
 }
@@ -30,7 +28,6 @@ async function post(endpoint, form) {
     let result = response.json();
     return result;
   } catch (error) {
-    console.log('Api.post', error);
     throw error;
   } 
 }
@@ -47,7 +44,6 @@ async function loginCurrentUser() {
     let result = response.json();
     return result;
   } catch (error) {
-    console.log('Api.loginCurrentUser', error);
     throw error;
   } 
 }

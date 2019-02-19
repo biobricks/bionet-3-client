@@ -4,6 +4,7 @@ import Auth from '../../modules/Auth';
 import appConfig from '../../configuration.js';
 import { generateRandomName } from '../../modules/Wu';
 import GridSmall from '../Grid/GridSmall';
+import Api from '../../modules/Api';
 
 class ContainerNewForm extends Component {
   
@@ -78,19 +79,28 @@ class ContainerNewForm extends Component {
     let formData = this.state.form;
     //console.log(formData);
     //formData.locations = this.props.newItemLocations;
+    formData.createdBy = this.props.currentUser._id;
     formData.row = this.props.newItemLocations[0][1];
     formData.column = this.props.newItemLocations[0][0];
     let isContainer = this.props.parentType && this.props.parentType === "Container";
     formData.lab = isContainer ? this.props.container.lab._id : this.props.lab._id;
     formData.parent = isContainer ? this.props.container._id : null;
-    console.log(formData);
+    //console.log(formData);
     this.submitForm(formData);
   }
 
   submitForm(formData) {
-    this.postContainerNew(formData)
+    // this.postContainerNew(formData)
+    // .then((res) => {
+    //   //console.log(res);
+    //   this.setState({
+    //     redirect: true
+    //   });
+    //   this.props.refresh(this.props.currentUser);
+    // });
+    Api.post('containers/new', formData)
     .then((res) => {
-      //console.log(res);
+      this.props.debugging && console.log('post new container res', res);
       this.setState({
         redirect: true
       });

@@ -210,7 +210,7 @@ class LabAdd extends React.Component {
                     <div className="card-body">
                       {(itemType === 'container') ? (
                         <p className="card-text">
-                          Select one or more cells for the Container to occupy within {this.state.lab.name}.
+                          Select which cell for the Container to occupy within {this.state.lab.name}.
                         </p>
                       ) : (
                         <p className="card-text">

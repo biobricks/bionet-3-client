@@ -9,12 +9,13 @@ import Loading from './partials/Loading/Loading';
 import Signup from './Signup';
 import Login from './Login';
 import Footer from './Footer/Footer';
+import Landing from './Landing';
 
 import { RouteBoundary } from './Helpers';
 
-import { loginCurrentUser, fetchAll, sortUserLabs } from '../modules/Api';
+import { loginCurrentUser } from '../modules/Api';
 
-const Landing = lazy(() => import('./Landing'));
+//const Landing = lazy(() => import('./Landing'));
 
 function RouteWrapper(props) {
   return (
@@ -31,6 +32,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      debugging: false,
       isLoaded: false,
       isLoggedIn: false,
       currentUser: {},
@@ -47,7 +49,6 @@ class App extends Component {
   async getCurrentUserLabs(currentUser) {
     let res, data, labs, virtuals, physicals; // eslint-disable-line 
     res = await fetchAll('labs');
-    console.log('res1', res);
     labs = res.data;
     res = await fetchAll('virtuals');
     virtuals = res.data;
@@ -107,7 +108,8 @@ class App extends Component {
           <Switch>
             <Route path="/signup" exact render={(props) => (<Signup {...props} {...this.state}/>)}/>
             <Route path="/login" exact render={(props) => (<Login {...props} {...this.state} setCurrentUser={this.setCurrentUser}/>)}/>
-            <Route path="/" exact render={(props) => ( <RouteWrapper><Landing {...props} {...this.state} labs={this.state.labs}/></RouteWrapper> )}/>
+            {/* <Route path="/" exact render={(props) => ( <RouteWrapper><Landing {...props} {...this.state} labs={this.state.labs}/></RouteWrapper> )}/> */}
+            <Route path="/" exact render={(props) => ( <Landing {...props} {...this.state} labs={this.state.labs}/> )}/>
           </Switch>        
         </main>
         <Footer />

@@ -248,10 +248,10 @@ class LabProfile extends React.Component {
     if (isLoggedIn) {
       for (let i = 0; i < labUsers.length; i++) {
         let labUser = labUsers[i];
-        console.log(`Lab user ${i}: `, labUser);
-        console.log('CurrentUser', currentUser);
+        this.props.debugging && console.log(`Lab user ${i}: `, labUser);
+        this.props.debugging && console.log('CurrentUser', currentUser);
         if (String(labUser._id) === String(currentUser._id)) { 
-          console.log('User is member of Lab');
+          this.props.debugging && console.log('User is member of Lab');
           userIsMember = true; 
         }
       }

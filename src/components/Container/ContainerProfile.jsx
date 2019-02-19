@@ -419,13 +419,6 @@ class ContainerProfile extends React.Component {
 
   componentDidMount() {
     this.getData();
-    this.getDataAsync()
-    .then((res) => {
-      console.log('getDataAsync.res', res);
-    })
-    .catch((error) => {
-      throw error;
-    });
   }
 
   render() {
