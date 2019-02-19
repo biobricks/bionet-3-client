@@ -10,6 +10,8 @@ import Signup from './components/Signup';
 import LabProfile from './components/Lab/LabProfile';
 import ContainerProfile from './components/Container/ContainerProfile';
 import Api from './modules/Api';
+import PasswordReset from './components/PasswordReset';
+import PasswordResetVerify from './components/PasswordResetVerify';
 
 const Landing = lazy(() => import('./components/Landing'));
 
@@ -127,6 +129,8 @@ class App extends React.Component {
           </Switch>  
 
           <Switch>
+            <Route path="/password-reset/verify" exact render={(props) => ( <PasswordResetVerify {...props} {...this.state}/> )}/>
+            <Route path="/password-reset" render={(props) => ( <PasswordReset {...props} {...this.state}/> )}/>
             <Route path="/signup" exact render={(props) => (<Signup {...props} {...this.state}/>)}/>
             <Route path="/login" exact render={(props) => (<Login {...props} {...this.state} setCurrentUser={this.setCurrentUser}/>)}/>
             <Route path="/" exact component={WaitForComponent(Landing, this.state)}/>

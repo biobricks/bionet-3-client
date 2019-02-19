@@ -32,6 +32,44 @@ async function post(endpoint, form) {
   } 
 }
 
+async function postPublic(endpoint, form) {
+  try {  
+    let request = new Request(`${Config.apiBaseUrl}/${endpoint}`, {
+      method: 'POST',
+      body: JSON.stringify(form),
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Auth.getToken()}`
+      })
+    });
+    let response = await fetch(request);
+    let result = response.json();
+    return result;
+  } catch (error) {
+    console.log('Api.postPublic', error);
+  } 
+}
+
+async function signup(form) {
+  try {  
+    let request = new Request(`${Config.apiBaseUrl}/signup`, {
+      method: 'POST',
+      body: JSON.stringify(form),
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Auth.getToken()}`
+      })
+    });
+    let response = await fetch(request);
+    let result = response.json();
+    return result;
+  } catch (error) {
+    console.log('Api.signup', error);
+  } 
+}
+
 async function loginCurrentUser() {
   try {  
     let request = new Request(`${Config.apiBaseUrl}/dashboard`, {
@@ -125,6 +163,6 @@ async function setCurrentUser() {
   }
 }
 
-let Api = { get, post, loginCurrentUser, logoutCurrentUser, getCurrentUserLabs, setCurrentUser };
+let Api = { get, post, loginCurrentUser, logoutCurrentUser, getCurrentUserLabs, setCurrentUser, postPublic, signup };
 
 export default Api;

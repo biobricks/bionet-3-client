@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Auth from '../modules/Auth';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import appConfig from '../configuration.js';
 
 class Login extends Component {
@@ -113,7 +113,13 @@ class Login extends Component {
                     <button type="submit" className="btn btn-success mt-3">
                       Login
                     </button>
-                  </div>                    
+                  </div>
+                  <p className="mt-3 text-center">
+                    <Link to="/password-reset">Forgot Password ?</Link>
+                  </p>
+                  <p className="mt-3 text-center">
+                    <Link to="/signup">Create Account</Link>
+                  </p>                    
                 </form>
               </div>
             </div>

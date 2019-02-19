@@ -404,7 +404,6 @@ class ContainerProfile extends React.Component {
     .then((res) => {
       console.log(res);
       this.getData();
-      this.props.refresh(this.props.currentUser);
     });
   }
 
