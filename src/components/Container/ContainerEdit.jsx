@@ -11,8 +11,6 @@ class ContainerEdit extends React.Component {
       redirect: false,
       lab: {},
       container: {},
-      containers: [],
-      physicals: [],
       form: {
         name: "",
         description: "",
