@@ -54,7 +54,7 @@ class Search extends React.Component {
     const physicals = this.state.physicals.map((physical) => {
       const hasParentAttr = Object.keys(physical).indexOf('parent') > -1;
       const hasLabParent = hasParentAttr && physical.parent === null;
-      const hasContainerParent = hasParentAttr && !hasLabParent && physical.parent.length > 0;
+      const hasContainerParent = hasParentAttr && !hasLabParent;
       const parentIsValid = hasLabParent || hasContainerParent;
       const parentRoute = hasLabParent ? `/labs/${physical.lab._id}` : `/containers/${physical.parent._id}`;
       if (parentIsValid) {
