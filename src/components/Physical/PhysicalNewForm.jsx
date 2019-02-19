@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import Auth from '../../modules/Auth';
-import appConfig from '../../configuration.js';
-//import axios from 'axios';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead-bs4.css';
 //import { generateRandomName } from '../../modules/Wu';
-
+import Api from '../../modules/Api';
 
 class PhysicalNewForm extends Component {
   
@@ -15,9 +12,10 @@ class PhysicalNewForm extends Component {
     super(props);
     this.state = {
       redirect: false,
+      redirectTo: "",
       virtual: {},
       form: {
-        creator: this.props.currentUser._id || "",
+        createdBy: "",
         lab: "",
         parent: "",
         name: "",
@@ -37,44 +35,6 @@ class PhysicalNewForm extends Component {
     //this.wuGenerate = this.wuGenerate.bind(this);
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.submitForm = this.submitForm.bind(this);
-  }
-
-  async postVirtualNew(formData) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/virtuals/new`, {
-        method: 'POST',
-        body: JSON.stringify(formData),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let requestRes = await fetch(request);
-      let response = requestRes.json();
-      return response;
-    } catch (error) {
-      console.log('PhysicalNewForm.postVirtualNew', error);
-    }   
-  }
-
-  async postPhysicalNew(formData) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/physicals/new`, {
-        method: 'POST',
-        body: JSON.stringify(formData),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let requestRes = await fetch(request);
-      let response = requestRes.json();
-      return response;
-    } catch (error) {
-      console.log('PhysicalNewForm.postPhysicalNew', error);
-    }   
   }
 
   handleVirtualChange(selectedArray) {
@@ -110,7 +70,8 @@ class PhysicalNewForm extends Component {
   onFormSubmit(e) {
     e.preventDefault();
     let formData = this.state.form;
-    console.log('physical form data', formData);
+    this.props.debugging && console.log('physical form data', formData);
+    formData.createdBy = this.props.currentUser._id;
     formData.row = this.props.newItemLocations[0][1];
     formData.column = this.props.newItemLocations[0][0];
     let isContainer = this.props.parentType && this.props.parentType === "Container";
@@ -119,41 +80,41 @@ class PhysicalNewForm extends Component {
     let virtualExists = Object.keys(this.state.virtual).length > 0;
     if (virtualExists) {
       // if virtual exists add to form and proceed
-      console.log('virtual exists. form:', formData);
+      this.props.debugging && console.log('virtual exists. form:', formData);
       formData.virtual = this.state.virtual._id;
       
-      console.log('Form Submitted', formData);
+      this.props.debugging && console.log('Form Submitted', formData);
       this.submitForm(formData);
     } else {
       // if virtual does not exist, create and on response add id to form and proceed
-      console.log('virtual doesn\'t exist - form:', formData);
+      this.props.debugging && console.log('virtual doesn\'t exist - form:', formData);
       let newVirtual = {
-        creator: this.props.currentUser._id,
+        createdBy: this.props.currentUser._id,
         name: formData.name,
         description: formData.description,
         provenance: formData.provenance,
         genotype: formData.genotype,
         sequence: formData.sequence,
-        category: formData.category,
-        datName: "",
-        datHash: ""
+        category: formData.category
       };
-      this.postVirtualNew(newVirtual)
+      Api.post('virtuals/new', newVirtual)
       .then((res) => {
         let virtual = res.data;
         formData.virtual = virtual._id;
-        console.log('virtual created and added - form:', formData);
+        this.props.debugging && console.log('virtual created and added - form:', formData);
         this.submitForm(formData);
-      });
+      });      
     }
   }
 
   submitForm(formData) {
-    this.postPhysicalNew(formData)
+    let parentIsContainer = this.props.parentType && this.props.parentType === "Container";
+    Api.post('physicals/new', formData)
     .then((res) => {
-      console.log('PhysicalNewForm.submitForm.res', res);
+      this.props.debugging && console.log('PhysicalNewForm.submitForm.res', res);
       this.setState({
-        redirect: true
+        redirect: true,
+        redirectTo: parentIsContainer ? `/containers/${formData.parent}` : `/labs/${formData.lab}`
       });
       this.props.refresh(this.props.currentUser);
     });
@@ -161,7 +122,7 @@ class PhysicalNewForm extends Component {
 
   render() { 
     if (this.state.redirect === true) {
-      return ( <Redirect to={`/labs/${this.props.lab._id}`}/> )
+      return ( <Redirect to={this.state.redirectTo}/> )
     }    
     return (
       <div className="row mb-3">
