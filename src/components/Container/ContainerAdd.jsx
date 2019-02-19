@@ -1,11 +1,8 @@
 import React from 'react';
-// import { Link } from 'react-router-dom';
-// import shortid from 'shortid';
-import Auth from "../../modules/Auth";
-import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
 import ContainerNewForm from '../Container/ContainerNewForm';
 import PhysicalNewForm from '../Physical/PhysicalNewForm';
+import Api from '../../modules/Api';
 
 class ContainerAdd extends React.Component {
 
@@ -14,62 +11,21 @@ class ContainerAdd extends React.Component {
     this.state = {
       lab: {},
       container: {},
-      containers: [],
-      physicals: [],
       newItemLocations: []
     };
-    this.getContainer = this.getContainer.bind(this);
-    this.postContainer = this.postContainer.bind(this);
     this.updateContainer = this.updateContainer.bind(this);
     this.addLocation = this.addLocation.bind(this);
     this.removeLocation = this.removeLocation.bind(this);
   }
 
-  async getContainer(containerId) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/containers/${containerId}`, {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('ContainerProfile.getContainer', error);
-    }  
-  }
-
-  async postContainer(formData) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/containers/new`, {
-        method: 'POST',
-        body: JSON.stringify(formData),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('ContainerEdit.postContainer', error);
-    }   
-  }
-
   getData() {
     let containerId = this.props.match.params.containerId;
-    this.getContainer(containerId)
+    Api.get(`containers/${containerId}`)
     .then((res) => {
       console.log('ContainerAdd.getData.res', res);
       this.setState({
         lab: res.data.lab,
-        container: res.data,
-        // containers: res.containers,
-        // physicals: res.physicals
+        container: res.data
       });
     });
   }
@@ -77,7 +33,7 @@ class ContainerAdd extends React.Component {
   updateContainer(container) {
     let containerRecord = container;
     containerRecord['parent'] = container._id;
-    this.postContainer(containerRecord)
+    Api.postContainer('containers/new', containerRecord)
     .then((res) => {
       console.log(res);
       this.getData();
