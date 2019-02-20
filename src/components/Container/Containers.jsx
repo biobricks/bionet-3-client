@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Auth from "../../modules/Auth";
-import appConfig from '../../configuration.js';
 import { Link } from 'react-router-dom';
 import shortid from 'shortid';
 import { Typeahead } from 'react-bootstrap-typeahead';
@@ -22,7 +20,6 @@ class Containers extends Component {
       newItemLocations: []
     };
     this.onMoveCancel = this.onMoveCancel.bind(this);
-    this.updateContainer = this.updateContainer.bind(this);
     this.updateLocation = this.updateLocation.bind(this);
     this.onChangeMode = this.onChangeMode.bind(this);
     this.changeMode = this.changeMode.bind(this);
@@ -31,39 +28,23 @@ class Containers extends Component {
     this.removeLocation = this.removeLocation.bind(this);
   }
 
-  async updateContainer(container) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/containers/${container._id}/edit`, {
-        method: 'POST',
-        body: JSON.stringify(container),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('Containers.updateContainer', error);
-    }   
-  }
-
   onMoveCancel() {
     this.changeMode("List");
   }
 
   updateLocation() {
-    let container = this.state.container;
-    container.parent = this.state.newParent._id;
-    container.column = this.state.newItemLocations[0][0];
-    container.row = this.state.newItemLocations[0][1];
-    this.updateContainer(container)
-    .then((res) => {
-      this.props.refresh();
-      this.setState({ mode: 'List' });
-    });
+    if (this.props.isLoggedIn) {
+      let container = this.state.container;
+      container.parent = this.state.newParent._id;
+      container.updatedBy = this.props.currentUser._id;
+      container.column = this.state.newItemLocations[0][0];
+      container.row = this.state.newItemLocations[0][1];
+      Api.post(`containers/${container._id}/edit`, container)
+      .then((res) => {
+        this.props.refresh();
+        this.setState({ mode: 'List' });
+      });
+    }
   }
 
   onChangeMode(e) {
