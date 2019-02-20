@@ -148,7 +148,7 @@ class Containers extends Component {
     }
 
     let allParentOptions = [this.props.lab].concat(this.props.allContainers) || [];
-    console.log('Containers.allParentOptions', allParentOptions);
+    //console.log('Containers.allParentOptions', allParentOptions);
     let newParentOptions = [];
     if(Object.keys(container).length > 0 && containers.length > 0) {
       if (containers && containers.length > 0) {

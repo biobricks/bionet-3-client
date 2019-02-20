@@ -359,6 +359,7 @@ class LabProfile extends React.Component {
                 containers={labContainers} 
                 physicals={labPhysicals} 
                 currentUser={this.props.currentUser}
+                refresh={this.getData}
                 allContainers={this.state.allContainers} 
                 lab={this.state.lab} 
               />

@@ -37,10 +37,18 @@ class Physicals extends Component {
   }
 
   handleNewParentChange(selectedArray) {
-    let newParent = selectedArray[0] || {};
-    this.setState({
-      newParent,
-      mode: "Move Step 2"
+    const newParent = selectedArray[0];
+    const newParentIsLab = Object.keys(newParent).indexOf('parent') === -1;
+    const recordEndpoint = newParentIsLab ? `labs/${newParent._id}` : `containers/${newParent._id}`;
+    Api.get(recordEndpoint)
+    .then((res) => {
+      this.setState({
+        newParent: res.data,
+        mode: "Move Step 2"
+      });
+    })
+    .catch((error) => {
+      throw error;
     });
   }
 
@@ -108,11 +116,13 @@ class Physicals extends Component {
   }
 
   onDeleteVirtual() {
-    Api.post(`virtuals/${this.state.virtual._id}/remove`)
-    .then((res) => {
-      console.log('Delete Virtual Res', res);
-      this.props.refresh();
-    });    
+    if (this.props.isLoggedIn) {
+      Api.post(`virtuals/${this.state.virtual._id}/remove`)
+      .then((res) => {
+        console.log('Delete Virtual Res', res);
+        this.props.refresh();
+      });  
+    }  
   }
 
   onChangeMode(e) {
@@ -185,22 +195,21 @@ class Physicals extends Component {
   }
 
   submitVirtualForm(formData) {
-    Api.post(`virtuals/${this.state.physical.virtual._id}/edit`, formData)
-    .then((res) => {
-      console.log('Post Virtual Res', res);
-      this.changeMode('List');
-    });
+    if (this.props.isLoggedIn) {
+      formData.updatedBy = this.props.currentUser._id;
+      Api.post(`virtuals/${this.state.physical.virtual._id}/edit`, formData)
+      .then((res) => {
+        console.log('Post Virtual Res', res);
+        this.changeMode('List');
+      });
+    }
   }
 
   handleVirtualFormSubmit(e) {
     e.preventDefault();
     let formData = this.state.virtualForm;
     this.submitVirtualForm(formData);
-  }
-
-  componentDidMount() {
-
-  }  
+  } 
 
   render() {
     const isLoggedIn = this.props.isLoggedIn;
