@@ -41,6 +41,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      debugging: true,
       isLoggedIn: false,
       currentUser: {},
       labs: [],
@@ -129,7 +130,7 @@ class App extends React.Component {
           </Switch>  
 
           <Switch>
-            <Route path="/password-reset/verify" exact render={(props) => ( <PasswordResetVerify {...props} {...this.state}/> )}/>
+            <Route path="/password-reset/verify" exact render={(props) => (<PasswordResetVerify {...props} {...this.state}/>)}/>
             <Route path="/password-reset" render={(props) => ( <PasswordReset {...props} {...this.state}/> )}/>
             <Route path="/signup" exact render={(props) => (<Signup {...props} {...this.state}/>)}/>
             <Route path="/login" exact render={(props) => (<Login {...props} {...this.state} setCurrentUser={this.setCurrentUser}/>)}/>
