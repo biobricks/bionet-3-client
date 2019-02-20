@@ -10,10 +10,7 @@ class ContainerDelete extends React.Component {
     this.state = {
       redirect: false,
       lab: {},
-      container: {},
-      containers: [],
-      physicals: [],
-      form: {}
+      container: {}
     };
     this.handleDelete = this.handleDelete.bind(this);
   }
@@ -36,8 +33,7 @@ class ContainerDelete extends React.Component {
       this.props.debugging && console.log('ContainerDelete.getContainer.res', res);
       this.setState({
         lab: res.data.lab,
-        container: res.data,
-        form: res.data
+        container: res.data
       });
     });
   }
@@ -93,10 +89,10 @@ class ContainerDelete extends React.Component {
               <Grid 
                 demo={true}
                 editMode={false}
-                formData={this.state.form}
+                formData={container}
                 selectLocations={false}
                 recordType="Container"
-                record={this.state.form}
+                record={container}
                 containers={containerContainers}
                 physicals={containerPhysicals}
               />
