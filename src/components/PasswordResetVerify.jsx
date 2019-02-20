@@ -80,6 +80,7 @@ class PasswordResetVerify extends Component {
   }
 
   render() {
+    const form = this.state.form;
     if (this.state.redirect) { return <Redirect to="/login" /> }
     return (
       <div className="PasswordResetVerify container-fluid">
@@ -102,16 +103,44 @@ class PasswordResetVerify extends Component {
                   <div className="form-group">
                     <label htmlFor="resetToken">Reset Token</label>
                     <input 
-                      type="text" 
+                      type="password" 
                       name="resetToken" 
                       className="form-control" 
                       onChange={ this.onInputChange } 
-                      value={ this.state.form.resetToken }
+                      value={ form.resetToken }
                       placeholder="your.reset.token" 
                     />
                     {this.state.errors.resetToken && <small className="text-danger">{this.state.errors.resetToken}</small>}
                   </div>
-                  <button className="btn btn-block btn-success mt-3">
+                  {form.resetToken && form.resetToken.length > 6 && (
+                    <>
+                      <div className="form-group">
+                        <label htmlFor="newPassword">New Password</label>
+                        <input 
+                          type="password" 
+                          name="newPassword" 
+                          className="form-control" 
+                          onChange={ this.onInputChange } 
+                          value={ form.newPassword }
+                          placeholder="your new password" 
+                        />
+                        {this.state.errors.newPassword && <small className="text-danger">{this.state.errors.newPassword}</small>}
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="passwordConfirm">Password Confirm</label>
+                        <input 
+                          type="password" 
+                          name="passwordConfirm" 
+                          className="form-control" 
+                          onChange={ this.onInputChange } 
+                          value={ form.passwordConfirm }
+                          placeholder="your new password (again)" 
+                        />
+                        {this.state.errors.passwordConfirm && <small className="text-danger">{this.state.errors.passwordConfirm}</small>}
+                      </div>                      
+                    </>
+                  )}
+                  <button type="submit" className="btn btn-block btn-success mt-3">
                     <i className="mdi text-lg mdi-lock-question mr-2" />Submit
                   </button>
                 </form>

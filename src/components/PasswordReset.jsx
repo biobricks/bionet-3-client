@@ -43,7 +43,7 @@ class PasswordReset extends Component {
     if (formValid) {
       Api.postPublic('reset-password', this.state.form)
       .then((result) => {
-        this.props.debug && console.log('PasswordReset.onFormSubmit.result', result);
+        this.props.debugging && console.log('PasswordReset.onFormSubmit.result', result);
         if (result.success) {
           this.setState({ redirect: true });
         } else {
