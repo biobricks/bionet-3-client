@@ -439,7 +439,7 @@ class ContainerProfile extends React.Component {
             <Grid 
               demo={false}
               selectLocations={false}
-              recordType="Lab"
+              recordType="Container"
               record={this.state.container}
               containers={this.state.containers}
               physicals={this.state.physicals}
