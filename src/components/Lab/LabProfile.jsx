@@ -35,8 +35,8 @@ class LabProfile extends React.Component {
     let itemType = Object.keys(item).indexOf('virtual') > -1 ? "Physical" : "Container";
     if (itemType === "Physical") {
       Api.post(`physicals/${item._id}/edit`, item)
-      .then((res) => {
-        this.props.refresh(this.props.currentUser);      
+      .then((res) => { 
+        this.getData();     
       })
       .catch((error) => {
         throw error;
@@ -44,7 +44,7 @@ class LabProfile extends React.Component {
     } else {
       Api.post(`containers/${item._id}/edit`, item)
       .then((res) => {
-        this.props.refresh(this.props.currentUser);    
+        this.getData();    
       })
       .catch((error) => {
         throw error;
@@ -53,29 +53,29 @@ class LabProfile extends React.Component {
   }
 
   onCellDragStart(e) {
-    console.log('onCellDragStart');
-    // let selectedRecord = this.props.selectedRecord;
-    // let children = selectedRecord.children || [];
-    let children = this.state.containers.concat(this.props.physicals);
-    //console.log(children);
-    let originRow = Number(e.target.getAttribute('row'));
-    let originColumn = Number(e.target.getAttribute('col'));
-    //console.log('origin', originColumn, originRow);
+    this.props.debugging && console.log('onCellDragStart');
+    const lab = this.state.lab;
+    const itemId = e.target.getAttribute('id');
     let draggedCell;
-    for(let i = 0; i < children.length; i++){
-      let child = children[i];
-      if(String(child._id) === String(e.target.id)){
-        draggedCell = child;
-        for(let j = 0; j < draggedCell.locations.length; j++){
-          let column = draggedCell.locations[j][0];
-          let row = draggedCell.locations[j][1];
-          if (column === originColumn && row === originRow){
-            draggedCell['moveLocationIndex'] = j;
-          }
-        }
+    const labExists = lab && Object.keys(lab).length > 0;
+    const labChildrenExist = labExists && Object.keys(lab).indexOf('children') > -1;
+    const labContainersExist = labChildrenExist && Object.keys(lab.children).indexOf('containers') > -1;
+    const labPhysicalsExist = labChildrenExist && Object.keys(lab.children).indexOf('physicals') > -1;
+    const labContainers = labExists && labChildrenExist && labContainersExist ? lab.children.containers : [];
+    const labPhysicals = labExists && labChildrenExist && labPhysicalsExist ? lab.children.physicals : [];
+    for(let i = 0; i < labContainers.length; i++){
+      let childContainer = labContainers[i];
+      if (childContainer._id === itemId) {
+        draggedCell = childContainer;
       }
     }
-    //console.log('draggedCell: ', draggedCell);
+    for(let i = 0; i < labPhysicals.length; i++){
+      let childPhysical = labPhysicals[i];
+      if (childPhysical._id === itemId) {
+        draggedCell = childPhysical;
+      }
+    }
+    this.props.debugging && console.log('draggedCell: ', draggedCell);
     e.dataTransfer.setData("draggedCell", JSON.stringify(draggedCell));
   }
 
@@ -84,26 +84,17 @@ class LabProfile extends React.Component {
   }
 
   onCellDragEnd(e) {
-    //console.log('onCellDragEnd'); 
     this.setState({
       dragging: false
     }); 
   }
 
   onCellDrop(e) {
-    console.log('onCellDrop');
+    this.props.debugging && console.log('onCellDrop');
     const draggedCell = JSON.parse(e.dataTransfer.getData("draggedCell"));
-    //console.log('draggedCell+data', draggedCell);
-    const targetCellRow = Number(e.target.getAttribute('row'));
-    const targetCellColumn = Number(e.target.getAttribute('col'));
-    draggedCell.locations[draggedCell.moveLocationIndex] = [targetCellColumn, targetCellRow];
-    //const targetCellPosition = Number(e.target.getAttribute('pos'));
-    //console.log(`Cell ${draggedCell.name} dragged and dropped to ${targetCellColumn}, ${targetCellRow}`);
-    //console.log('updatedDraggedCell', draggedCell);
+    draggedCell.row = Number(e.target.getAttribute('row'));
+    draggedCell.column = Number(e.target.getAttribute('col'));
     this.moveItem(draggedCell);
-    // this.setState({
-    //   dragging: false
-    // }); 
   }
 
   getData() {
@@ -135,7 +126,6 @@ class LabProfile extends React.Component {
     joinRequests.push(this.props.currentUser._id);
     lab.users = users;
     lab.joinRequests = joinRequests;
-    //console.log(lab);
     this.updateLab(lab);
   }
 
@@ -155,7 +145,6 @@ class LabProfile extends React.Component {
     };
     lab.users = users;
     lab.joinRequests = joinRequests;
-    //console.log('LabProfile.onCancelRequestLabMembership.lab', lab);
     this.updateLab(lab);
   }
 
