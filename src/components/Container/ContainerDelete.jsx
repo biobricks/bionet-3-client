@@ -3,6 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 import Auth from "../../modules/Auth";
 import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
+import Api from '../../modules/Api';
 
 class ContainerDelete extends React.Component {
 
@@ -11,6 +12,7 @@ class ContainerDelete extends React.Component {
     this.state = {
       redirect: false,
       lab: {},
+      container: {},
       containers: [],
       physicals: [],
       form: {}
@@ -57,23 +59,22 @@ class ContainerDelete extends React.Component {
 
   handleDelete() {
     let containerId = this.props.match.params.containerId;
-    console.log('Deleting', containerId)
     this.deleteContainer(containerId)
     .then((res) => {
-      console.log(res);
+      this.props.debugging && console.log('ContainerDelete.getContainer.res', res);
       this.setState({
         redirect: true
       });
-      this.props.refresh(this.props.currentUser);
     });
   }
 
   componentDidMount() {
     let containerId = this.props.match.params.containerId;
-    this.getContainer(containerId)
+    Api.get(`containers/${containerId}`)
     .then((res) => {
-      console.log('ContainerDelete.componentDidMount', res);
+      this.props.debugging && console.log('ContainerDelete.getContainer.res', res);
       this.setState({
+        lab: res.data.lab,
         container: res.data,
         form: res.data
       });
@@ -81,8 +82,16 @@ class ContainerDelete extends React.Component {
   }
 
   render() {
+    const container = this.state.container;
+    const containerExists = container && Object.keys(container).length > 0;
+    const containerChildrenExist = containerExists && Object.keys(container).indexOf('children') > -1;
+    const containerContainersExist = containerChildrenExist && Object.keys(container.children).indexOf('containers') > -1;
+    const containerPhysicalsExist = containerChildrenExist && Object.keys(container.children).indexOf('physicals') > -1;
+
+    const containerContainers = containerChildrenExist && containerContainersExist ? container.children.containers : [];
+    const containerPhysicals = containerChildrenExist && containerPhysicalsExist ? container.children.physicals : [];
     if (this.state.redirect === true) {
-      let route = this.state.container.parent === null ? `/labs/${this.state.container.lab._id}` : `/containers/${this.state.container.parent._id}`;
+      let route = this.state.container.parent === null ? `/labs/${container.lab._id}` : `/containers/${container.parent._id}`;
       return ( <Redirect to={route}/> )
     }    
     const isLoggedIn = this.props.isLoggedIn;
@@ -95,7 +104,7 @@ class ContainerDelete extends React.Component {
               <div className="card-header rounded-0 bg-dark text-light">
                 <div className="card-title mb-0 text-capitalize">
                   <h4 className="card-title mb-0 text-capitalize">
-                    <i className="mdi mdi-teach mr-2"/>Delete Container
+                    <i className="mdi mdi-grid mr-2"/>Delete Container
                   </h4>
                 </div>
               </div>
@@ -127,8 +136,8 @@ class ContainerDelete extends React.Component {
                 selectLocations={false}
                 recordType="Container"
                 record={this.state.form}
-                containers={this.state.containers}
-                physicals={this.state.physicals}
+                containers={containerContainers}
+                physicals={containerPhysicals}
               />
             </div>
           ) : null }
