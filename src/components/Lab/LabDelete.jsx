@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import Auth from "../../modules/Auth";
-import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
 import Api from '../../modules/Api';
 
@@ -21,44 +19,7 @@ class LabDelete extends React.Component {
         columns: 0
       }
     };
-    this.getLab = this.getLab.bind(this);
-    this.postDeleteLab = this.postDeleteLab.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-  }
-
-  async getLab(labId) {
-    try {  
-      let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${labId}`, {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let labRes = await fetch(labRequest);
-      let labResponse = labRes.json();
-      return labResponse;
-    } catch (error) {
-      console.log('LabEdit.getLab', error);
-    }  
-  }
-
-  async postDeleteLab(labId) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/labs/${labId}/remove`, {
-        method: 'POST',
-        // body: "deleteit",
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let labRes = await fetch(request);
-      let response = labRes.json();
-      return response;
-    } catch (error) {
-      console.log('LabDelete.postUpdateLab', error);
-    }   
   }
 
   handleDelete() {
