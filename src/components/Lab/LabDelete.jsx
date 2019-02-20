@@ -9,15 +9,7 @@ class LabDelete extends React.Component {
     super(props);
     this.state = {
       redirect: false,
-      lab: {},
-      containers: [],
-      physicals: [],
-      form: {
-        name: "",
-        description: "",
-        rows: 0,
-        columns: 0
-      }
+      lab: {}
     };
     this.handleDelete = this.handleDelete.bind(this);
   }
