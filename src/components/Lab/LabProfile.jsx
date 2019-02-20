@@ -334,7 +334,6 @@ class LabProfile extends React.Component {
                 userIsMember={userIsMember}
                 containers={labContainers} 
                 currentUser={this.props.currentUser}
-                refresh={this.props.refresh}
                 physicals={labPhysicals}                
               /> 
 
@@ -344,7 +343,6 @@ class LabProfile extends React.Component {
                 containers={labContainers} 
                 physicals={labPhysicals} 
                 currentUser={this.props.currentUser}
-                refresh={this.props.refresh}
               />
 
           </div>

@@ -143,8 +143,12 @@ class ContainerProfile extends React.Component {
       const containerId = this.props.match.params.containerId;
       const getContainerRes = await Api.get(`containers/${containerId}`);
       let container = getContainerRes.data;
-      const containers = container.children.containers || [];
-      const physicals = container.children.physicals || [];
+      const containerExists = container && Object.keys(container).length > 0;
+      const containerChildrenExist = containerExists && Object.keys(container).indexOf('children') > -1;
+      const containerContainersExist = containerChildrenExist && Object.keys(container.children).indexOf('containers') > -1;
+      const containerPhysicalsExist = containerChildrenExist && Object.keys(container.children).indexOf('physicals') > -1;
+      const containers = containerChildrenExist && containerContainersExist ? container.children.containers : [];
+      const physicals = containerChildrenExist && containerPhysicalsExist ? container.children.physicals : [];
       const labId = container.lab._id;
       const getLabRes = await Api.get(`labs/${labId}`);
       const lab = getLabRes.data;
@@ -304,6 +308,7 @@ class ContainerProfile extends React.Component {
     const isLoggedIn = this.props.isLoggedIn;
     const currentUser = this.props.currentUser;
     const lab = this.state.lab;
+    const container = this.state.container;
     const labUsers = lab.users || [];
     let userIsMember = false;
     if (isLoggedIn) {
@@ -314,20 +319,6 @@ class ContainerProfile extends React.Component {
         }
       }
     }
-    let labPhysicals = [];
-    if (this.state.physicals && this.state.physicals.length){
-      for(let i = 0; i < this.state.physicals.length; i++){
-        let physical = this.state.physicals[i];
-        if (physical.lab){
-          //console.log(physical.lab._id, lab._id);
-          if (physical.lab._id === lab._id){
-            //console.log('match',physical.lab._id, lab._id);
-            labPhysicals.push(physical);
-          }
-        }  
-      }
-    }
-
 
     const membershipRequests = isLoggedIn && lab.joinRequests ? lab.joinRequests.map((user, index) => {
       return (
@@ -355,6 +346,16 @@ class ContainerProfile extends React.Component {
         </div>
       )
     }) : [];
+
+    const containerExists = container && Object.keys(container).length > 0;
+    const containerChildrenExist = containerExists && Object.keys(container).indexOf('children') > -1;
+    const containerContainersExist = containerChildrenExist && Object.keys(container.children).indexOf('containers') > -1;
+    const containerPhysicalsExist = containerChildrenExist && Object.keys(container.children).indexOf('physicals') > -1;
+
+    const containerContainers = containerChildrenExist && containerContainersExist ? container.children.containers : [];
+    const containerPhysicals = containerChildrenExist && containerPhysicalsExist ? container.children.physicals : [];
+
+
     return (
       <div className="ContainerProfile container-fluid">
         
@@ -364,7 +365,7 @@ class ContainerProfile extends React.Component {
             <div className="card rounded-0 mt-3">
               <div className="card-header rounded-0 bg-dark text-light">
                 <div className="card-title mb-0 text-capitalize">
-                  <span><i className="mdi mdi-xl mdi-grid" />{this.state.container.name}</span>
+                  <span><i className="mdi mdi-xl mdi-grid" />{container.name}</span>
                   {isLoggedIn && (
                     <LabToolbar 
                       {...this.props}
@@ -382,8 +383,8 @@ class ContainerProfile extends React.Component {
               {(this.state.path.length > 0) ? (
                 <Breadcrumbs 
                   path={this.state.path}
-                  lab={this.state.lab}
-                  item={this.state.container}
+                  lab={lab}
+                  item={container}
                 />
               ) : null }
               <div className="card-body">
@@ -393,8 +394,8 @@ class ContainerProfile extends React.Component {
                   </p>
                 ) : null}
                 
-                  {this.state.container.description && this.state.container.description.length > 0 ? (
-                    <p className="card-text">{this.state.container.description}</p>
+                  {container.description && container.description.length > 0 ? (
+                    <p className="card-text">{container.description}</p>
                   ) : (
                     <p className="card-text">No description provided.</p>
                   )}
@@ -411,17 +412,17 @@ class ContainerProfile extends React.Component {
               <Containers 
                 isLoggedIn={isLoggedIn}
                 userIsMember={userIsMember}
-                containers={this.state.containers} 
+                containers={containerContainers} 
                 currentUser={this.props.currentUser}
                 refresh={this.props.refresh}
-                physicals={labPhysicals}                
+                physicals={containerPhysicals}                
               /> 
               
               <Physicals 
                 isLoggedIn={isLoggedIn}
                 userIsMember={userIsMember}
-                containers={this.state.containers} 
-                physicals={this.state.physicals} 
+                containers={containerContainers} 
+                physicals={containerPhysicals} 
                 currentUser={this.props.currentUser}
                 refresh={this.props.refresh}
               />   
@@ -435,8 +436,8 @@ class ContainerProfile extends React.Component {
               selectLocations={false}
               recordType="Container"
               record={this.state.container}
-              containers={this.state.containers}
-              physicals={this.state.physicals}
+              containers={containerContainers}
+              physicals={containerPhysicals}
               dragging={this.state.dragging}
               onCellDragStart={this.onCellDragStart}
               onCellDragOver={this.onCellDragOver}

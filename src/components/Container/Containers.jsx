@@ -133,10 +133,6 @@ class Containers extends Component {
     });
   }
 
-  componentDidMount() {
-
-  }  
-
   render() {
     const isLoggedIn = this.props.isLoggedIn;
     const mode = this.state.mode;
@@ -190,7 +186,7 @@ class Containers extends Component {
             <div className="btn-group float-right">
               <Link 
                 to={`/containers/${thisContainer._id}`}
-                mode='View'
+                mode='List'
                 className="btn btn-sm btn-info rounded-0"
                 onClick={this.onChangeMode}
               >View Details

@@ -109,7 +109,7 @@ class App extends React.Component {
                 {...props}
                 {...this.state}
                 {...this.props}
-                getCurrentUserLabs={this.getCurrentUserLabs}
+                refresh={this.setCurrentUser}
               />
             )}/>
           </Switch>  
@@ -124,7 +124,7 @@ class App extends React.Component {
                 {...props}
                 {...this.state}
                 {...this.props}
-                getCurrentUserLabs={this.getCurrentUserLabs}
+                refresh={this.setCurrentUser}
               />
             )}/>            
           </Switch>  
