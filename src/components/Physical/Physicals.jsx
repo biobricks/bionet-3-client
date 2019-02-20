@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import Auth from "../../modules/Auth";
-import appConfig from '../../configuration.js';
-//import { Link } from 'react-router-dom';
 import shortid from 'shortid';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead-bs4.css';
 import Grid from '../Grid/Grid';
+import Api from '../../modules/Api';
 
 class Physicals extends Component {
 
@@ -22,10 +20,6 @@ class Physicals extends Component {
       newParent: {},
       newItemLocations: []
     };
-    this.updatePhysical = this.updatePhysical.bind(this);
-    this.deletePhysical = this.deletePhysical.bind(this);
-    this.updateVirtual = this.updateVirtual.bind(this);
-    this.deleteVirtual = this.deleteVirtual.bind(this);
     this.onDeletePhysical = this.onDeletePhysical.bind(this);
     this.onDeleteVirtual = this.onDeleteVirtual.bind(this);
     this.addLocation = this.addLocation.bind(this);
@@ -48,82 +42,6 @@ class Physicals extends Component {
       newParent,
       mode: "Move Step 2"
     });
-  }
-
-  async updatePhysical(formData) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/physicals/${this.state.physical._id}/edit`, {
-        method: 'POST',
-        body: JSON.stringify(formData),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('Physicals.updatePhysical', error);
-    }   
-  }
-
-  async deletePhysical(id) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/physicals/${id}/remove`, {
-        method: 'POST',
-        //body: JSON.stringify(id),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('Physicals.deletePhysical', error);
-    }   
-  }
-
-  async updateVirtual(formData) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/virtuals/${this.state.physical.virtual._id}/edit`, {
-        method: 'POST',
-        body: JSON.stringify(formData),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('Physicals.updateVirtual', error);
-    }   
-  }
-
-  async deleteVirtual(id) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/virtuals/${id}/remove`, {
-        method: 'POST',
-        //body: JSON.stringify(id),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('Physicals.deleteVirtual', error);
-    }   
   }
 
   addLocation(newLocationArray) {
@@ -165,28 +83,35 @@ class Physicals extends Component {
   }
 
   updateLocation() {
-    let physical = this.state.physical;
-    physical.parent = this.state.newParent._id;
-    physical.locations = this.state.newItemLocations;
-    this.updatePhysical(physical)
-    .then((res) => {
-      this.props.refresh(this.props.currentUser);
-    });
+    if (this.props.isLoggedIn) {
+      let physical = this.state.physical;
+      physical.parent = this.state.newParent._id;
+      physical.updatedBy = this.props.currentUser._id;
+      physical.column = this.state.newItemLocations[0][0];
+      physical.row = this.state.newItemLocations[0][1];
+      Api.post(`physicals/${physical._id}/edit`, physical)
+      .then((res) => {
+        this.props.refresh();
+        this.setState({ mode: 'List' });
+      });
+    }
   }
 
   onDeletePhysical() {
-    this.deletePhysical(this.state.physical._id)
-    .then((res) => {
-      console.log(res);
-      this.props.refresh(this.props.currentUser);
-    });    
+    if (this.props.isLoggedIn) {
+      Api.post(`physicals/${this.state.physical._id}/remove`)
+      .then((res) => {
+        console.log('Delete Physical Res', res);
+        this.props.refresh();
+      }); 
+    }     
   }
 
   onDeleteVirtual() {
-    this.deleteVirtual(this.state.virtual._id)
+    Api.post(`virtuals/${this.state.virtual._id}/remove`)
     .then((res) => {
-      console.log(res);
-      this.props.refresh(this.props.currentUser);
+      console.log('Delete Virtual Res', res);
+      this.props.refresh();
     });    
   }
 
@@ -234,11 +159,14 @@ class Physicals extends Component {
   }
 
   submitPhysicalForm(formData) {
-    this.updatePhysical(formData)
-    .then((res) => {
-      console.log(res);
-      this.changeMode('View');
-    });
+    if (this.props.isLoggedIn) {
+      formData.updatedBy = this.props.currentUser._id;
+      Api.post(`physicals/${this.state.physical._id}/edit`, formData)
+      .then((res) => {
+        console.log('Post Physical Res', res);
+        this.changeMode('View');
+      });
+    }
   }
 
   handlePhysicalFormSubmit(e) {
@@ -257,9 +185,9 @@ class Physicals extends Component {
   }
 
   submitVirtualForm(formData) {
-    this.updateVirtual(formData)
+    Api.post(`virtuals/${this.state.physical.virtual._id}/edit`, formData)
     .then((res) => {
-      console.log(res);
+      console.log('Post Virtual Res', res);
       this.changeMode('List');
     });
   }

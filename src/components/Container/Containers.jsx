@@ -154,13 +154,6 @@ class Containers extends Component {
       if (containers && containers.length > 0) {
         for (let i = 0; i < allParentOptions.length; i++){
           let option = allParentOptions[i];
-          if (i === 0) { // first entry is lab
-            if (this.state.currentParent !== null) {
-              console.log(container);
-              //newParentOptions.push(option);
-            }
-          }
-          //console.log(option);
           if (option._id !== container._id) {
             newParentOptions.push(option);
           }
