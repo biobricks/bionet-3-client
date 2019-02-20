@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import Auth from "../../modules/Auth";
-import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
 import Api from '../../modules/Api';
 
@@ -17,49 +15,12 @@ class ContainerDelete extends React.Component {
       physicals: [],
       form: {}
     };
-    this.getContainer = this.getContainer.bind(this);
-    this.deleteContainer = this.deleteContainer.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-  }
-
-  async getContainer(containerId) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/containers/${containerId}`, {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('ContainerProfile.getContainer', error);
-    }  
-  }
-
-  async deleteContainer(containerId) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/containers/${containerId}/remove`, {
-        method: 'POST',
-        // body: "deleteit",
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('ContainerDelete.deleteContainer', error);
-    }   
   }
 
   handleDelete() {
     let containerId = this.props.match.params.containerId;
-    this.deleteContainer(containerId)
+    Api.post(`containers/${containerId}/remove`)
     .then((res) => {
       this.props.debugging && console.log('ContainerDelete.getContainer.res', res);
       this.setState({
