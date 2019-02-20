@@ -15,7 +15,8 @@ class LabProfile extends React.Component {
       dragging: false,
       lab: {},
       containers: [],
-      virtuals: []
+      virtuals: [],
+      allContainers: []
     };
     this.getData = this.getData.bind(this);
     this.onRequestLabMembership = this.onRequestLabMembership.bind(this);
@@ -97,14 +98,26 @@ class LabProfile extends React.Component {
     this.moveItem(draggedCell);
   }
 
+  async getDataAsync() {
+    // get labs and containers
+    try {
+      const labId = this.props.match.params.labId;
+      const getLabRes = await Api.get(`labs/${labId}`);
+      const lab = getLabRes.data || [];
+      const getContainersRes = await Api.get('containers');
+      const allContainers = getContainersRes.data || [];
+      const getVirtualsRes = await Api.get('virtuals');
+      const virtuals = getVirtualsRes.data || [];
+      return { lab, allContainers, virtuals };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   getData() {
-    let labId = this.props.match.params.labId;
-    Api.get(`labs/${labId}`)
+    this.getDataAsync()
     .then((res) => {
-      this.setState({
-        lab: res.data,
-        virtuals: res.virtuals
-      });      
+      this.setState(res);      
     })
     .catch((error) => {
       throw error;
@@ -334,7 +347,10 @@ class LabProfile extends React.Component {
                 userIsMember={userIsMember}
                 containers={labContainers} 
                 currentUser={this.props.currentUser}
-                physicals={labPhysicals}                
+                refresh={this.getData}
+                physicals={labPhysicals}  
+                allContainers={this.state.allContainers} 
+                lab={this.state.lab}               
               /> 
 
               <Physicals 

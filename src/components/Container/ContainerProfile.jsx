@@ -19,7 +19,8 @@ class ContainerProfile extends React.Component {
       containers: [],
       physicalsMode: "List",
       physicals: [],
-      physical: {}
+      physical: {},
+      allContainers: []
     };
     this.getData = this.getData.bind(this);
     this.onRequestLabMembership = this.onRequestLabMembership.bind(this);
@@ -143,6 +144,8 @@ class ContainerProfile extends React.Component {
       const containerId = this.props.match.params.containerId;
       const getContainerRes = await Api.get(`containers/${containerId}`);
       let container = getContainerRes.data;
+      const getContainersRes = await Api.get('containers');
+      const allContainers = getContainersRes.data || [];
       const containerExists = container && Object.keys(container).length > 0;
       const containerChildrenExist = containerExists && Object.keys(container).indexOf('children') > -1;
       const containerContainersExist = containerChildrenExist && Object.keys(container.children).indexOf('containers') > -1;
@@ -165,7 +168,8 @@ class ContainerProfile extends React.Component {
         lab,
         container,
         containers,
-        physicals
+        physicals,
+        allContainers
       };
     } catch (error) {
       throw error;
@@ -414,8 +418,10 @@ class ContainerProfile extends React.Component {
                 userIsMember={userIsMember}
                 containers={containerContainers} 
                 currentUser={this.props.currentUser}
-                refresh={this.props.refresh}
-                physicals={containerPhysicals}                
+                refresh={this.getData}
+                physicals={containerPhysicals} 
+                allContainers={this.state.allContainers} 
+                lab={this.state.lab}              
               /> 
               
               <Physicals 

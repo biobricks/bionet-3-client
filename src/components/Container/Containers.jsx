@@ -7,6 +7,7 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead-bs4.css';
 import Grid from '../Grid/Grid';
+import Api from '../../modules/Api';
 
 class Containers extends Component {
 
@@ -56,10 +57,12 @@ class Containers extends Component {
   updateLocation() {
     let container = this.state.container;
     container.parent = this.state.newParent._id;
-    container.locations = this.state.newItemLocations;
+    container.column = this.state.newItemLocations[0][0];
+    container.row = this.state.newItemLocations[0][1];
     this.updateContainer(container)
     .then((res) => {
-      this.props.refresh(this.props.currentUser);
+      this.props.refresh();
+      this.setState({ mode: 'List' });
     });
   }
 
@@ -88,10 +91,18 @@ class Containers extends Component {
   }
 
   handleNewParentChange(selectedArray) {
-    let newParent = selectedArray[0] || {};
-    this.setState({
-      newParent,
-      mode: "Move Step 2"
+    const newParent = selectedArray[0];
+    const newParentIsLab = Object.keys(newParent).indexOf('parent') === -1;
+    const recordEndpoint = newParentIsLab ? `labs/${newParent._id}` : `containers/${newParent._id}`;
+    Api.get(recordEndpoint)
+    .then((res) => {
+      this.setState({
+        newParent: res.data,
+        mode: "Move Step 2"
+      });
+    })
+    .catch((error) => {
+      throw error;
     });
   }
 
@@ -155,7 +166,8 @@ class Containers extends Component {
         title = `Containers (${containers.length})`;
     }
 
-    let allParentOptions = [container.lab].concat(containers);
+    let allParentOptions = [this.props.lab].concat(this.props.allContainers) || [];
+    console.log('Containers.allParentOptions', allParentOptions);
     let newParentOptions = [];
     if(Object.keys(container).length > 0 && containers.length > 0) {
       if (containers && containers.length > 0) {
@@ -284,8 +296,8 @@ class Containers extends Component {
               removeLocation={this.removeLocation}
               recordType="Container"
               record={Object.keys(this.state.newParent).length > 0 ? this.state.newParent : this.state.container}
-              containers={this.state.containers}
-              physicals={this.props.physicals}
+              containers={this.state.newParent.children.containers || []}
+              physicals={this.state.newParent.children.physicals || []}
             />
           </div>
         ) : null }  
