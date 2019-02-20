@@ -1,12 +1,11 @@
 import React from 'react';
 import shortid from 'shortid';
-import Auth from "../../modules/Auth";
-import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
 import Containers from '../Container/Containers';
 import Physicals from '../Physical/Physicals';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import LabToolbar from '../Lab/LabToolbar';
+import Api from '../../modules/Api';
 
 class ContainerProfile extends React.Component {
 
@@ -22,9 +21,6 @@ class ContainerProfile extends React.Component {
       physicals: [],
       physical: {}
     };
-    this.getPath = this.getPath.bind(this);
-    this.getContainer = this.getContainer.bind(this);
-    this.postLab = this.postLab.bind(this);
     this.getData = this.getData.bind(this);
     this.onRequestLabMembership = this.onRequestLabMembership.bind(this);
     this.onCancelRequestLabMembership = this.onCancelRequestLabMembership.bind(this);
@@ -79,124 +75,15 @@ class ContainerProfile extends React.Component {
     console.log(physicalId);
   }
 
-  async getPath(labId, containerId) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/labs/${labId}/container/${containerId}`, {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('ContainerProfile.getContainer', error);
-    }  
-  }
-
-  async getContainer(containerId) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/containers/${containerId}`, {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('ContainerProfile.getContainer', error);
-    }  
-  }
-
-  async getLab(labId) {
-    try {  
-      let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${labId}`, {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let labRes = await fetch(labRequest);
-      let labResponse = labRes.json();
-      //console.log('getLabRes', labResponse);
-      return labResponse;
-    } catch (error) {
-      console.log('ContainerProfile.getLab', error);
-    }  
-  }
-
-  async postLab(lab) {
-    try {  
-      let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${lab._id}/membership`, {
-        method: 'POST',
-        //mode: "cors",
-        body: JSON.stringify(lab),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let labRes = await fetch(labRequest);
-      let labResponse = labRes.json();
-      return labResponse;
-    } catch (error) {
-      console.log('LabProfile.postLab', error);
-    }   
-  }
-
-  async postContainer(container) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/containers/${container._id}/edit`, {
-        method: 'POST',
-        //mode: "cors",
-        body: JSON.stringify(container),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('LabProfile.postContainer', error);
-    }   
-  }
-
-  async postPhysical(physical) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/physicals/${physical._id}/edit`, {
-        method: 'POST',
-        //mode: "cors",
-        body: JSON.stringify(physical),
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('LabProfile.postPhysical', error);
-    }   
-  } 
-
   moveItem(item) {
     let itemType = Object.keys(item).indexOf('virtual') > -1 ? "Physical" : "Container";
     if (itemType === "Physical") {
-      this.postPhysical(item)
+      Api.post(`physicals/${item._id}/edit`, item)
       .then((res) => {
         this.props.refresh(this.props.currentUser);
       });
     } else {
-      this.postContainer(item)
+      Api.post(`containers/${item._id}/edit`, item)
       .then((res) => {
         this.props.refresh(this.props.currentUser);
       });
@@ -260,14 +147,14 @@ class ContainerProfile extends React.Component {
   async getDataAsync() {
     try {
       const containerId = this.props.match.params.containerId;
-      const getContainerRes = await this.getContainer(containerId);
+      const getContainerRes = await Api.get(`containers/${containerId}`);
       let container = getContainerRes.data;
       const containers = container.children.containers || [];
       const physicals = container.children.physicals || [];
       const labId = container.lab._id;
-      const getLabRes = await this.getLab(labId);
+      const getLabRes = await Api.get(`labs/${labId}`);
       const lab = getLabRes.data;
-      const getPathRes = await this.getPath(lab._id, container._id);
+      const getPathRes = await Api.get(`labs/${lab._id}/container/${container._id}`);
       let pathArray = getPathRes.data || [];
       let path = [];
       for(let i = 0; i < pathArray.length; i++){
@@ -400,9 +287,8 @@ class ContainerProfile extends React.Component {
   }
   
   updateLab(lab) {
-    this.postLab(lab)
+    Api.post(`labs/${lab._id}/edit`, lab)
     .then((res) => {
-      console.log(res);
       this.getData();
     });
   }
@@ -429,10 +315,7 @@ class ContainerProfile extends React.Component {
     if (isLoggedIn) {
       for (let i = 0; i < labUsers.length; i++) {
         let labUser = labUsers[i];
-        this.props.debugging && console.log(`Lab user ${i}: `, labUser);
-        this.props.debugging && console.log('CurrentUser', currentUser);
         if (String(labUser._id) === String(currentUser._id)) { 
-          this.props.debugging && console.log('User is member of Containers Lab');
           userIsMember = true; 
         }
       }
