@@ -3,6 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 import Auth from "../../modules/Auth";
 import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
+import Api from '../../modules/Api';
 
 class LabDelete extends React.Component {
 
@@ -62,22 +63,20 @@ class LabDelete extends React.Component {
 
   handleDelete() {
     let labId = this.props.match.params.labId;
-    console.log('Deleting', labId)
-    this.postDeleteLab(labId)
+    Api.post(`labs/${labId}/remove`)
     .then((res) => {
-      console.log(res);
+      this.props.debugging && console.log('LabDelete.handleDelete.res', res);
       this.setState({
         redirect: true
       });
-      this.props.refresh(this.props.currentUser);
     });
   }
 
   componentDidMount() {
     let labId = this.props.match.params.labId;
-    this.getLab(labId)
+    Api.get(`labs/${labId}`)
     .then((res) => {
-      console.log('getData.res', res);
+      this.props.debugging && console.log('LabDelete.getLab.res', res);
       this.setState({
         lab: res.data
       });
@@ -85,9 +84,6 @@ class LabDelete extends React.Component {
   }
 
   render() {
-    if (this.state.redirect === true) {
-      return ( <Redirect to={`/`}/> )
-    }    
     const isLoggedIn = this.props.isLoggedIn;
     const currentUser = this.props.currentUser;
     const lab = this.state.lab;
@@ -97,7 +93,17 @@ class LabDelete extends React.Component {
         let userLab = currentUser.labs[i];
         if (userLab._id === lab._id) { userIsMember = true; }
       }
-    }
+    }   
+    const labExists = lab && Object.keys(lab).length > 0;
+    const labChildrenExist = labExists && Object.keys(lab).indexOf('children') > -1;
+    const labContainersExist = labChildrenExist && Object.keys(lab.children).indexOf('containers') > -1;
+    const labPhysicalsExist = labChildrenExist && Object.keys(lab.children).indexOf('physicals') > -1;
+
+    const labContainers = labExists && labChildrenExist && labContainersExist ? lab.children.containers : [];
+    const labPhysicals = labExists && labChildrenExist && labPhysicalsExist ? lab.children.physicals : []; 
+    if (this.state.redirect === true) {
+      return ( <Redirect to={`/`}/> )
+    }    
     return (
       <div className="LabProfile container-fluid">
         
@@ -148,12 +154,12 @@ class LabDelete extends React.Component {
               <Grid 
                 demo={true}
                 editMode={true}
-                formData={this.state.form}
+                formData={lab}
                 selectLocations={false}
                 recordType="Lab"
-                record={this.state.form}
-                containers={this.state.containers}
-                physicals={this.state.physicals}
+                record={lab}
+                containers={labContainers}
+                physicals={labPhysicals}
               />
             </div>
           ) : null }
