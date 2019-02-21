@@ -21,7 +21,11 @@ class ContainerNewForm extends Component {
         columns: 1,
         category: "General",
         bgColor: "#00D1FD",
-        locations: []
+        row: 1,
+        column: 1
+      },
+      errors: {
+        name: ""
       }
     };
     this.updateField = this.updateField.bind(this);
@@ -56,13 +60,24 @@ class ContainerNewForm extends Component {
   onFormSubmit(e) {
     e.preventDefault();
     let formData = this.state.form;
+    let errors = this.state.errors;
     formData.createdBy = this.props.currentUser._id;
     formData.row = this.props.newItemLocations[0][1];
     formData.column = this.props.newItemLocations[0][0];
     let isContainer = this.props.parentType && this.props.parentType === "Container";
     formData.lab = isContainer ? this.props.container.lab._id : this.props.lab._id;
     formData.parent = isContainer ? this.props.container._id : null;
-    this.submitForm(formData);
+    // form validation attributes
+    const nameIsValid = formData.name && formData.name.length > 2;
+    if (!nameIsValid) { errors.name = "Please enter a name with at least 3 letters."; } else { errors.name = "" };
+    // validate
+    const formIsValid = nameIsValid;
+    if (formIsValid) { 
+      this.submitForm(formData); 
+    } else {
+      // if form isn't valid, display errors
+      this.setState({errors});      
+    }
   }
 
   submitForm(formData) {
@@ -79,6 +94,8 @@ class ContainerNewForm extends Component {
   }
 
   render() { 
+    const errors = this.state.errors;
+    const nameErrorExists = errors.name && errors.name.length > 0;    
     if (this.state.redirect === true) {
       return ( <Redirect to={this.state.redirectTo}/> )
     }    
@@ -110,6 +127,7 @@ class ContainerNewForm extends Component {
                   >Wu Generate</button>
                 </div>
               </div>
+              { nameErrorExists && <small className="form-text text-danger">{this.state.errors.name}</small> }
             </div>
             <div className="form-group">
               <label htmlFor="bgColor">Background Color</label>       
