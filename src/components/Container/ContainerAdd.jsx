@@ -42,21 +42,22 @@ class ContainerAdd extends React.Component {
   }
 
   addLocation(newLocationArray) {
-    //console.log('add location called');
     let locations = this.state.newItemLocations;
-    let locationExists = false;
-    for(let i = 0; i < locations.length; i++){
-      let locationArray = locations[i];
-      if (locationArray[0] === newLocationArray[0] && locationArray[1] === newLocationArray[1]) {
-        locationExists = true;
+    if (locations.length === 0) {
+      let locationExists = false;
+      for(let i = 0; i < locations.length; i++){
+        let locationArray = locations[i];
+        if (locationArray[0] === newLocationArray[0] && locationArray[1] === newLocationArray[1]) {
+          locationExists = true;
+        }
       }
+      if (!locationExists) {
+        locations.push(newLocationArray);
+      }
+      this.setState({
+        newItemLocations: locations
+      });
     }
-    if (!locationExists) {
-      locations.push(newLocationArray);
-    }
-    this.setState({
-      newItemLocations: locations
-    });
   }
 
   removeLocation(locationArrayToRemove) {
@@ -123,7 +124,7 @@ class ContainerAdd extends React.Component {
                     <div className="card-body">
                       {(itemType === 'container') ? (
                         <p className="card-text">
-                          Select one or more cells for the Container to occupy within {this.state.container.name}.
+                          Select which cell the Container will occupy within {this.state.container.name}.
                         </p>
                       ) : (
                         <p className="card-text">

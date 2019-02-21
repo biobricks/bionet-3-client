@@ -41,19 +41,21 @@ class LabAdd extends React.Component {
 
   addLocation(newLocationArray) {
     let locations = this.state.newItemLocations;
-    let locationExists = false;
-    for(let i = 0; i < locations.length; i++){
-      let locationArray = locations[i];
-      if (locationArray[0] === newLocationArray[0] && locationArray[1] === newLocationArray[1]) {
-        locationExists = true;
+    if (locations.length === 0) {
+      let locationExists = false;
+      for(let i = 0; i < locations.length; i++){
+        let locationArray = locations[i];
+        if (locationArray[0] === newLocationArray[0] && locationArray[1] === newLocationArray[1]) {
+          locationExists = true;
+        }
       }
-    }
-    if (!locationExists) {
-      locations.push(newLocationArray);
-    }
-    this.setState({
-      newItemLocations: locations
-    });
+      if (!locationExists) {
+        locations.push(newLocationArray);
+      }
+      this.setState({
+        newItemLocations: locations
+      });
+    }  
   }
 
   removeLocation(locationArrayToRemove) {
@@ -119,7 +121,7 @@ class LabAdd extends React.Component {
                     <div className="card-body">
                       {(itemType === 'container') ? (
                         <p className="card-text">
-                          Select which cell for the Container to occupy within {this.state.lab.name}.
+                          Select which cell the Container will occupy within {this.state.lab.name}.
                         </p>
                       ) : (
                         <p className="card-text">
