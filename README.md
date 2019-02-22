@@ -23,6 +23,3 @@ npm install
 ```
 npm start
 ```
-
-## Ubuntu 16 Server Installation
-Instructions coming soon.
