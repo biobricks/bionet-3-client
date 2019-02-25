@@ -153,8 +153,18 @@ class Containers extends Component {
     if(Object.keys(container).length > 0 && containers.length > 0) {
       if (containers && containers.length > 0) {
         for (let i = 0; i < allParentOptions.length; i++){
-          let option = allParentOptions[i];
-          if (option._id !== container._id) {
+          const option = allParentOptions[i];
+          // remove self from options
+          const isSelf = String(option._id) === String(container._id);
+          // remove other lab containers
+          const isContainer = Object.keys(option).indexOf('lab') > -1;
+          
+          const isFromLab = isContainer && String(option.lab._id) === String(container.lab._id);
+          // filter
+          if (!isSelf && isContainer && isFromLab) {
+            newParentOptions.push(option);
+          }
+          if (!isSelf && !isContainer) {
             newParentOptions.push(option);
           }
         }
