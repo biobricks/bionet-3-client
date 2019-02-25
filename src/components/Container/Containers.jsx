@@ -16,9 +16,11 @@ class Containers extends Component {
       containers: [],
       container: {},
       currentParent: {},
+      newParentOptions: [],
       newParent: {},
       newItemLocations: []
     };
+    this.setParentOptions = this.setParentOptions.bind(this);
     this.onMoveCancel = this.onMoveCancel.bind(this);
     this.updateLocation = this.updateLocation.bind(this);
     this.onChangeMode = this.onChangeMode.bind(this);
@@ -26,6 +28,34 @@ class Containers extends Component {
     this.handleNewParentChange = this.handleNewParentChange.bind(this);
     this.addLocation = this.addLocation.bind(this);
     this.removeLocation = this.removeLocation.bind(this);
+  }
+
+  setParentOptions() {
+    const container = this.state.container;
+    console.log('Container Moving', container);
+    //const allParentOptions = [this.props.lab].concat(this.props.allContainers) || [];
+    const allParentOptions = this.props.allContainers || [];
+    console.log('All Parent Options', allParentOptions);
+    let filteredParentOptions = [];
+    let newParentOptions = [];
+    for (let i = 0; i < allParentOptions.length; i++){
+      const option = allParentOptions[i];
+      const isFromLab = option.lab._id === container.lab._id;
+      const isNotSelf = option._id !== container._id;
+      if (isNotSelf && isFromLab) {
+        filteredParentOptions.push(option);
+      }
+    }
+    for (let i = 0; i < filteredParentOptions.length; i++){
+      const option = filteredParentOptions[i];
+      search(option, container)
+      .then((wasFound) => {
+        if (!wasFound) { newParentOptions.push(option) }
+      });  
+    }
+    newParentOptions = [this.props.lab].concat(newParentOptions);
+    console.log('new parent options', newParentOptions);
+    this.setState({newParentOptions});  
   }
 
   onMoveCancel() {
@@ -125,12 +155,28 @@ class Containers extends Component {
     });
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.mode === "Move Step 1") {
+      //this.setParentOptions();
+      const containerId = this.state.container._id;
+      const prevContainerId = prevState.container._id || "";
+      // console.log('Container IDs', containerId);
+      const containerChanged = String(containerId) !== String(prevContainerId);
+      if (containerChanged) { this.setParentOptions(); }
+    }
+  }
+
+  componentDidMount() {
+
+  }
+
   render() {
     const isLoggedIn = this.props.isLoggedIn;
     const mode = this.state.mode;
     const containers = this.props.containers || [];
     const container = this.state.container;
     const userIsMember = this.props.userIsMember;
+    const newParentOptions = this.state.newParentOptions;
     let title;
     let titleClasses = "mdi mdi-grid mr-2";
     switch(mode) {
@@ -147,29 +193,38 @@ class Containers extends Component {
         title = `Containers (${containers.length})`;
     }
 
-    let allParentOptions = [this.props.lab].concat(this.props.allContainers) || [];
+    /********************************************/
+    /* All Parent Options Needs Moving To State */
+    /********************************************/
+
+    //let allParentOptions = [this.props.lab].concat(this.props.allContainers) || [];
     //console.log('Containers.allParentOptions', allParentOptions);
-    let newParentOptions = [];
-    if(Object.keys(container).length > 0 && containers.length > 0) {
-      if (containers && containers.length > 0) {
-        for (let i = 0; i < allParentOptions.length; i++){
-          const option = allParentOptions[i];
-          // remove self from options
-          const isSelf = String(option._id) === String(container._id);
-          // remove other lab containers
-          const isContainer = Object.keys(option).indexOf('lab') > -1;
+    
+    // let newParentOptions = [];
+    // if(Object.keys(container).length > 0 && containers.length > 0) {
+    //   if (containers && containers.length > 0) {
+    //     for (let i = 0; i < allParentOptions.length; i++){
+    //       const option = allParentOptions[i];
+    //       const isContainer = Object.keys(option).indexOf('lab') > -1;
           
-          const isFromLab = isContainer && String(option.lab._id) === String(container.lab._id);
-          // filter
-          if (!isSelf && isContainer && isFromLab) {
-            newParentOptions.push(option);
-          }
-          if (!isSelf && !isContainer) {
-            newParentOptions.push(option);
-          }
-        }
-      }
-    }  
+    //       // remove self from options
+    //       const isSelf = String(option._id) === String(container._id);
+    //       // remove other lab containers
+    //       const isFromLab = isContainer && String(option.lab._id) === String(container.lab._id);
+    //       // filter
+    //       if (!isSelf && isContainer && isFromLab) {
+    //         //console.log(option);
+    //         let optionIsChild = isChildOf(option, container);
+    //         //console.log('option is child', optionIsChild);
+    //         if (!optionIsChild) { newParentOptions.push(option); }
+    //       }
+    //       if (!isSelf && !isContainer) {
+    //         //console.log(option);
+    //         newParentOptions.push(option);
+    //       }
+    //     }
+    //   }
+    // }  
 
     const containersList = containers.map((thisContainer, index) => {
       return (
@@ -292,3 +347,33 @@ class Containers extends Component {
 }
 
 export default Containers;
+
+async function search(option, container) {
+  try {
+    let isFound = await searchChildren(option, container);
+    return isFound === true;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function searchChildren(option, container) {
+  try {
+    if (String(option._id) === String(container._id)) { 
+      console.log(`${option.name} found`);
+      return true;
+    }
+    const containerHasChildren = Object.keys(container).indexOf('children') > -1;
+    const containerHasChildContainers = containerHasChildren && Object.keys(container.children).indexOf('containers') > -1 && container.children.containers.length > 0;
+    if (containerHasChildContainers) {
+      for(let i = 0; i < container.children.containers.length; i++){
+        let childContainer = container.children.containers[i];
+        return await searchChildren(option, childContainer);
+      }
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw error;
+  }
+}
