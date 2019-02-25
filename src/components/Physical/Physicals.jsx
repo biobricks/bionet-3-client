@@ -216,6 +216,7 @@ class Physicals extends Component {
     const mode = this.state.mode;
     const physicals = this.props.physicals || [];
     const physical = this.state.physical;
+    const physicalExists = Object.keys(physical).length > 0;
     const virtual = this.state.virtual;
     const containers = this.props.containers || [];
     const userIsMember = this.props.userIsMember;
@@ -276,25 +277,31 @@ class Physicals extends Component {
       );
     });
 
-    let allParentOptions = [physical.lab].concat(containers);
+    //let allParentOptions = [physical.lab].concat(containers);
+    const allParentOptions = this.props.allContainers;
+    let filteredOptions = [];
+    for (let i = 0; i < allParentOptions.length; i++){
+      let option = allParentOptions[i];
+      if (physicalExists) {
+        console.log(option.lab._id, physical.lab._id);
+        if (option.lab._id === physical.lab._id) { filteredOptions.push(option) }
+      } else {
+        console.log(option.lab._id);
+      }  
+    }
     let newParentOptions = [];
     if(Object.keys(physical).length > 0 && containers.length > 0) {
       if (containers && containers.length > 0) {
-        for (let i = 0; i < allParentOptions.length; i++){
-          let option = allParentOptions[i];
-          if (i === 0) { // first entry is lab
-            if (this.state.currentParent !== null) {
-              //console.log(physical);
-              //newParentOptions.push(option);
-            }
-          }
-          //console.log(option);
+        for (let i = 0; i < filteredOptions.length; i++){
+          let option = filteredOptions[i];
+          //console.log(option.lab._id);
           if (option._id !== physical._id) {
             newParentOptions.push(option);
           }
         }
       }
     } 
+    newParentOptions = [physical.lab].concat(newParentOptions);
 
     return (
       <div className="card rounded-0 mt-3 mb-3">
