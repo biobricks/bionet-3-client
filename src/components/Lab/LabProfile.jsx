@@ -237,6 +237,15 @@ class LabProfile extends React.Component {
     });
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const labId = this.props.match.params.labId;
+    console.log('Lab ID', labId);
+    const prevLabId = prevProps.match.params.labId;
+    console.log('Previous Lab ID', prevLabId);
+    const labIdHasChanged = String(labId) !== String(prevLabId);
+    if (labIdHasChanged) { this.getData() }
+  }
+
   componentDidMount() {
     this.getData();
   }
