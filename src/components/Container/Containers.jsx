@@ -48,10 +48,12 @@ class Containers extends Component {
     }
     for (let i = 0; i < filteredParentOptions.length; i++){
       const option = filteredParentOptions[i];
+      /* eslint-disable no-loop-func */
       search(option, container)
       .then((wasFound) => {
         if (!wasFound) { newParentOptions.push(option) }
-      });  
+      });
+      /* eslint-enable no-loop-func */
     }
     newParentOptions = [this.props.lab].concat(newParentOptions);
     console.log('new parent options', newParentOptions);
