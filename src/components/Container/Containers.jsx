@@ -260,7 +260,7 @@ class Containers extends Component {
 
     return (
       <div className="card rounded-0 mt-3 mb-3">
-        <div className="card-header bg-dark text-light rounded-0">
+        <div className="card-header bg-dark-green text-light rounded-0">
           <h5 className="card-title mb-0 text-capitalize">
             <i className={titleClasses}/>{title}
           </h5>

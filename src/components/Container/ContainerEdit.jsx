@@ -88,7 +88,7 @@ class ContainerEdit extends React.Component {
         <div className="row">
           <div className="col-12 col-lg-7">
             <div className="card rounded-0 mt-3">
-              <div className="card-header rounded-0 bg-dark text-light">
+              <div className="card-header rounded-0 bg-dark-green text-light">
                 <div className="card-title mb-0 text-capitalize">
                   <h4 className="card-title mb-0 text-capitalize">
                     <i className="mdi mdi-grid mr-2"/ >Edit Container

@@ -308,7 +308,7 @@ class LabProfile extends React.Component {
           <div className="col-12 col-lg-7">
 
             <div className="card rounded-0 mt-3">
-              <div className="card-header rounded-0 bg-dark text-light">
+              <div className="card-header rounded-0 bg-dark-green text-light">
                 <div className="card-title mb-0 text-capitalize">
                   <span><i className="mdi mdi-xl mdi-teach" /> {lab.name}</span>
                   {isLoggedIn && ( 
