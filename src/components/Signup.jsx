@@ -127,6 +127,7 @@ class Signup extends Component {
       .then((result) => {
         this.props.debug && console.log('SignupForm.onFormSubmit.Api.signup.result', result);
         if (result.success) {
+          localStorage.setItem('successMessage', result.message);
           this.setState({ redirect: true });
         } else {
           errors.summary = result.message;
