@@ -24,7 +24,7 @@ class Landing extends React.Component {
             {(isLoggedIn) ? (
               <Card className="mt-3 mb-3">
                 <CardHeader dark className="bg-dark-green">
-                  <CardTitle>Welcome Back To BioNet {currentUser.username}</CardTitle>
+                  <CardTitle>Welcome Back To Bionet {currentUser.username}</CardTitle>
                 </CardHeader>
             
                 <CardBody>
@@ -50,7 +50,7 @@ class Landing extends React.Component {
             ) : (
               <Card className="mt-3 mb-3 text-center text-lg-left">
                 <CardHeader dark className="bg-dark-green">
-                  <CardTitle>BioNet</CardTitle>
+                  <CardTitle>Bionet</CardTitle>
                 </CardHeader>
                 <CardBody>
                   <CardTitle className="mb-2"><strong>Open Source Biological Inventory Management</strong></CardTitle>
