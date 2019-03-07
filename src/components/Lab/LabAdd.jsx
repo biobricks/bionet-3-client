@@ -221,12 +221,6 @@ const initialState = {
     column: 1,
     columnSpan: 1        
   },
-  containerFormErrors: {
-    name: ""
-  },
-  containerFormInstructions: {
-    name: ""
-  },
   physicalForm: {
     createdBy: "",
     lab: "",
@@ -242,17 +236,5 @@ const initialState = {
     provenance: "",
     genotype: "",
     sequence: ""      
-  },
-  physicalFormErrors: {
-    name: "",
-    provenance: "",
-    genotype: "",
-    sequence: ""
-  },
-  physicalFormInstructions: {
-    name: "",
-    provenance: "",
-    genotype: "",
-    sequence: ""
-  },
+  }
 };

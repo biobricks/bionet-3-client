@@ -6,6 +6,7 @@ import Physicals from '../Physical/Physicals';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import LabToolbar from '../Lab/LabToolbar';
 import Api from '../../modules/Api';
+import { getChildren, getLocations } from '../Lab/LabHelpers';
 
 class ContainerProfile extends React.Component {
 
@@ -150,12 +151,6 @@ class ContainerProfile extends React.Component {
       let container = getContainerRes.data;
       const getContainersRes = await Api.get('containers');
       const allContainers = getContainersRes.data || [];
-      const containerExists = container && Object.keys(container).length > 0;
-      const containerChildrenExist = containerExists && Object.keys(container).indexOf('children') > -1;
-      const containerContainersExist = containerChildrenExist && Object.keys(container.children).indexOf('containers') > -1;
-      const containerPhysicalsExist = containerChildrenExist && Object.keys(container.children).indexOf('physicals') > -1;
-      const containers = containerChildrenExist && containerContainersExist ? container.children.containers : [];
-      const physicals = containerChildrenExist && containerPhysicalsExist ? container.children.physicals : [];
       const labId = container.lab._id;
       const getLabRes = await Api.get(`labs/${labId}`);
       const lab = getLabRes.data;
@@ -167,13 +162,16 @@ class ContainerProfile extends React.Component {
           path.push(pathArray[i]);
         }
       }
+      const { containers, physicals } = getChildren(container);
+      const locations = getLocations(container, containers, physicals); 
       return {
         path,
         lab,
         container,
         containers,
         physicals,
-        allContainers
+        allContainers,
+        locations
       };
     } catch (error) {
       throw error;
@@ -457,6 +455,19 @@ class ContainerProfile extends React.Component {
               onCellDragEnd={this.onCellDragEnd}
               {...this.state} */}
             />
+            <Grid 
+                record={this.state.container}
+                recordType="Container"
+                // addFormActive={true}
+                // addFormType={itemType}
+                // addForm={itemType === 'container' ? this.state.containerForm : this.state.physicalForm}
+                containers={this.state.containers}
+                physicals={this.state.physicals}
+                locations={this.state.locations}
+                // newItemLocations={this.state.newItemLocations}
+                // addLocation={this.addLocation}
+                // removeLocation={this.removeLocation}
+              /> 
           </div>
 
         </div>

@@ -111,6 +111,7 @@ class Physicals extends Component {
       .then((res) => {
         console.log('Delete Physical Res', res);
         this.props.refresh();
+        this.setState({ mode: 'List' });
       }); 
     }     
   }

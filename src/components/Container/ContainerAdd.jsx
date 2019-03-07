@@ -3,30 +3,41 @@ import Grid from '../Grid/Grid';
 import ContainerNewForm from '../Container/ContainerNewForm';
 import PhysicalNewForm from '../Physical/PhysicalNewForm';
 import Api from '../../modules/Api';
+import { getChildren, getLocations } from '../Lab/LabHelpers';
 
 class ContainerAdd extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      lab: {},
-      container: {},
-      newItemLocations: []
-    };
+    this.state = initialState;
     this.updateContainer = this.updateContainer.bind(this);
     this.addLocation = this.addLocation.bind(this);
     this.removeLocation = this.removeLocation.bind(this);
+    this.updateFormData = this.updateFormData.bind(this);
   }
 
-  getData() {
-    let containerId = this.props.match.params.containerId;
-    Api.get(`containers/${containerId}`)
-    .then((res) => {
-      console.log('ContainerAdd.getData.res', res);
-      this.setState({
-        lab: res.data.lab,
-        container: res.data
-      });
+  async getData() {
+    try {
+      const containerId = this.props.match.params.containerId;
+      const containerRes = await Api.get(`containers/${containerId}`);
+      const container = containerRes.data;      
+      const lab = container.lab;
+      const { containers, physicals } = getChildren(container);
+      const locations = getLocations(container, containers, physicals);      
+      return { lab, container, containers, physicals, locations }; 
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  getDataSync() {
+    this.getData()
+    .then(res => {
+      const { lab, container, containers, physicals, locations } = res;
+      this.setState({ lab, container, containers, physicals, locations });
+    })
+    .catch(error => {
+      throw error;
     });
   }
 
@@ -35,9 +46,12 @@ class ContainerAdd extends React.Component {
     containerRecord['parent'] = container._id;
     Api.postContainer('containers/new', containerRecord)
     .then((res) => {
-      console.log(res);
-      this.getData();
-      this.props.refresh(this.props.currentUser);
+      //console.log(res);
+      this.getDataSync();
+      //this.props.refresh(this.props.currentUser);
+    })
+    .catch((error) => {
+      throw error;
     });
   }
 
@@ -80,8 +94,20 @@ class ContainerAdd extends React.Component {
     });
   }
 
+  updateFormData(formType, formData) {
+    if (formType === 'Container') {
+      this.setState({
+        containerForm: formData
+      });
+    } else if (formType === 'Physical') {
+      this.setState({
+        physicalForm: formData
+      });
+    }
+  }
+
   componentDidMount() {
-    this.getData();
+    this.getDataSync();
   }
 
   render() {
@@ -99,14 +125,6 @@ class ContainerAdd extends React.Component {
         if (userLab._id === lab._id) { userIsMember = true; }
       }
     }
-
-    const containerExists = container && Object.keys(container).length > 0;
-    const containerChildrenExist = containerExists && Object.keys(container).indexOf('children') > -1;
-    const containerContainersExist = containerChildrenExist && Object.keys(container.children).indexOf('containers') > -1;
-    const containerPhysicalsExist = containerChildrenExist && Object.keys(container.children).indexOf('physicals') > -1;
-
-    const containerContainers = containerChildrenExist && containerContainersExist ? container.children.containers : [];
-    const containerPhysicals = containerChildrenExist && containerPhysicalsExist ? container.children.physicals : [];
 
     return (
       <div className="ContainerAdd container-fluid">
@@ -135,27 +153,45 @@ class ContainerAdd extends React.Component {
                   ) : (
                     <div className="card-body">
                       {(itemType === 'container') ? (
+                        // <ContainerNewForm 
+                        //   parentType="Container"
+                        //   lab={this.state.lab}
+                        //   container={this.state.container}
+                        //   newItemLocations={this.state.newItemLocations}
+                        //   {...this.props}
+                        // />
                         <ContainerNewForm 
-                          parentType="Container"
-                          lab={this.state.lab}
-                          container={this.state.container}
-                          newItemLocations={this.state.newItemLocations}
-                          {...this.props}
-                        />
-                      ) : null } 
-                      {(itemType === 'physical') ? (
-                        <PhysicalNewForm 
-                          parentType="Container"
                           {...this.props} 
                           {...this.state}
-                        />
+                          parentType="Container"
+                          parentRecord={container}
+                          formData={this.state.containerForm}
+                          updateFormData={this.updateFormData}
+                          removeLocation={this.removeLocation}
+                        />                        
+                      ) : null } 
+                      {(itemType === 'physical') ? (
+                        // <PhysicalNewForm 
+                        //   parentType="Container"
+                        //   {...this.props} 
+                        //   {...this.state}
+                        // />
+                        <PhysicalNewForm 
+                          {...this.props} 
+                          {...this.state}
+                          parentType="Container"
+                          parentRecord={container}
+                          formData={this.state.physicalForm}
+                          updateFormData={this.updateFormData}
+                          removeLocation={this.removeLocation}
+                        />                        
                       ) : null }     
                     </div>
                   )} 
                 </div>
               </div>
               <div className="col-12 col-lg-5">
-                <Grid 
+                {/* <Grid 
                   demo={false}
                   selectLocations={true}
                   selectSingle={itemType === 'physical'}
@@ -166,7 +202,20 @@ class ContainerAdd extends React.Component {
                   record={this.state.container}
                   containers={containerContainers}
                   physicals={containerPhysicals}
-                />
+                /> */}
+                <Grid 
+                  record={this.state.container}
+                  recordType="Container"
+                  addFormActive={true}
+                  addFormType={itemType}
+                  addForm={itemType === 'container' ? this.state.containerForm : this.state.physicalForm}
+                  containers={this.state.containers}
+                  physicals={this.state.physicals}
+                  locations={this.state.locations}
+                  newItemLocations={this.state.newItemLocations}
+                  addLocation={this.addLocation}
+                  removeLocation={this.removeLocation}
+                />                
               </div>
             </>
           ) : null }  
@@ -177,3 +226,46 @@ class ContainerAdd extends React.Component {
 }
 
 export default ContainerAdd;
+
+const initialState = {
+  lab: {},
+  container: {},
+  containers: [],
+  physicals: [],
+  locations: {
+    empty: [],
+    full: []
+  },
+  newItemLocations: [],
+  containerForm: {
+    createdBy: "",
+    lab: "",
+    parent: "",
+    name: "",
+    description: "",
+    rows: 1,
+    columns: 1,
+    category: "General",
+    bgColor: "#00D1FD",
+    row: 1,
+    rowSpan: 1,
+    column: 1,
+    columnSpan: 1        
+  },
+  physicalForm: {
+    createdBy: "",
+    lab: "",
+    parent: "",
+    name: "",
+    description: "",
+    rowSpan: 1,
+    columnSpan: 1,
+    category: "General",
+    bgColor: "#00D1FD",
+    row: 1,
+    column: 1,
+    provenance: "",
+    genotype: "",
+    sequence: ""      
+  }
+};
