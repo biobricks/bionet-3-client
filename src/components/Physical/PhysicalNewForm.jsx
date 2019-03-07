@@ -3,8 +3,8 @@ import { Link, Redirect } from 'react-router-dom';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead-bs4.css';
-//import { generateRandomName } from '../../modules/Wu';
 import Api from '../../modules/Api';
+import { getSpanMax } from '../Helpers';
 
 class PhysicalNewForm extends Component {
   
@@ -14,22 +14,6 @@ class PhysicalNewForm extends Component {
       redirect: false,
       redirectTo: "",
       virtual: {},
-      form: {
-        createdBy: "",
-        lab: "",
-        parent: "",
-        name: "",
-        description: "",
-        rows: 1,
-        columns: 1,
-        category: "General",
-        bgColor: "#00D1FD",
-        row: 1,
-        column: 1,
-        provenance: "",
-        genotype: "",
-        sequence: ""
-      },
       errors: {
         name: "",
         provenance: "",
@@ -39,7 +23,6 @@ class PhysicalNewForm extends Component {
     };
     this.handleVirtualChange = this.handleVirtualChange.bind(this);
     this.updateField = this.updateField.bind(this);
-    //this.wuGenerate = this.wuGenerate.bind(this);
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.submitForm = this.submitForm.bind(this);
   }
@@ -52,7 +35,7 @@ class PhysicalNewForm extends Component {
   }
 
   updateField(e) {
-    let form = this.state.form;
+    let form = this.props.formData;
     let fieldType = e.target.getAttribute('type');
     let field = e.target.getAttribute('name');
     if (fieldType === 'number') {
@@ -60,29 +43,18 @@ class PhysicalNewForm extends Component {
     } else {
       form[field] = e.target.value;
     }
-    this.setState({
-      form
-    });
+    this.props.updateFormData('Physical', form);
   }
-
-  // wuGenerate(e) {
-  //   e.preventDefault();
-  //   let form = this.state.form;
-  //   form.name = generateRandomName();
-  //   this.setState({
-  //     form
-  //   });
-  // }
 
   onFormSubmit(e) {
     e.preventDefault();
-    let formData = this.state.form;
+    let formData = this.props.formData;
     let errors = this.state.errors;
     this.props.debugging && console.log('physical form data', formData);
     // add data to form
     formData.createdBy = this.props.currentUser._id;
-    formData.row = this.props.newItemLocations[0][1];
-    formData.column = this.props.newItemLocations[0][0];
+    formData.row = this.props.newItemLocations[0][0];
+    formData.column = this.props.newItemLocations[0][1];
     const isContainer = this.props.parentType && this.props.parentType === "Container";
     formData.lab = isContainer ? this.props.container.lab._id : this.props.lab._id;
     formData.parent = isContainer ? this.props.container._id : null;    
@@ -141,7 +113,10 @@ class PhysicalNewForm extends Component {
         redirect: true,
         redirectTo: parentIsContainer ? `/containers/${formData.parent}` : `/labs/${formData.lab}`
       });
-      this.props.refresh(this.props.currentUser);
+      //this.props.refresh(this.props.currentUser);
+    })
+    .catch((error) => {
+      throw error;
     });
   }
 
@@ -153,6 +128,13 @@ class PhysicalNewForm extends Component {
     const provenanceErrorExists = errors.provenance && errors.provenance.length > 0;
     const genotypeErrorExists = errors.genotype && errors.genotype.length > 0;
     const sequenceErrorExists = errors.sequence && errors.sequence.length > 0;
+    const form = this.props.formData;
+    const newItemLocations = this.props.newItemLocations;
+    const locations = this.props.locations;
+    const parentRecord = this.props.parentRecord;
+
+    const { rowSpanMax, columnSpanMax } = getSpanMax(form, newItemLocations, locations, parentRecord);  
+
     if (this.state.redirect === true) {
       return ( <Redirect to={this.state.redirectTo}/> )
     }
@@ -186,7 +168,7 @@ class PhysicalNewForm extends Component {
                 id="form-name"
                 name="name" 
                 placeholder="Physical Name"
-                value={this.state.form.name}
+                value={form.name}
                 onChange={this.updateField}
               />
               { nameErrorExists && <small className="form-text text-danger">{this.state.errors.name}</small> }
@@ -199,14 +181,43 @@ class PhysicalNewForm extends Component {
                 className="form-control"
                 name="description"
                 placeholder="A short description of the Physical."
-                value={this.state.form.description}
+                value={form.description}
                 onChange={this.updateField}
               ></textarea>
             </div>
 
+            <div className="row mt-3">
+              <div className="col">
+                <label htmlFor="columnSpan">Width</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  name="columnSpan"
+                  min="1"
+                  max={columnSpanMax}
+                  step="1"
+                  value={form.columnSpan}
+                  onChange={this.updateField}
+                />
+              </div>
+              <div className="col">
+                <label htmlFor="rowSpan">Height</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  name="rowSpan"
+                  min="1"
+                  max={rowSpanMax}
+                  step="1"
+                  value={form.rowSpan}
+                  onChange={this.updateField}
+                />
+              </div>  
+            </div>
+
             {(Object.keys(this.state.virtual).length === 0) ? (
               <>
-                <div className="form-group">
+                <div className="form-group mt-3">
                   <label htmlFor="provenance">Provenance</label>
                   <input 
                     type="text" 
@@ -214,7 +225,7 @@ class PhysicalNewForm extends Component {
                     id="form-name"
                     name="provenance" 
                     placeholder="Sample Provenance"
-                    value={this.state.form.provenance}
+                    value={form.provenance}
                     onChange={this.updateField}
                   />
                   { provenanceErrorExists && <small className="form-text text-danger">{this.state.errors.provenance}</small> }
@@ -228,7 +239,7 @@ class PhysicalNewForm extends Component {
                     id="form-name"
                     name="genotype" 
                     placeholder="Sample Genotype"
-                    value={this.state.form.genotype}
+                    value={form.genotype}
                     onChange={this.updateField}
                   />
                   { genotypeErrorExists && <small className="form-text text-danger">{this.state.errors.genotype}</small> }
@@ -241,7 +252,7 @@ class PhysicalNewForm extends Component {
                     className="form-control"
                     name="sequence"
                     placeholder="AGTCAGTCAG..."
-                    value={this.state.form.sequence}
+                    value={form.sequence}
                     onChange={this.updateField}
                     rows="5"
                   ></textarea>
@@ -256,7 +267,7 @@ class PhysicalNewForm extends Component {
                 type="select"
                 className="form-control"
                 name="category"
-                value={this.state.form.category}
+                value={form.category}
                 onChange={this.updateField}
               >
                 <option value="Sample">Sample</option>

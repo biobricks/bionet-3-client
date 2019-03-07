@@ -15,10 +15,14 @@ class ContainerProfile extends React.Component {
       error: "",
       path: [],
       lab: {},
-      container: {},
       containers: [],
-      physicalsMode: "List",
       physicals: [],
+      locations: {
+        empty: [],
+        full: []
+      },
+      container: {},
+      physicalsMode: "List",
       physical: {},
       allContainers: []
     };
@@ -439,7 +443,7 @@ class ContainerProfile extends React.Component {
 
 
           <div className="col-12 col-lg-5">
-            <Grid 
+            {/* <Grid 
               demo={false}
               selectLocations={false}
               recordType="Container"
@@ -451,7 +455,7 @@ class ContainerProfile extends React.Component {
               onCellDragOver={this.onCellDragOver}
               onCellDrop={this.onCellDrop}
               onCellDragEnd={this.onCellDragEnd}
-              {...this.state}
+              {...this.state} */}
             />
           </div>
 

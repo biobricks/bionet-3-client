@@ -283,10 +283,10 @@ class Physicals extends Component {
     for (let i = 0; i < allParentOptions.length; i++){
       let option = allParentOptions[i];
       if (physicalExists) {
-        console.log(option.lab._id, physical.lab._id);
+        //console.log(option.lab._id, physical.lab._id);
         if (option.lab._id === physical.lab._id) { filteredOptions.push(option) }
       } else {
-        console.log(option.lab._id);
+        //console.log(option.lab._id);
       }  
     }
     let newParentOptions = [];

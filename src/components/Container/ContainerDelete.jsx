@@ -86,7 +86,7 @@ class ContainerDelete extends React.Component {
           </div>
           {(isLoggedIn) ? (
             <div className="col-12 col-lg-5">
-              <Grid 
+              {/* <Grid 
                 demo={true}
                 editMode={false}
                 formData={container}
@@ -95,7 +95,7 @@ class ContainerDelete extends React.Component {
                 record={container}
                 containers={containerContainers}
                 physicals={containerPhysicals}
-              />
+              /> */}
             </div>
           ) : null }
         </div>

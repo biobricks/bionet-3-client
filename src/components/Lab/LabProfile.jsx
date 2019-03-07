@@ -5,6 +5,7 @@ import Containers from '../Container/Containers';
 import Physicals from '../Physical/Physicals';
 import LabToolbar from '../Lab/LabToolbar';
 import Api from '../../modules/Api';
+import { getChildren, getLocations } from './LabHelpers';
 
 class LabProfile extends React.Component {
 
@@ -15,6 +16,11 @@ class LabProfile extends React.Component {
       dragging: false,
       lab: {},
       containers: [],
+      physicals: [],
+      locations: {
+        empty: [],
+        full: []
+      },
       virtuals: [],
       allContainers: []
     };
@@ -103,12 +109,14 @@ class LabProfile extends React.Component {
     try {
       const labId = this.props.match.params.labId;
       const getLabRes = await Api.get(`labs/${labId}`);
-      const lab = getLabRes.data || [];
+      const lab = getLabRes.data;
       const getContainersRes = await Api.get('containers');
       const allContainers = getContainersRes.data || [];
       const getVirtualsRes = await Api.get('virtuals');
       const virtuals = getVirtualsRes.data || [];
-      return { lab, allContainers, virtuals };
+      const { containers, physicals } = getChildren(lab);
+      const locations = getLocations(lab, containers, physicals); 
+      return { lab, allContainers, virtuals, containers, physicals, locations };
     } catch (error) {
       throw error;
     }
@@ -377,7 +385,7 @@ class LabProfile extends React.Component {
 
 
           <div className="col-12 col-lg-5">
-            <Grid 
+            {/* <Grid 
               demo={false}
               selectLocations={false}
               recordType="Lab"
@@ -389,7 +397,20 @@ class LabProfile extends React.Component {
               onCellDragOver={this.onCellDragOver}
               onCellDrop={this.onCellDrop}
               onCellDragEnd={this.onCellDragEnd}
-            />
+            /> */}
+              <Grid 
+                record={this.state.lab}
+                recordType="Lab"
+                // addFormActive={true}
+                // addFormType={itemType}
+                // addForm={itemType === 'container' ? this.state.containerForm : this.state.physicalForm}
+                containers={this.state.containers}
+                physicals={this.state.physicals}
+                locations={this.state.locations}
+                // newItemLocations={this.state.newItemLocations}
+                // addLocation={this.addLocation}
+                // removeLocation={this.removeLocation}
+              />            
           </div>
 
         </div>

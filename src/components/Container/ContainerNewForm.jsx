@@ -3,6 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { generateRandomName } from '../../modules/Wu';
 import GridSmall from '../Grid/GridSmall';
 import Api from '../../modules/Api';
+import { getSpanMax } from '../Helpers';
 
 class ContainerNewForm extends Component {
   
@@ -11,19 +12,6 @@ class ContainerNewForm extends Component {
     this.state = {
       redirect: false,
       redirectTo: "",
-      form: {
-        createdBy: "",
-        lab: "",
-        parent: "",
-        name: "",
-        description: "",
-        rows: 1,
-        columns: 1,
-        category: "General",
-        bgColor: "#00D1FD",
-        row: 1,
-        column: 1
-      },
       errors: {
         name: ""
       }
@@ -35,7 +23,7 @@ class ContainerNewForm extends Component {
   }
 
   updateField(e) {
-    let form = this.state.form;
+    let form = this.props.formData;
     let fieldType = e.target.getAttribute('type');
     let field = e.target.getAttribute('name');
     if (fieldType === 'number') {
@@ -43,27 +31,23 @@ class ContainerNewForm extends Component {
     } else {
       form[field] = e.target.value;
     }
-    this.setState({
-      form
-    });
+    this.props.updateFormData('Container', form);
   }
 
   wuGenerate(e) {
     e.preventDefault();
-    let form = this.state.form;
+    let form = this.props.formData;
     form.name = generateRandomName();
-    this.setState({
-      form
-    });
+    this.props.updateFormData('Container', form);
   }
 
   onFormSubmit(e) {
     e.preventDefault();
-    let formData = this.state.form;
+    let formData = this.props.formData;
     let errors = this.state.errors;
     formData.createdBy = this.props.currentUser._id;
-    formData.row = this.props.newItemLocations[0][1];
-    formData.column = this.props.newItemLocations[0][0];
+    formData.row = this.props.newItemLocations[0][0];
+    formData.column = this.props.newItemLocations[0][1];
     let isContainer = this.props.parentType && this.props.parentType === "Container";
     formData.lab = isContainer ? this.props.container.lab._id : this.props.lab._id;
     formData.parent = isContainer ? this.props.container._id : null;
@@ -82,6 +66,7 @@ class ContainerNewForm extends Component {
 
   submitForm(formData) {
     let parentIsContainer = this.props.parentType && this.props.parentType === "Container";
+    this.props.removeLocation(this.props.newItemLocations[0]);
     Api.post('containers/new', formData)
     .then((res) => {
       this.props.debugging && console.log('post new container res', res);
@@ -95,7 +80,14 @@ class ContainerNewForm extends Component {
 
   render() { 
     const errors = this.state.errors;
-    const nameErrorExists = errors.name && errors.name.length > 0;    
+    const nameErrorExists = errors.name && errors.name.length > 0; 
+    const form = this.props.formData;
+    const newItemLocations = this.props.newItemLocations;
+    const locations = this.props.locations;
+    const parentRecord = this.props.parentRecord;
+
+    const { rowSpanMax, columnSpanMax } = getSpanMax(form, newItemLocations, locations, parentRecord);
+
     if (this.state.redirect === true) {
       return ( <Redirect to={this.state.redirectTo}/> )
     }    
@@ -113,11 +105,11 @@ class ContainerNewForm extends Component {
               <div className="input-group">
                 <input 
                   type="text" 
-                  className="form-control"
+                  className="form-control text-capitalize"
                   id="form-name"
                   name="name" 
                   placeholder="Container Name"
-                  value={this.state.form.name}
+                  value={form.name}
                   onChange={this.updateField}
                 />
                 <div className="input-group-append">
@@ -136,7 +128,7 @@ class ContainerNewForm extends Component {
                 className="form-control"
                 style={{'height': '50px'}}
                 name="bgColor" 
-                value={this.state.form.bgColor}
+                value={form.bgColor}
                 onChange={this.updateField}
               />
             </div>            
@@ -147,7 +139,7 @@ class ContainerNewForm extends Component {
                 className="form-control"
                 name="description"
                 placeholder="A short description of the Container."
-                value={this.state.form.description}
+                value={form.description}
                 onChange={this.updateField}
               ></textarea>
             </div>
@@ -157,7 +149,7 @@ class ContainerNewForm extends Component {
                 type="select"
                 className="form-control"
                 name="category"
-                value={this.state.form.category}
+                value={form.category}
                 onChange={this.updateField}
               >
                 <option value="General">General</option>
@@ -175,7 +167,7 @@ class ContainerNewForm extends Component {
                   min="1"
                   max="50"
                   step="1"
-                  value={this.state.form.columns}
+                  value={form.columns}
                   onChange={this.updateField}
                 />
               </div>
@@ -188,7 +180,35 @@ class ContainerNewForm extends Component {
                   min="1"
                   max="50"
                   step="1"
-                  value={this.state.form.rows}
+                  value={form.rows}
+                  onChange={this.updateField}
+                />
+              </div>  
+            </div>
+            <div className="row mt-3">
+              <div className="col">
+                <label htmlFor="columnSpan">Width</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  name="columnSpan"
+                  min="1"
+                  max={columnSpanMax}
+                  step="1"
+                  value={form.columnSpan}
+                  onChange={this.updateField}
+                />
+              </div>
+              <div className="col">
+                <label htmlFor="rowSpan">Height</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  name="rowSpan"
+                  min="1"
+                  max={rowSpanMax}
+                  step="1"
+                  value={form.rowSpan}
                   onChange={this.updateField}
                 />
               </div>  
@@ -208,8 +228,8 @@ class ContainerNewForm extends Component {
         </div>
         <div className="col-12 col-lg-6">
           <div className="form-group">
-            {(this.state.form.name.length > 0) ? (
-              <label>{this.state.form.name} Preview</label>
+            {(form.name.length > 0) ? (
+              <label className="text-capitalize">{form.name} Preview</label>
             ) : (
               <label>Container Preview</label>
             )}
@@ -217,7 +237,7 @@ class ContainerNewForm extends Component {
               demo={true}
               selectLocations={false}
               recordType="Container"
-              record={this.state.form}
+              record={form}
             />
           </div>
         </div>

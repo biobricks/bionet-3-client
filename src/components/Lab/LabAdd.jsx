@@ -3,30 +3,41 @@ import Grid from '../Grid/Grid';
 import ContainerNewForm from '../Container/ContainerNewForm';
 import PhysicalNewForm from '../Physical/PhysicalNewForm';
 import Api from '../../modules/Api';
+import { getChildren, getLocations } from './LabHelpers';
 
 class LabAdd extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      lab: {},
-      containers: [],
-      physicals: [],
-      newItemLocations: []
-    };
+    this.state = initialState;
+    this.getDataSync = this.getDataSync.bind(this);
     this.updateLab = this.updateLab.bind(this);
     this.addLocation = this.addLocation.bind(this);
     this.removeLocation = this.removeLocation.bind(this);
+    this.updateFormData = this.updateFormData.bind(this);
   }
 
-  getData() {
-    let labId = this.props.match.params.labId;
-    Api.get(`labs/${labId}`)
-    .then((res) => {
-      console.log('LabAdd.getData.res', res);
-      this.setState({
-        lab: res.data
-      });
+  async getData() {
+    try {
+      const labId = this.props.match.params.labId;
+      const labRes = await Api.get(`labs/${labId}`);
+      const lab = labRes.data;      
+      const { containers, physicals } = getChildren(lab);
+      const locations = getLocations(lab, containers, physicals);      
+      return { lab, containers, physicals, locations }; 
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  getDataSync() {
+    this.getData()
+    .then(res => {
+      const { lab, containers, physicals, locations } = res;
+      this.setState({ lab, containers, physicals, locations });
+    })
+    .catch(error => {
+      throw error;
     });
   }
 
@@ -34,7 +45,7 @@ class LabAdd extends React.Component {
     Api.post(`labs/${lab._id}/edit`, lab)
     .then((res) => {
       console.log(res);
-      this.getData();
+      this.getDataSync();
       this.props.refresh(this.props.currentUser);
     });
   }
@@ -78,8 +89,20 @@ class LabAdd extends React.Component {
     });
   }
 
+  updateFormData(formType, formData) {
+    if (formType === 'Container') {
+      this.setState({
+        containerForm: formData
+      });
+    } else if (formType === 'Physical') {
+      this.setState({
+        physicalForm: formData
+      });
+    }
+  }
+
   componentDidMount() {
-    this.getData();
+    this.getDataSync();
   }
 
   render() {
@@ -97,14 +120,6 @@ class LabAdd extends React.Component {
       }
     }
 
-    const labExists = lab && Object.keys(lab).length > 0;
-    const labChildrenExist = labExists && Object.keys(lab).indexOf('children') > -1;
-    const labContainersExist = labChildrenExist && Object.keys(lab.children).indexOf('containers') > -1;
-    const labPhysicalsExist = labChildrenExist && Object.keys(lab.children).indexOf('physicals') > -1;
-
-    const labContainers = labExists && labChildrenExist && labContainersExist ? lab.children.containers : [];
-    const labPhysicals = labExists && labChildrenExist && labPhysicalsExist ? lab.children.physicals : [];
-
     return (
       <div className="LabProfile container-fluid">
         <div className="row">
@@ -112,7 +127,7 @@ class LabAdd extends React.Component {
             <>
               <div className="col-12 col-lg-7">
                 <div className="card rounded-0 mt-3">
-                  <div className="card-header rounded-0 bg-dark text-light">
+                  <div className="card-header rounded-0 bg-dark-green text-light">
                     <h4 className="card-title mb-0 text-capitalize">
                       <i className={itemIconClasses}/>Add {itemType}
                     </h4>
@@ -121,11 +136,11 @@ class LabAdd extends React.Component {
                     <div className="card-body">
                       {(itemType === 'container') ? (
                         <p className="card-text">
-                          Select which cell the Container will occupy within {this.state.lab.name}.
+                          Select which cell the Container will occupy within {lab.name}.
                         </p>
                       ) : (
                         <p className="card-text">
-                          Select which cell the Physical Sample will occupy within {this.state.lab.name}.
+                          Select which cell the Physical Sample will occupy within {lab.name}.
                         </p>
                       )}    
                     </div>
@@ -136,6 +151,10 @@ class LabAdd extends React.Component {
                           {...this.props} 
                           {...this.state}
                           parentType="Lab"
+                          parentRecord={lab}
+                          formData={this.state.containerForm}
+                          updateFormData={this.updateFormData}
+                          removeLocation={this.removeLocation}
                         />
                       ) : null } 
                       {(itemType === 'physical') ? (
@@ -143,6 +162,10 @@ class LabAdd extends React.Component {
                           {...this.props} 
                           {...this.state}
                           parentType="Lab"
+                          parentRecord={lab}
+                          formData={this.state.physicalForm}
+                          updateFormData={this.updateFormData}
+                          removeLocation={this.removeLocation}
                         />
                       ) : null }     
                     </div>
@@ -151,16 +174,17 @@ class LabAdd extends React.Component {
               </div>
               <div className="col-12 col-lg-5">
                 <Grid 
-                  demo={false}
-                  selectLocations={true}
-                  selectSingle={itemType === 'physical'}
+                  record={this.state.lab}
+                  recordType="Lab"
+                  addFormActive={true}
+                  addFormType={itemType}
+                  addForm={itemType === 'container' ? this.state.containerForm : this.state.physicalForm}
+                  containers={this.state.containers}
+                  physicals={this.state.physicals}
+                  locations={this.state.locations}
                   newItemLocations={this.state.newItemLocations}
                   addLocation={this.addLocation}
                   removeLocation={this.removeLocation}
-                  recordType="Lab"
-                  record={this.state.lab}
-                  containers={labContainers}
-                  physicals={labPhysicals}
                 />
               </div>
             </>
@@ -172,3 +196,63 @@ class LabAdd extends React.Component {
 }
 
 export default LabAdd;
+
+const initialState = {
+  lab: {},
+  containers: [],
+  physicals: [],
+  locations: {
+    empty: [],
+    full: []
+  },
+  newItemLocations: [],
+  containerForm: {
+    createdBy: "",
+    lab: "",
+    parent: "",
+    name: "",
+    description: "",
+    rows: 1,
+    columns: 1,
+    category: "General",
+    bgColor: "#00D1FD",
+    row: 1,
+    rowSpan: 1,
+    column: 1,
+    columnSpan: 1        
+  },
+  containerFormErrors: {
+    name: ""
+  },
+  containerFormInstructions: {
+    name: ""
+  },
+  physicalForm: {
+    createdBy: "",
+    lab: "",
+    parent: "",
+    name: "",
+    description: "",
+    rowSpan: 1,
+    columnSpan: 1,
+    category: "General",
+    bgColor: "#00D1FD",
+    row: 1,
+    column: 1,
+    provenance: "",
+    genotype: "",
+    sequence: ""      
+  },
+  physicalFormErrors: {
+    name: "",
+    provenance: "",
+    genotype: "",
+    sequence: ""
+  },
+  physicalFormInstructions: {
+    name: "",
+    provenance: "",
+    genotype: "",
+    sequence: ""
+  },
+};

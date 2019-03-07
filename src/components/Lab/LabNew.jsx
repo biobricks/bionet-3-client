@@ -91,7 +91,7 @@ class LabNew extends React.Component {
       return ( <Redirect to={`/`}/> )
     }
     return (
-      <div className="LabProfile container-fluid">
+      <div className="LabNew container-fluid">
         
         <div className="row">
           <div className="col-12 col-lg-7">

@@ -102,6 +102,14 @@ class App extends React.Component {
           <Switch>
             <Route path="/labs/new" exact component={WaitForComponent(LabNew, this.state, this.getCurrentUserLabs)}/>
             <Route path='/labs/:labId/add/:itemType' component={WaitForComponent(LabAdd, this.state, this.getCurrentUserLabs)}/>
+            {/* <Route path='/labs/:labId/add/:itemType' render={(props) => (
+              <LabAdd 
+                {...props}
+                {...this.state}
+                {...this.props}
+                refresh={this.setCurrentUser}
+              />              
+            )}/> */}
             <Route path='/labs/:labId/edit' component={WaitForComponent(LabEdit, this.state, this.getCurrentUserLabs)}/>
             <Route path='/labs/:labId/delete' component={WaitForComponent(LabDelete, this.state, this.getCurrentUserLabs)}/>
             {/* <Route path="/labs/:labId" component={WaitForComponent(LabProfile, this.state, this.getCurrentUserLabs)}/> */}

@@ -1,0 +1,9 @@
+.GridEmptyCell {
+  background-color: white;
+  border: 1px solid #eee;
+  overflow: hidden; 
+  &:hover, &:active {
+    background-color: rgb(0,210,250);
+    border: 1px solid rgb(0,160,200);
+  }
+}
