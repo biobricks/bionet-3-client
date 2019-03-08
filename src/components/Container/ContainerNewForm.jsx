@@ -3,7 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { generateRandomName } from '../../modules/Wu';
 import GridSmall from '../Grid/GridSmall';
 import Api from '../../modules/Api';
-import { getSpanMax } from '../Helpers';
+import { getSpanMax, locationExistsInArray, getLocationRange } from '../Helpers';
 
 class ContainerNewForm extends Component {
   
@@ -24,14 +24,29 @@ class ContainerNewForm extends Component {
 
   updateField(e) {
     let form = this.props.formData;
-    let fieldType = e.target.getAttribute('type');
-    let field = e.target.getAttribute('name');
-    if (fieldType === 'number') {
-      form[field] = Number(e.target.value);
-    } else {
-      form[field] = e.target.value;
+    const locations = this.props.locations;
+    const fieldType = e.target.getAttribute('type');
+    const field = e.target.getAttribute('name');
+    const isSpanField = field === 'rowSpan' || field === 'columnSpan';
+    let performUpdate = true;
+    if (isSpanField) {
+      const newItemLocation = this.props.newItemLocations[0];
+      // const locations = this.props.locations;
+      const { rowSpan, columnSpan } = form;
+      const locationRange = getLocationRange(newItemLocation, rowSpan, columnSpan, true, field);
+      for(let i = 0; i < locationRange.length; i++){
+        let locationOccupied = locationExistsInArray(locationRange[i], locations.full);
+        if (locationOccupied) { performUpdate = false; }
+      }
     }
-    this.props.updateFormData('Container', form);
+    if (performUpdate) {
+      if (fieldType === 'number') {
+        form[field] = Number(e.target.value);
+      } else {
+        form[field] = e.target.value;
+      }
+      this.props.updateFormData('Container', form);
+    }    
   }
 
   wuGenerate(e) {
