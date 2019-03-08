@@ -173,7 +173,7 @@ class ContainerEdit extends React.Component {
           </div>
           {(isLoggedIn) ? (
             <div className="col-12 col-lg-5">
-              <Grid 
+              {/* <Grid 
                 demo={true}
                 editMode={true}
                 formData={this.state.form}
@@ -182,7 +182,7 @@ class ContainerEdit extends React.Component {
                 record={this.state.container}
                 containers={containerContainers}
                 physicals={containerPhysicals}
-              />
+              /> */}
             </div>
           ) : null }
         </div>

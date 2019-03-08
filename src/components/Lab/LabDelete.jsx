@@ -104,7 +104,7 @@ class LabDelete extends React.Component {
           </div>
           {(isLoggedIn) ? (
             <div className="col-12 col-lg-5">
-              <Grid 
+              {/* <Grid 
                 demo={true}
                 editMode={true}
                 formData={lab}
@@ -113,7 +113,7 @@ class LabDelete extends React.Component {
                 record={lab}
                 containers={labContainers}
                 physicals={labPhysicals}
-              />
+              /> */}
             </div>
           ) : null }
         </div>

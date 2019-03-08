@@ -180,7 +180,7 @@ class LabEdit extends React.Component {
           </div>
           {(isLoggedIn) ? (
             <div className="col-12 col-lg-5">
-              <Grid 
+              {/* <Grid 
                 demo={true}
                 editMode={true}
                 formData={this.state.form}
@@ -189,7 +189,7 @@ class LabEdit extends React.Component {
                 record={this.state.form}
                 containers={labContainers}
                 physicals={labPhysicals}
-              />
+              /> */}
             </div>
           ) : null }
         </div>
