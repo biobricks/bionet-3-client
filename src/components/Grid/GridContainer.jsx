@@ -29,6 +29,13 @@ class GridContainer extends React.Component {
           addFormActive={this.props.addFormActive}
           addFormType={this.props.addFormType}
           addForm={this.props.addForm}
+          onCellDrop={this.props.onCellDrop}
+          onCellDragOver={this.props.onCellDragOver}
+          onCellDragEnd={this.props.onCellDragEnd}
+          moveActive={this.props.moveActive}
+          isDragging={this.props.isDragging}
+          draggingOver={this.props.draggingOver}
+          draggedRecord={this.props.draggedRecord}
         />
       );       
     });
@@ -40,6 +47,13 @@ class GridContainer extends React.Component {
           record={container} 
           row={container.row} 
           column={container.column} 
+          onCellDrag={this.props.onCellDrag}
+          onCellDragStart={this.props.onCellDragStart}
+          onCellDragOver={this.props.onCellDragOver}
+          moveActive={this.props.moveActive}
+          isDragging={this.props.isDragging}
+          draggingOver={this.props.draggingOver}
+          draggedRecord={this.props.draggedRecord}
         />     
       );
     });
@@ -51,6 +65,13 @@ class GridContainer extends React.Component {
           record={physical} 
           row={physical.row} 
           column={physical.column} 
+          onCellDrag={this.props.onCellDrag}
+          onCellDragStart={this.props.onCellDragStart}
+          onCellDragOver={this.props.onCellDragOver}
+          moveActive={this.props.moveActive}
+          isDragging={this.props.isDragging}
+          draggingOver={this.props.draggingOver}
+          draggedRecord={this.props.draggedRecord}
         /> 
       );      
     });

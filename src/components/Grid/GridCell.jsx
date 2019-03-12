@@ -23,8 +23,7 @@ class GridCell extends React.Component {
       <>
         { this.props.recordType === 'Physical' && (
           <div 
-            // className={cellIsSelected ? 'selected empty grid-item' : 'empty grid-item'}
-            // isselected={cellIsSelected ? 'true' : 'false'}
+            id={this.props.record._id}
             className="GridCell physical grid-item"
             style={emptyChildStyles}
             row={row}
@@ -32,17 +31,14 @@ class GridCell extends React.Component {
             data-toggle="tooltip"
             data-placement="top"
             title={`Row ${row}, Column ${column}\n${this.props.recordType} - ${this.props.record.name}`}
-            //onClick={props.selectCell}
-            //onDrop={props.onCellDrop}
-            //onDragOver={props.onCellDragOver}
-            //onDragEnd={props.onCellDragEnd}
-            //draggable={false}
+            draggable={true}
+            onDragStart={this.props.onCellDragStart}
+            onDragOver={this.props.onCellDragOver}
           ></div>
         )}
         { this.props.recordType === 'Container' && (
           <Link 
-            // className={cellIsSelected ? 'selected empty grid-item' : 'empty grid-item'}
-            // isselected={cellIsSelected ? 'true' : 'false'}
+            id={this.props.record._id}
             to={`/containers/${this.props.record._id}`}
             className="GridCell container grid-item"
             style={emptyChildStyles}
@@ -51,11 +47,10 @@ class GridCell extends React.Component {
             data-toggle="tooltip"
             data-placement="top"
             title={`Row ${row}, Column ${column}\n${this.props.recordType} - ${this.props.record.name}`}
-            //onClick={props.selectCell}
-            //onDrop={props.onCellDrop}
-            //onDragOver={props.onCellDragOver}
-            //onDragEnd={props.onCellDragEnd}
-            //draggable={false}
+            draggable={this.props.moveActive}
+            onDrag={this.props.onCellDrag}
+            onDragStart={this.props.onCellDragStart}
+            onDragOver={this.props.onCellDragOver}
           />
         )}  
       </>     

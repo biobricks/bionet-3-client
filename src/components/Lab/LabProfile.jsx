@@ -5,7 +5,7 @@ import Containers from '../Container/Containers';
 import Physicals from '../Physical/Physicals';
 import LabToolbar from '../Lab/LabToolbar';
 import Api from '../../modules/Api';
-import { getChildren, getLocations } from './LabHelpers';
+import { getItemById, getChildren, getLocations } from './LabHelpers';
 
 class LabProfile extends React.Component {
 
@@ -13,7 +13,6 @@ class LabProfile extends React.Component {
     super(props);
     this.state = {
       error: "",
-      dragging: false,
       lab: {},
       containers: [],
       physicals: [],
@@ -22,7 +21,10 @@ class LabProfile extends React.Component {
         full: []
       },
       virtuals: [],
-      allContainers: []
+      allContainers: [],
+      isDragging: false,
+      draggingOver: [],
+      draggedRecord: {}
     };
     this.getData = this.getData.bind(this);
     this.onRequestLabMembership = this.onRequestLabMembership.bind(this);
@@ -31,6 +33,7 @@ class LabProfile extends React.Component {
     this.onDenyRequestLabMembership = this.onDenyRequestLabMembership.bind(this);
     this.onRevokeLabMembership = this.onRevokeLabMembership.bind(this);
     this.updateLab = this.updateLab.bind(this);
+    this.onCellDrag = this.onCellDrag.bind(this);
     this.onCellDragStart = this.onCellDragStart.bind(this);
     this.onCellDragOver = this.onCellDragOver.bind(this);
     this.onCellDragEnd = this.onCellDragEnd.bind(this);
@@ -61,47 +64,61 @@ class LabProfile extends React.Component {
 
   onCellDragStart(e) {
     this.props.debugging && console.log('onCellDragStart');
-    const lab = this.state.lab;
     const itemId = e.target.getAttribute('id');
-    let draggedCell;
-    const labExists = lab && Object.keys(lab).length > 0;
-    const labChildrenExist = labExists && Object.keys(lab).indexOf('children') > -1;
-    const labContainersExist = labChildrenExist && Object.keys(lab.children).indexOf('containers') > -1;
-    const labPhysicalsExist = labChildrenExist && Object.keys(lab.children).indexOf('physicals') > -1;
-    const labContainers = labExists && labChildrenExist && labContainersExist ? lab.children.containers : [];
-    const labPhysicals = labExists && labChildrenExist && labPhysicalsExist ? lab.children.physicals : [];
-    for(let i = 0; i < labContainers.length; i++){
-      let childContainer = labContainers[i];
-      if (childContainer._id === itemId) {
-        draggedCell = childContainer;
-      }
-    }
-    for(let i = 0; i < labPhysicals.length; i++){
-      let childPhysical = labPhysicals[i];
-      if (childPhysical._id === itemId) {
-        draggedCell = childPhysical;
-      }
-    }
-    this.props.debugging && console.log('draggedCell: ', draggedCell);
+    let labContainers = this.state.containers;
+    let labPhysicals = this.state.physicals;
+    let draggedCell = getItemById(itemId, labContainers, labPhysicals);
+    //this.props.debugging && console.log('draggedCell: ', draggedCell);
     e.dataTransfer.setData("draggedCell", JSON.stringify(draggedCell));
   }
 
+  onCellDrag(e) {
+    const draggedRecord = this.state.draggedRecord;
+    let draggedRecordExists = Object.keys(draggedRecord).length > 0;
+    if (!draggedRecordExists) {
+      const itemId = e.target.getAttribute('id');
+      let labContainers = this.state.containers;
+      let labPhysicals = this.state.physicals;
+      let draggedCell = getItemById(itemId, labContainers, labPhysicals);
+      this.setState({
+        isDragging: true,
+        draggedRecord: draggedCell
+      });
+    }  
+  }
+
   onCellDragOver(e) {
-    e.preventDefault();
+    e.preventDefault(); 
+    //const row = Number(e.target.getAttribute('row'));
+    //const column = Number(e.target.getAttribute('column'));
+    // const draggedCell = this.state.draggedRecord;
+    // const width = draggedCell.columnSpan;
+    // const height = draggedCell.rowSpan;
+    // console.log('hovered', [hoveredRow, hoveredColumn]);
+    // console.log(`Dragged cell width/height`, width, height);
+    //let location = [row, column];
+    //console.log(`dragging over`, location);
+
+    //this.setState({draggingOver: location});
   }
 
   onCellDragEnd(e) {
-    this.setState({
-      dragging: false
-    }); 
+    // this.setState({
+    //   isDragging: false,
+    //   draggedRecord: {}
+    // });
   }
 
   onCellDrop(e) {
-    this.props.debugging && console.log('onCellDrop');
+    console.log('onCellDrop');
     const draggedCell = JSON.parse(e.dataTransfer.getData("draggedCell"));
     draggedCell.row = Number(e.target.getAttribute('row'));
-    draggedCell.column = Number(e.target.getAttribute('col'));
+    draggedCell.column = Number(e.target.getAttribute('column'));
     this.moveItem(draggedCell);
+    this.setState({
+      isDragging: false,
+      draggedRecord: {}
+    });
   }
 
   async getDataAsync() {
@@ -247,9 +264,9 @@ class LabProfile extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const labId = this.props.match.params.labId;
-    console.log('Lab ID', labId);
+    //console.log('Lab ID', labId);
     const prevLabId = prevProps.match.params.labId;
-    console.log('Previous Lab ID', prevLabId);
+    //console.log('Previous Lab ID', prevLabId);
     const labIdHasChanged = String(labId) !== String(prevLabId);
     if (labIdHasChanged) { this.getData() }
   }
@@ -267,10 +284,10 @@ class LabProfile extends React.Component {
     if (isLoggedIn) {
       for (let i = 0; i < labUsers.length; i++) {
         let labUser = labUsers[i];
-        this.props.debugging && console.log(`Lab user ${i}: `, labUser);
-        this.props.debugging && console.log('CurrentUser', currentUser);
+        //this.props.debugging && console.log(`Lab user ${i}: `, labUser);
+        //this.props.debugging && console.log('CurrentUser', currentUser);
         if (String(labUser._id) === String(currentUser._id)) { 
-          this.props.debugging && console.log('User is member of Lab');
+          //this.props.debugging && console.log('User is member of Lab');
           userIsMember = true; 
         }
       }
@@ -385,32 +402,22 @@ class LabProfile extends React.Component {
 
 
           <div className="col-12 col-lg-5">
-            {/* <Grid 
-              demo={false}
-              selectLocations={false}
-              recordType="Lab"
+            <Grid 
               record={this.state.lab}
-              containers={labContainers}
-              physicals={labPhysicals}
-              dragging={this.state.dragging}
+              recordType="Lab"
+              moveActive={this.props.isLoggedIn}
+              containers={this.state.containers}
+              physicals={this.state.physicals}
+              locations={this.state.locations}
+              isDragging={this.state.isDragging}
+              draggingOver={this.state.draggingOver}
+              draggedRecord={this.state.draggedRecord}
+              onCellDrag={this.onCellDrag}
               onCellDragStart={this.onCellDragStart}
               onCellDragOver={this.onCellDragOver}
               onCellDrop={this.onCellDrop}
               onCellDragEnd={this.onCellDragEnd}
-            /> */}
-              <Grid 
-                record={this.state.lab}
-                recordType="Lab"
-                // addFormActive={true}
-                // addFormType={itemType}
-                // addForm={itemType === 'container' ? this.state.containerForm : this.state.physicalForm}
-                containers={this.state.containers}
-                physicals={this.state.physicals}
-                locations={this.state.locations}
-                // newItemLocations={this.state.newItemLocations}
-                // addLocation={this.addLocation}
-                // removeLocation={this.removeLocation}
-              />            
+            />            
           </div>
 
         </div>

@@ -18,6 +18,7 @@ class AddGrid extends React.Component {
           {/* {this.props.addFormActive && ( */}
             <GridContainer
               record={this.props.record}
+              moveActive={this.props.moveActive}
               addFormActive={this.props.addFormActive}
               addFormType={this.props.addFormType}
               addForm={this.props.addForm}
@@ -27,6 +28,14 @@ class AddGrid extends React.Component {
               newItemLocations={this.props.newItemLocations}
               addLocation={this.props.addLocation}
               removeLocation={this.props.removeLocation}
+              isDragging={this.props.isDragging}
+              draggingOver={this.props.draggingOver}
+              draggedRecord={this.props.draggedRecord}
+              onCellDrag={this.props.onCellDrag}
+              onCellDragStart={this.props.onCellDragStart}
+              onCellDragOver={this.props.onCellDragOver}
+              onCellDrop={this.props.onCellDrop}
+              onCellDragEnd={this.props.onCellDragEnd}
             />
           {/* )} */}
         </div>

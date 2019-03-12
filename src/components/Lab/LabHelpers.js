@@ -1,3 +1,20 @@
+export const getItemById = function getItemById(id, containers, physicals) {
+  let result = null;
+  for(let i = 0; i < containers.length; i++){
+    let childContainer = containers[i];
+    if (childContainer._id === id) {
+      result = childContainer;
+    }
+  }
+  for(let i = 0; i < physicals.length; i++){
+    let childPhysical = physicals[i];
+    if (childPhysical._id === id) {
+      result = childPhysical;
+    }
+  }
+  return result;
+}
+
 export const getChildren = function getChildren(record) {
   const recordExists = record && Object.keys(record).length > 0;
   const recordChildrenExist = recordExists && Object.keys(record).indexOf('children') > -1;
@@ -18,6 +35,18 @@ export const getLocations = function getLocations(record, containers, physicals)
     const { row, rowSpan, column, columnSpan } = container;
     const position = [row,column];
     let containerPositions = [position];
+    // for(let rowSpanNo = 1; rowSpanNo <= rowSpan; rowSpanNo++){
+    //   if (rowSpanNo !== 1) {
+    //     let rowPos = row + rowSpanNo - 1;
+    //     containerPositions.push([rowPos, column]);
+    //   }  
+    // }
+    // for(let colSpanNo = 1; colSpanNo <= columnSpan; colSpanNo++){
+    //   if (colSpanNo !== 1) {
+    //     let colPos = column + colSpanNo;
+    //     containerPositions.push([row, colPos]);
+    //   }
+    // }    
     for(let rowSpanNo = 1; rowSpanNo <= rowSpan; rowSpanNo++){
       if (rowSpanNo !== 1) {
         let rowPos = row + rowSpanNo - 1;
@@ -26,10 +55,10 @@ export const getLocations = function getLocations(record, containers, physicals)
     }
     for(let colSpanNo = 1; colSpanNo <= columnSpan; colSpanNo++){
       if (colSpanNo !== 1) {
-        let colPos = column + colSpanNo;
+        let colPos = column + colSpanNo - 1;
         containerPositions.push([row, colPos]);
       }
-    }
+    }  
     fullCellArray = containerPositions.concat(fullCellArray);
   }
   //console.log('full cell array after containers', fullCellArray);
@@ -48,13 +77,13 @@ export const getLocations = function getLocations(record, containers, physicals)
     }
     for(let colSpanNo = 1; colSpanNo <= columnSpan; colSpanNo++){
       if (colSpanNo !== 1) {
-        let colPos = column + colSpanNo;
+        let colPos = column + colSpanNo - 1;
         physicalPositions.push([row, colPos]);
       }
     }
     fullCellArray = physicalPositions.concat(fullCellArray);
   }
-  //console.log('full cell array after physicals', fullCellArray);
+  console.log('full cell array after physicals', fullCellArray);
 
   // empty cells
   let emptyCellArray = [];
@@ -87,4 +116,4 @@ export const getLocations = function getLocations(record, containers, physicals)
   return locations;
 }
 
-export const LabHelpers = { getChildren, getLocations };
+export const LabHelpers = { getItemById, getChildren, getLocations };

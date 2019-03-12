@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import Grid from '../Grid/Grid';
+//import Grid from '../Grid/Grid';
 import Api from '../../modules/Api';
 
 class ContainerEdit extends React.Component {
@@ -69,15 +69,15 @@ class ContainerEdit extends React.Component {
 
   render() {
     const isLoggedIn = this.props.isLoggedIn;
-    const form = this.state.form;
-    const container = this.state.container;
-    const containerExists = container && Object.keys(container).length > 0;
-    const containerChildrenExist = containerExists && Object.keys(container).indexOf('children') > -1;
-    const containerContainersExist = containerChildrenExist && Object.keys(container.children).indexOf('containers') > -1;
-    const containerPhysicalsExist = containerChildrenExist && Object.keys(container.children).indexOf('physicals') > -1;
+    //const form = this.state.form;
+    //const container = this.state.container;
+    //const containerExists = container && Object.keys(container).length > 0;
+    //const containerChildrenExist = containerExists && Object.keys(container).indexOf('children') > -1;
+    //const containerContainersExist = containerChildrenExist && Object.keys(container.children).indexOf('containers') > -1;
+    //const containerPhysicalsExist = containerChildrenExist && Object.keys(container.children).indexOf('physicals') > -1;
 
-    const containerContainers = containerChildrenExist && containerContainersExist ? container.children.containers : [];
-    const containerPhysicals = containerChildrenExist && containerPhysicalsExist ? container.children.physicals : [];
+    //const containerContainers = containerChildrenExist && containerContainersExist ? container.children.containers : [];
+    //const containerPhysicals = containerChildrenExist && containerPhysicalsExist ? container.children.physicals : [];
 
     if (this.state.redirect === true) {
       return ( <Redirect to={`/containers/${this.props.match.params.containerId}`}/> )

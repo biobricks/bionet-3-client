@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import Grid from '../Grid/Grid';
+//import Grid from '../Grid/Grid';
 import Api from '../../modules/Api';
 
 class LabEdit extends React.Component {
@@ -70,14 +70,14 @@ class LabEdit extends React.Component {
     let form = this.state.form;
     let formValid = form.name.length > 0 && form.rows > 1 && form.columns > 1;
     
-    const lab = this.state.lab;
-    const labExists = lab && Object.keys(lab).length > 0;
-    const labChildrenExist = labExists && Object.keys(lab).indexOf('children') > -1;
-    const labContainersExist = labChildrenExist && Object.keys(lab.children).indexOf('containers') > -1;
-    const labPhysicalsExist = labChildrenExist && Object.keys(lab.children).indexOf('physicals') > -1;
+    //const lab = this.state.lab;
+    //const labExists = lab && Object.keys(lab).length > 0;
+    //const labChildrenExist = labExists && Object.keys(lab).indexOf('children') > -1;
+    //const labContainersExist = labChildrenExist && Object.keys(lab.children).indexOf('containers') > -1;
+    //const labPhysicalsExist = labChildrenExist && Object.keys(lab.children).indexOf('physicals') > -1;
 
-    const labContainers = labExists && labChildrenExist && labContainersExist ? lab.children.containers : [];
-    const labPhysicals = labExists && labChildrenExist && labPhysicalsExist ? lab.children.physicals : [];
+    //const labContainers = labExists && labChildrenExist && labContainersExist ? lab.children.containers : [];
+    //const labPhysicals = labExists && labChildrenExist && labPhysicalsExist ? lab.children.physicals : [];
 
     if (this.state.redirect === true) {
       return ( <Redirect to={`/labs/${this.props.match.params.labId}`}/> )

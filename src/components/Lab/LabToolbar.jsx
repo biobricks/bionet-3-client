@@ -15,19 +15,19 @@ class LabToolbar extends React.Component {
     if (isLoggedIn) {
       for (let i = 0; i < labUsers.length; i++) {
         let labUser = labUsers[i];
-        this.props.debugging && console.log(`Lab user ${i}: `, labUser);
-        this.props.debugging && console.log('CurrentUser', currentUser);
+        //this.props.debugging && console.log(`Lab user ${i}: `, labUser);
+        //this.props.debugging && console.log('CurrentUser', currentUser);
         if (String(labUser._id) === String(currentUser._id)) { 
-          this.props.debugging && console.log('User is member of Lab');
+          //this.props.debugging && console.log('User is member of Lab');
           userIsMember = true; 
         }
       }
       for (let i = 0; i < joinRequests.length; i++) {
         let requester = joinRequests[i];
-        console.log(`Requester ${i}: `, requester);
-        console.log('CurrentUser', currentUser);     
+        //console.log(`Requester ${i}: `, requester);
+        //console.log('CurrentUser', currentUser);     
         if (String(requester._id) === String(currentUser._id)) { 
-          console.log('User is requesting membership to Lab');
+          //console.log('User is requesting membership to Lab');
           userIsRequestingMembership = true; 
         }
       }

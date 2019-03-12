@@ -13,6 +13,7 @@ import Api from './modules/Api';
 import PasswordReset from './components/PasswordReset';
 import PasswordResetVerify from './components/PasswordResetVerify';
 import About from './components/About';
+import Download from './components/Download';
 
 const Landing = lazy(() => import('./components/Landing'));
 
@@ -98,6 +99,16 @@ class App extends React.Component {
       <div className="App">
         <Navigation {...this.state} logoutCurrentUser={this.logoutCurrentUser}/>
         <main className="viewport-container">
+
+          <Switch>
+            <Route path="/download" render={(props) => (
+              <Download 
+                {...props}
+                {...this.props}
+                {...this.state}
+              />
+            )}/>
+          </Switch>
 
           <Switch>
             <Route path="/labs/new" exact component={WaitForComponent(LabNew, this.state, this.getCurrentUserLabs)}/>

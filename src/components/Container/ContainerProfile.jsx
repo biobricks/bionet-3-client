@@ -6,7 +6,7 @@ import Physicals from '../Physical/Physicals';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import LabToolbar from '../Lab/LabToolbar';
 import Api from '../../modules/Api';
-import { getChildren, getLocations } from '../Lab/LabHelpers';
+import { getItemById, getChildren, getLocations } from '../Lab/LabHelpers';
 
 class ContainerProfile extends React.Component {
 
@@ -25,7 +25,10 @@ class ContainerProfile extends React.Component {
       container: {},
       physicalsMode: "List",
       physical: {},
-      allContainers: []
+      allContainers: [],
+      isDragging: false,
+      draggingOver: [],
+      draggedRecord: {}
     };
     this.getData = this.getData.bind(this);
     this.onRequestLabMembership = this.onRequestLabMembership.bind(this);
@@ -35,6 +38,7 @@ class ContainerProfile extends React.Component {
     this.onRevokeLabMembership = this.onRevokeLabMembership.bind(this);
     this.updateLab = this.updateLab.bind(this);
     this.onCellDragStart = this.onCellDragStart.bind(this);
+    this.onCellDrag = this.onCellDrag.bind(this);
     this.onCellDragOver = this.onCellDragOver.bind(this);
     this.onCellDragEnd = this.onCellDragEnd.bind(this);
     this.onCellDrop = this.onCellDrop.bind(this);
@@ -100,29 +104,27 @@ class ContainerProfile extends React.Component {
 
   onCellDragStart(e) {
     this.props.debugging && console.log('onCellDragStart');
-    const container = this.state.container;
     const itemId = e.target.getAttribute('id');
-    let draggedCell;
-    const containerExists = container && Object.keys(container).length > 0;
-    const containerChildrenExist = containerExists && Object.keys(container).indexOf('children') > -1;
-    const containerContainersExist = containerChildrenExist && Object.keys(container.children).indexOf('containers') > -1;
-    const containerPhysicalsExist = containerChildrenExist && Object.keys(container.children).indexOf('physicals') > -1;
-    const containerContainers = containerChildrenExist && containerContainersExist ? container.children.containers : [];
-    const containerPhysicals = containerChildrenExist && containerPhysicalsExist ? container.children.physicals : [];
-    for(let i = 0; i < containerContainers.length; i++){
-      let childContainer = containerContainers[i];
-      if (childContainer._id === itemId) {
-        draggedCell = childContainer;
-      }
-    }
-    for(let i = 0; i < containerPhysicals.length; i++){
-      let childPhysical = containerPhysicals[i];
-      if (childPhysical._id === itemId) {
-        draggedCell = childPhysical;
-      }
-    }
-    this.props.debugging && console.log('draggedCell: ', draggedCell);
+    let containers = this.state.containers;
+    let physicals = this.state.physicals;
+    let draggedCell = getItemById(itemId, containers, physicals);
+    //this.props.debugging && console.log('draggedCell: ', draggedCell);
     e.dataTransfer.setData("draggedCell", JSON.stringify(draggedCell));
+  }
+
+  onCellDrag(e) {
+    const draggedRecord = this.state.draggedRecord;
+    let draggedRecordExists = Object.keys(draggedRecord).length > 0;
+    if (!draggedRecordExists) {
+      const itemId = e.target.getAttribute('id');
+      let containers = this.state.containers;
+      let physicals = this.state.physicals;
+      let draggedCell = getItemById(itemId, containers, physicals);
+      this.setState({
+        isDragging: true,
+        draggedRecord: draggedCell
+      });
+    }  
   }
 
   onCellDragOver(e) {
@@ -130,18 +132,19 @@ class ContainerProfile extends React.Component {
   }
 
   onCellDragEnd(e) {
-    this.setState({
-      dragging: false
-    }); 
+
   }
 
   onCellDrop(e) {
     console.log('onCellDrop');
     const draggedCell = JSON.parse(e.dataTransfer.getData("draggedCell"));
-    console.log('draggedCell+data', draggedCell);
     draggedCell.row = Number(e.target.getAttribute('row'));
-    draggedCell.column = Number(e.target.getAttribute('col'));
+    draggedCell.column = Number(e.target.getAttribute('column'));
     this.moveItem(draggedCell);
+    this.setState({
+      isDragging: false,
+      draggedRecord: {}
+    });
   }
 
   async getDataAsync() {
@@ -441,33 +444,22 @@ class ContainerProfile extends React.Component {
 
 
           <div className="col-12 col-lg-5">
-            {/* <Grid 
-              demo={false}
-              selectLocations={false}
-              recordType="Container"
+            <Grid 
               record={this.state.container}
-              containers={containerContainers}
-              physicals={containerPhysicals}
-              dragging={this.state.dragging}
+              recordType="Container"
+              moveActive={this.props.isLoggedIn}
+              containers={this.state.containers}
+              physicals={this.state.physicals}
+              locations={this.state.locations}
+              isDragging={this.state.isDragging}
+              draggingOver={this.state.draggingOver}
+              draggedRecord={this.state.draggedRecord}
+              onCellDrag={this.onCellDrag}
               onCellDragStart={this.onCellDragStart}
               onCellDragOver={this.onCellDragOver}
               onCellDrop={this.onCellDrop}
               onCellDragEnd={this.onCellDragEnd}
-              {...this.state} */}
-            />
-            <Grid 
-                record={this.state.container}
-                recordType="Container"
-                // addFormActive={true}
-                // addFormType={itemType}
-                // addForm={itemType === 'container' ? this.state.containerForm : this.state.physicalForm}
-                containers={this.state.containers}
-                physicals={this.state.physicals}
-                locations={this.state.locations}
-                // newItemLocations={this.state.newItemLocations}
-                // addLocation={this.addLocation}
-                // removeLocation={this.removeLocation}
-              /> 
+            /> 
           </div>
 
         </div>
