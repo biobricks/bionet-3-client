@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { generateRandomName } from '../../modules/Wu';
 import GridSmall from '../Grid/GridSmall';
-import Api from '../../modules/Api';
 import { getSpanMax, locationExistsInArray, getLocationRange } from '../Helpers';
 
 class ContainerNewForm extends Component {
@@ -73,6 +72,10 @@ class ContainerNewForm extends Component {
     const formIsValid = nameIsValid;
     if (formIsValid) { 
       this.submitForm(formData); 
+      // this.setState({
+      //   redirect: true,
+      //   redirectTo: `labs/${this.props.match.params.labId}`
+      // });
     } else {
       // if form isn't valid, display errors
       this.setState({errors});      
@@ -80,17 +83,7 @@ class ContainerNewForm extends Component {
   }
 
   submitForm(formData) {
-    let parentIsContainer = this.props.parentType && this.props.parentType === "Container";
-    this.props.removeLocation(this.props.newItemLocations[0]);
-    Api.post('containers/new', formData)
-    .then((res) => {
-      this.props.debugging && console.log('post new container res', res);
-      this.setState({
-        redirect: true,
-        redirectTo: parentIsContainer ? `/containers/${formData.parent}` : `/labs/${formData.lab}`
-      });
-      this.props.refresh(this.props.currentUser);
-    });
+    this.props.updateContainer(formData);
   }
 
   render() { 

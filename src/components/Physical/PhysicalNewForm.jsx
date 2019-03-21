@@ -74,6 +74,13 @@ class PhysicalNewForm extends Component {
     formData.lab = isContainer ? this.props.container.lab._id : this.props.lab._id;
     formData.parent = isContainer ? this.props.container._id : null;    
     const virtualExists = Object.keys(this.state.virtual).length > 0;
+    if (virtualExists) {
+      let virtual = this.state.virtual;
+      formData.virtual = virtual._id;
+      formData.provenance = virtual.provenance;
+      formData.genotype = virtual.genotype;
+      formData.sequence = virtual.sequence;
+    }
     // form validation attributes
     const nameIsValid = formData.name && formData.name.length > 2;
     if (!nameIsValid) { errors.name = "Please enter a name with at least 3 letters."; } else { errors.name = "" };
@@ -86,16 +93,15 @@ class PhysicalNewForm extends Component {
     // validate
     const formIsValid = nameIsValid && provenanceIsValid && genotypeIsValid && sequenceIsValid;
     if (formIsValid) {
+      console.log('form valid');
       if (virtualExists) {
         // if virtual exists add to form and proceed
-        this.props.debugging && console.log('virtual exists. form:', formData);
-        formData.virtual = this.state.virtual._id;
-        
-        this.props.debugging && console.log('Form Submitted', formData);
+        console.log('virtual exists');
+        console.log('Form Submitted', formData);
         this.submitForm(formData);
       } else {
         // if virtual does not exist, create and on response add id to form and proceed
-        this.props.debugging && console.log('virtual doesn\'t exist - form:', formData);
+        console.log('virtual doesn\'t exist - form:', formData);
         let newVirtual = {
           createdBy: this.props.currentUser._id,
           name: formData.name,
@@ -114,6 +120,7 @@ class PhysicalNewForm extends Component {
         });      
       }
     } else {
+      console.log('form not valid', formData);
       // if form isn't valid, display errors
       this.setState({errors});
     }  
@@ -276,7 +283,7 @@ class PhysicalNewForm extends Component {
               </>
             ) : null }
 
-            <div className="form-group">
+            <div className="form-group mt-2">
               <label htmlFor="category">Category</label>
               <select
                 type="select"

@@ -1,5 +1,6 @@
 import React from 'react';
 import Grid from '../Grid/Grid';
+import  { Redirect } from 'react-router-dom';
 import ContainerNewForm from '../Container/ContainerNewForm';
 import PhysicalNewForm from '../Physical/PhysicalNewForm';
 import Api from '../../modules/Api';
@@ -41,17 +42,17 @@ class ContainerAdd extends React.Component {
     });
   }
 
-  updateContainer(container) {
-    let containerRecord = container;
-    containerRecord['parent'] = container._id;
-    Api.postContainer('containers/new', containerRecord)
+  updateContainer(formData) {
+    console.log('updating container', formData);
+    Api.post('containers/new', formData)
     .then((res) => {
-      //console.log(res);
-      this.getDataSync();
-      //this.props.refresh(this.props.currentUser);
-    })
-    .catch((error) => {
-      throw error;
+      this.props.debugging && console.log('post new container res', res);
+      this.removeLocation(this.state.newItemLocations[0]);
+      this.setState({
+        redirect: true,
+        redirectTo: `/containers/${this.props.match.params.containerId}`
+      });
+      this.props.refresh(this.props.currentUser);
     });
   }
 
@@ -126,6 +127,10 @@ class ContainerAdd extends React.Component {
       }
     }
 
+    if (this.state.redirect === true) {
+      return ( <Redirect to={this.state.redirectTo}/> )
+    }
+
     return (
       <div className="ContainerAdd container-fluid">
         <div className="row">
@@ -168,6 +173,7 @@ class ContainerAdd extends React.Component {
                           formData={this.state.containerForm}
                           updateFormData={this.updateFormData}
                           removeLocation={this.removeLocation}
+                          updateContainer={this.updateContainer}
                         />                        
                       ) : null } 
                       {(itemType === 'physical') ? (
@@ -228,6 +234,8 @@ class ContainerAdd extends React.Component {
 export default ContainerAdd;
 
 const initialState = {
+  redirect: false,
+  redirectTo: "",
   lab: {},
   container: {},
   containers: [],

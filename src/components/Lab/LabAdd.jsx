@@ -1,5 +1,6 @@
 import React from 'react';
 import Grid from '../Grid/Grid';
+import  { Redirect } from 'react-router-dom';
 import ContainerNewForm from '../Container/ContainerNewForm';
 import PhysicalNewForm from '../Physical/PhysicalNewForm';
 import Api from '../../modules/Api';
@@ -12,6 +13,7 @@ class LabAdd extends React.Component {
     this.state = initialState;
     this.getDataSync = this.getDataSync.bind(this);
     this.updateLab = this.updateLab.bind(this);
+    this.updateContainer = this.updateContainer.bind(this);
     this.addLocation = this.addLocation.bind(this);
     this.removeLocation = this.removeLocation.bind(this);
     this.updateFormData = this.updateFormData.bind(this);
@@ -44,9 +46,23 @@ class LabAdd extends React.Component {
   updateLab(lab) {
     Api.post(`labs/${lab._id}/edit`, lab)
     .then((res) => {
-      console.log(res);
+      //console.log(res);
       this.getDataSync();
       this.props.refresh(this.props.currentUser);
+    });
+  }
+
+  updateContainer(formData) {
+    console.log('updating container', formData);
+    Api.post('containers/new', formData)
+    .then((res) => {
+      this.props.debugging && console.log('post new container res', res);
+      this.removeLocation(this.state.newItemLocations[0]);
+      this.setState({
+        redirect: true,
+        redirectTo: `/labs/${this.props.match.params.labId}`
+      });
+      //this.props.refresh(this.props.currentUser);
     });
   }
 
@@ -120,6 +136,10 @@ class LabAdd extends React.Component {
       }
     }
 
+    if (this.state.redirect === true) {
+      return ( <Redirect to={this.state.redirectTo}/> )
+    }
+
     return (
       <div className="LabProfile container-fluid">
         <div className="row">
@@ -155,6 +175,7 @@ class LabAdd extends React.Component {
                           formData={this.state.containerForm}
                           updateFormData={this.updateFormData}
                           removeLocation={this.removeLocation}
+                          updateContainer={this.updateContainer}
                         />
                       ) : null } 
                       {(itemType === 'physical') ? (
@@ -198,6 +219,8 @@ class LabAdd extends React.Component {
 export default LabAdd;
 
 const initialState = {
+  redirect: false,
+  redirectTo: "",
   lab: {},
   containers: [],
   physicals: [],

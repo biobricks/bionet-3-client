@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-//import Grid from '../Grid/Grid';
+import Grid from '../Grid/Grid';
 import Api from '../../modules/Api';
+import { getChildren, getLocations } from '../Lab/LabHelpers';
 
 class ContainerEdit extends React.Component {
 
@@ -11,6 +12,13 @@ class ContainerEdit extends React.Component {
       redirect: false,
       lab: {},
       container: {},
+      containers: [],
+      physicals: [],
+      locations: {
+        empty: [],
+        full: []
+      },
+      newItemLocations: [],
       form: {
         name: "",
         description: "",
@@ -21,6 +29,7 @@ class ContainerEdit extends React.Component {
     this.updateField = this.updateField.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.getData = this.getData.bind(this);
   }
 
   updateField(e) {
@@ -54,17 +63,61 @@ class ContainerEdit extends React.Component {
     this.submitForm(formData);
   }
 
-  componentDidMount() {
-    let containerId = this.props.match.params.containerId;
-    Api.get(`containers/${containerId}`)
+  async getDataAsync() {
+    try {
+      const containerId = this.props.match.params.containerId;
+      const getContainerRes = await Api.get(`containers/${containerId}`);
+      let container = getContainerRes.data;
+      const form = container;
+      const getContainersRes = await Api.get('containers');
+      const allContainers = getContainersRes.data || [];
+      const labId = container.lab._id;
+      const getLabRes = await Api.get(`labs/${labId}`);
+      const lab = getLabRes.data;
+      const getPathRes = await Api.get(`labs/${lab._id}/container/${container._id}`);
+      let pathArray = getPathRes.data || [];
+      let path = [];
+      for(let i = 0; i < pathArray.length; i++){
+        if (pathArray[i] !== null) {
+          path.push(pathArray[i]);
+        }
+      }
+      const { containers, physicals } = getChildren(container);
+      const locations = getLocations(container, containers, physicals); 
+      return {
+        path,
+        lab,
+        container,
+        containers,
+        physicals,
+        allContainers,
+        locations,
+        form
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  getData() {
+    this.getDataAsync()
     .then((res) => {
-      //console.log('getContainer.res', res);
-      this.setState({
-        lab: res.data.lab,
-        container: res.data,
-        form: res.data
-      });
+      this.setState(res);
     });
+  }
+
+  componentDidMount() {
+    // let containerId = this.props.match.params.containerId;
+    // Api.get(`containers/${containerId}`)
+    // .then((res) => {
+    //   //console.log('getContainer.res', res);
+    //   this.setState({
+    //     lab: res.data.lab,
+    //     container: res.data,
+    //     form: res.data
+    //   });
+    // });
+    this.getData();
   }
 
   render() {
@@ -111,7 +164,7 @@ class ContainerEdit extends React.Component {
                           className="form-control"
                           value={this.state.form.name}
                           onChange={this.updateField}
-                          placeholder="Containre Name"
+                          placeholder="Container Name"
                         />
                       </div>
 
@@ -180,9 +233,25 @@ class ContainerEdit extends React.Component {
                 selectLocations={false}
                 recordType="Container"
                 record={this.state.container}
-                containers={containerContainers}
-                physicals={containerPhysicals}
+                containers={this.state.containers}
+                physicals={this.state.physicals}
               /> */}
+              <Grid 
+                record={this.state.container}
+                recordType="Container"
+                moveActive={this.props.isLoggedIn}
+                containers={this.state.containers}
+                physicals={this.state.physicals}
+                locations={this.state.locations}
+                // isDragging={this.state.isDragging}
+                // draggingOver={this.state.draggingOver}
+                // draggedRecord={this.state.draggedRecord}
+                // onCellDrag={this.onCellDrag}
+                // onCellDragStart={this.onCellDragStart}
+                // onCellDragOver={this.onCellDragOver}
+                // onCellDrop={this.onCellDrop}
+                // onCellDragEnd={this.onCellDragEnd}
+              /> 
             </div>
           ) : null }
         </div>

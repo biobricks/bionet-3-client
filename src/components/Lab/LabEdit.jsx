@@ -1,22 +1,46 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-//import Grid from '../Grid/Grid';
+import Grid from '../Grid/Grid';
 import Api from '../../modules/Api';
+import { getChildren, getLocations } from './LabHelpers';
 
 class LabEdit extends React.Component {
 
   constructor(props) {
     super(props);
+    // this.state = {
+    //   redirect: false,
+    //   lab: {},
+      // form: {
+      //   name: "",
+      //   description: "",
+      //   rows: 0,
+      //   columns: 0
+      // }
+    // };
     this.state = {
       redirect: false,
+      error: "",
       lab: {},
+      containers: [],
+      physicals: [],
+      locations: {
+        empty: [],
+        full: []
+      },
       form: {
         name: "",
         description: "",
         rows: 0,
         columns: 0
-      }
+      },
+      virtuals: [],
+      allContainers: [],
+      isDragging: false,
+      draggingOver: [],
+      draggedRecord: {}
     };
+    this.getData = this.getData.bind(this);
     this.updateField = this.updateField.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -53,31 +77,43 @@ class LabEdit extends React.Component {
     this.submitForm(formData);
   }
 
-  componentDidMount() {
-    const labId = this.props.match.params.labId;
-    Api.get(`labs/${labId}`)
+  async getDataAsync() {
+    // get labs and containers
+    try {
+      const labId = this.props.match.params.labId;
+      const getLabRes = await Api.get(`labs/${labId}`);
+      const lab = getLabRes.data;
+      const getContainersRes = await Api.get('containers');
+      const allContainers = getContainersRes.data || [];
+      const getVirtualsRes = await Api.get('virtuals');
+      const virtuals = getVirtualsRes.data || [];
+      const { containers, physicals } = getChildren(lab);
+      const locations = getLocations(lab, containers, physicals); 
+      const form = lab; 
+      return { lab, allContainers, virtuals, containers, physicals, locations, form };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  getData() {
+    this.getDataAsync()
     .then((res) => {
-      this.props.debugging && console.log('getData.res', res);
-      this.setState({
-        lab: res.data,
-        form: res.data
-      });
+      this.setState(res);      
+    })
+    .catch((error) => {
+      throw error;
     });
+  }
+
+  componentDidMount() {
+    this.getData();
   }
 
   render() {
     const isLoggedIn = this.props.isLoggedIn;
     let form = this.state.form;
     let formValid = form.name.length > 0 && form.rows > 1 && form.columns > 1;
-    
-    //const lab = this.state.lab;
-    //const labExists = lab && Object.keys(lab).length > 0;
-    //const labChildrenExist = labExists && Object.keys(lab).indexOf('children') > -1;
-    //const labContainersExist = labChildrenExist && Object.keys(lab.children).indexOf('containers') > -1;
-    //const labPhysicalsExist = labChildrenExist && Object.keys(lab.children).indexOf('physicals') > -1;
-
-    //const labContainers = labExists && labChildrenExist && labContainersExist ? lab.children.containers : [];
-    //const labPhysicals = labExists && labChildrenExist && labPhysicalsExist ? lab.children.physicals : [];
 
     if (this.state.redirect === true) {
       return ( <Redirect to={`/labs/${this.props.match.params.labId}`}/> )
@@ -190,6 +226,22 @@ class LabEdit extends React.Component {
                 containers={labContainers}
                 physicals={labPhysicals}
               /> */}
+              <Grid 
+                record={this.state.lab}
+                recordType="Lab"
+                moveActive={this.props.isLoggedIn}
+                containers={this.state.containers}
+                physicals={this.state.physicals}
+                locations={this.state.locations}
+                //isDragging={this.state.isDragging}
+                //draggingOver={this.state.draggingOver}
+                //draggedRecord={this.state.draggedRecord}
+                //onCellDrag={this.onCellDrag}
+                //onCellDragStart={this.onCellDragStart}
+                //onCellDragOver={this.onCellDragOver}
+                //onCellDrop={this.onCellDrop}
+                //onCellDragEnd={this.onCellDragEnd}
+              /> 
             </div>
           ) : null }
         </div>

@@ -435,7 +435,7 @@ class ContainerProfile extends React.Component {
                 containers={containerContainers} 
                 physicals={containerPhysicals} 
                 currentUser={this.props.currentUser}
-                refresh={this.props.refresh}
+                refresh={this.getData}
                 allContainers={this.state.allContainers} 
                 lab={this.state.lab} 
               />   
