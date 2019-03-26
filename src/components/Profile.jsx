@@ -1,19 +1,23 @@
 import React from 'react';
 import shortid from 'shortid';
-import Grid from '../Grid/Grid';
-import Containers from '../Container/Containers';
-import Physicals from '../Physical/Physicals';
-import LabToolbar from '../Lab/LabToolbar';
-import Api from '../../modules/Api';
-import { getItemById, getChildren, getLocations } from './LabHelpers';
+import Grid from './Grid/Grid';
+//import Tree from './Tree';
+import Containers from './Container/Containers';
+import Physicals from './Physical/Physicals';
+import LabToolbar from './Lab/LabToolbar';
+import Api from '../modules/Api';
+import Breadcrumbs from './Breadcrumbs/Breadcrumbs';
+import { getItemById, getChildren, getLocations } from './Lab/LabHelpers';
 
-class LabProfile extends React.Component {
+class Profile extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
       error: "",
+      path: [],
       lab: {},
+      container: {},
       containers: [],
       physicals: [],
       locations: {
@@ -125,15 +129,46 @@ class LabProfile extends React.Component {
     // get labs and containers
     try {
       const labId = this.props.match.params.labId;
-      const getLabRes = await Api.get(`labs/${labId}`);
-      const lab = getLabRes.data;
-      const getContainersRes = await Api.get('containers');
-      const allContainers = getContainersRes.data || [];
-      const getVirtualsRes = await Api.get('virtuals');
-      const virtuals = getVirtualsRes.data || [];
-      const { containers, physicals } = getChildren(lab);
-      const locations = getLocations(lab, containers, physicals); 
-      return { lab, allContainers, virtuals, containers, physicals, locations };
+      const containerId = this.props.match.params.containerId;
+      if (labId) {
+        const getLabRes = await Api.get(`labs/${labId}`);
+        const lab = getLabRes.data;
+        const getContainersRes = await Api.get('containers');
+        const allContainers = getContainersRes.data || [];
+        const getVirtualsRes = await Api.get('virtuals');
+        const virtuals = getVirtualsRes.data || [];
+        const { containers, physicals } = getChildren(lab);
+        const locations = getLocations(lab, containers, physicals); 
+        return { lab, allContainers, virtuals, containers, physicals, locations };
+      }
+      if (containerId) {
+        const getContainerRes = await Api.get(`containers/${containerId}`);
+        let container = getContainerRes.data;
+        const getContainersRes = await Api.get('containers');
+        const allContainers = getContainersRes.data || [];
+        const labId = container.lab._id;
+        const getLabRes = await Api.get(`labs/${labId}`);
+        const lab = getLabRes.data;
+        const getPathRes = await Api.get(`labs/${lab._id}/container/${container._id}`);
+        let pathArray = getPathRes.data || [];
+        let path = [];
+        for(let i = 0; i < pathArray.length; i++){
+          if (pathArray[i] !== null) {
+            path.push(pathArray[i]);
+          }
+        }
+        const { containers, physicals } = getChildren(container);
+        const locations = getLocations(container, containers, physicals); 
+        return {
+          path,
+          lab,
+          container,
+          containers,
+          physicals,
+          allContainers,
+          locations
+        };        
+      }
     } catch (error) {
       throw error;
     }
@@ -142,7 +177,11 @@ class LabProfile extends React.Component {
   getData() {
     this.getDataAsync()
     .then((res) => {
-      this.setState(res);      
+      const labId = this.props.match.params.labId;
+      const containerId = this.props.match.params.containerId;
+      if (labId || containerId){
+        this.setState(res);
+      }        
     })
     .catch((error) => {
       throw error;
@@ -278,10 +317,15 @@ class LabProfile extends React.Component {
   render() {
     const isLoggedIn = this.props.isLoggedIn;
     const currentUser = this.props.currentUser;
+
+    const labId = this.props.match.params.labId;
+    const recordIsLab = labId ? true : false;
+
     const lab = this.state.lab;
-    const labUsers = lab.users || [];
+    const container = this.state.container;
+    const labUsers = lab ? lab.users : [];
     let userIsMember = false;
-    if (isLoggedIn) {
+    if (isLoggedIn && labUsers) {
       for (let i = 0; i < labUsers.length; i++) {
         let labUser = labUsers[i];
         //this.props.debugging && console.log(`Lab user ${i}: `, labUser);
@@ -299,7 +343,16 @@ class LabProfile extends React.Component {
     const labPhysicalsExist = labChildrenExist && Object.keys(lab.children).indexOf('physicals') > -1;
     const labContainers = labExists && labChildrenExist && labContainersExist ? lab.children.containers : [];
     const labPhysicals = labExists && labChildrenExist && labPhysicalsExist ? lab.children.physicals : [];
-    const membershipRequests = isLoggedIn && lab.joinRequests ? lab.joinRequests.map((user, index) => {
+
+    const containerExists = container && Object.keys(container).length > 0;
+    const containerChildrenExist = containerExists && Object.keys(container).indexOf('children') > -1;
+    const containerContainersExist = containerChildrenExist && Object.keys(container.children).indexOf('containers') > -1;
+    const containerPhysicalsExist = containerChildrenExist && Object.keys(container.children).indexOf('physicals') > -1;
+
+    const containerContainers = containerChildrenExist && containerContainersExist ? container.children.containers : [];
+    const containerPhysicals = containerChildrenExist && containerPhysicalsExist ? container.children.physicals : [];
+
+    const membershipRequests = isLoggedIn && lab && lab.joinRequests ? lab.joinRequests.map((user, index) => {
       return (
         <div 
           key={shortid.generate()}
@@ -335,7 +388,7 @@ class LabProfile extends React.Component {
             <div className="card rounded-0 mt-3">
               <div className="card-header rounded-0 bg-dark-green text-light">
                 <div className="card-title mb-0 text-capitalize">
-                  <span><i className="mdi mdi-xl mdi-teach" /> {lab.name}</span>
+                  <span><i className="mdi mdi-xl mdi-teach" /> {lab ? lab.name : 'Error'}</span>
                   {isLoggedIn && ( 
                     <LabToolbar 
                       {...this.props}
@@ -348,6 +401,14 @@ class LabProfile extends React.Component {
                   )}
                 </div>
               </div>
+
+              {(this.state.path.length > 0) ? (
+                <Breadcrumbs 
+                  path={this.state.path}
+                  lab={lab}
+                  item={container}
+                />
+              ) : null }
             
               <div className="card-body">
                 {(this.state.error.length > 0) ? (
@@ -356,6 +417,8 @@ class LabProfile extends React.Component {
                   </p>
                 ) : null}
                 
+                {lab && (
+                  <>
                   {(lab.description && lab.description.length > 0) ? (
                     <p className="card-text">
                       {lab.description}
@@ -365,7 +428,8 @@ class LabProfile extends React.Component {
                       No description provided.
                     </p>
                   )}
-                
+                  </>
+                )}  
                 {(isLoggedIn && userIsMember && lab && lab.joinRequests && lab.joinRequests.length > 0) ? (
                   <>
                   <h5>Membership Requests</h5> 
@@ -376,13 +440,15 @@ class LabProfile extends React.Component {
     
             </div>
 
+              {/* <Tree record={lab} /> */}
+
               <Containers 
                 isLoggedIn={isLoggedIn}
                 userIsMember={userIsMember}
-                containers={labContainers} 
+                containers={recordIsLab ? labContainers : containerContainers} 
                 currentUser={this.props.currentUser}
                 refresh={this.getData}
-                physicals={labPhysicals}  
+                physicals={recordIsLab ? labPhysicals : containerPhysicals}  
                 allContainers={this.state.allContainers} 
                 lab={this.state.lab}               
               /> 
@@ -400,11 +466,11 @@ class LabProfile extends React.Component {
 
           </div>
 
-
+          
           <div className="col-12 col-lg-5">
             <Grid 
-              record={this.state.lab}
-              recordType="Lab"
+              record={recordIsLab ? this.state.lab : this.state.container}
+              recordType={recordIsLab ? "Lab" : "Container"}
               moveActive={this.props.isLoggedIn}
               containers={this.state.containers}
               physicals={this.state.physicals}
@@ -426,4 +492,4 @@ class LabProfile extends React.Component {
   }
 }
 
-export default LabProfile;
+export default Profile;

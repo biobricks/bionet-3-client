@@ -11,7 +11,7 @@ class AddGrid extends React.Component {
       <div className="AddGrid card rounded-0 mt-3 mb-3">
         <div className="card-header bg-dark-green text-light rounded-0">
           <h4 className="card-title mb-0 text-capitalize">
-            <i className={recordType === 'Lab' ? 'mdi mdi-teach mr-2' : 'mdi mdi-grid mr-2'} />{record.name}
+            <i className={recordType === 'Lab' ? 'mdi mdi-teach mr-2' : 'mdi mdi-grid mr-2'} />{record ? record.name : 'Error'}
           </h4>
         </div>
         <div className="card-body">

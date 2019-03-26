@@ -7,12 +7,12 @@ class LabToolbar extends React.Component {
     const isLoggedIn = this.props.isLoggedIn;
     const currentUser = this.props.currentUser;
     const lab = this.props.lab;
-    const labUsers = lab.users || [];
-    const joinRequests = lab.joinRequests || [];
+    const labUsers = lab ? lab.users : [];
+    const joinRequests = lab ? lab.joinRequests : [];
     let userIsMember = false;
     let userIsRequestingMembership = false;
 
-    if (isLoggedIn) {
+    if (isLoggedIn && labUsers) {
       for (let i = 0; i < labUsers.length; i++) {
         let labUser = labUsers[i];
         //this.props.debugging && console.log(`Lab user ${i}: `, labUser);

@@ -7,23 +7,20 @@ import Navigation from './components/Navigation/Navigation';
 import Footer from './components/Footer/Footer';
 import Login from './components/Login';
 import Signup from './components/Signup';
-import LabProfile from './components/Lab/LabProfile';
-import ContainerProfile from './components/Container/ContainerProfile';
 import Api from './modules/Api';
 import PasswordReset from './components/PasswordReset';
 import PasswordResetVerify from './components/PasswordResetVerify';
 import About from './components/About';
 import Download from './components/Download';
+import Profile from './components/Profile';
 
 const Landing = lazy(() => import('./components/Landing'));
 
-// const LabProfile = lazy(() => import('./components/Lab/LabProfile'));
 const LabNew = lazy(() => import('./components/Lab/LabNew'));
 const LabAdd = lazy(() => import('./components/Lab/LabAdd'));
 const LabEdit = lazy(() => import('./components/Lab/LabEdit'));
 const LabDelete = lazy(() => import('./components/Lab/LabDelete'));
 
-// const ContainerProfile = lazy(() => import('./components/Container/ContainerProfile'));
 const ContainerAdd = lazy(() => import('./components/Container/ContainerAdd'));
 const ContainerEdit = lazy(() => import('./components/Container/ContainerEdit'));
 const ContainerDelete = lazy(() => import('./components/Container/ContainerDelete'));
@@ -123,15 +120,23 @@ class App extends React.Component {
             )}/> */}
             <Route path='/labs/:labId/edit' component={WaitForComponent(LabEdit, this.state, this.getCurrentUserLabs)}/>
             <Route path='/labs/:labId/delete' component={WaitForComponent(LabDelete, this.state, this.getCurrentUserLabs)}/>
-            {/* <Route path="/labs/:labId" component={WaitForComponent(LabProfile, this.state, this.getCurrentUserLabs)}/> */}
-            <Route path="/labs/:labId" render={(props) => (
+            {/* <Route path="/labs/:labId" component={WaitForComaponent(LabProfile, this.state, this.getCurrentUserLabs)}/> */}
+            {/* <Route path="/labs/:labId" render={(props) => (
               <LabProfile 
                 {...props}
                 {...this.state}
                 {...this.props}
                 refresh={this.setCurrentUser}
               />
-            )}/>
+            )}/> */}
+            <Route path="/labs/:labId" render={(props) => (
+              <Profile 
+                {...props}
+                {...this.state}
+                {...this.props}
+                refresh={this.setCurrentUser}
+              />
+            )}/>            
           </Switch>  
 
           <Switch>
@@ -139,14 +144,23 @@ class App extends React.Component {
             <Route path="/containers/:containerId/edit" exact component={WaitForComponent(ContainerEdit, this.state, this.getCurrentUserLabs)}/>
             <Route path='/containers/:containerId/delete' component={WaitForComponent(ContainerDelete, this.state, this.getCurrentUserLabs)}/>
             {/* <Route path="/containers/:containerId" exact component={WaitForComponent(ContainerProfile, this.state, this.getCurrentUserLabs)}/> */}
-            <Route path="/containers/:containerId" render={(props) => (
+            {/* <Route path="/containers/:containerId" render={(props) => (
               <ContainerProfile 
                 {...props}
                 {...this.state}
                 {...this.props}
                 refresh={this.setCurrentUser}
               />
-            )}/>            
+            )}/>             
+            */}
+            <Route path="/containers/:containerId" render={(props) => (
+              <Profile 
+                {...props}
+                {...this.state}
+                {...this.props}
+                refresh={this.setCurrentUser}
+              />
+            )}/> 
           </Switch>  
 
           <Switch>

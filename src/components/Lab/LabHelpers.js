@@ -87,8 +87,10 @@ export const getLocations = function getLocations(record, containers, physicals)
 
   // empty cells
   let emptyCellArray = [];
-  for(let rowNo = 1; rowNo <= record.rows; rowNo++){
-    for(let colNo = 1; colNo <= record.columns; colNo++){
+  let recordRows = record ? record.rows : [];
+  let recordColumns = record ? record.columns : [];
+  for(let rowNo = 1; rowNo <= recordRows; rowNo++){
+    for(let colNo = 1; colNo <= recordColumns; colNo++){
       const position = [rowNo, colNo];
       let positionFull = false;
       for(let i = 0; i < fullCellArray.length; i++){
