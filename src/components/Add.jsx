@@ -1,12 +1,12 @@
 import React from 'react';
-import Grid from '../Grid/Grid';
+import Grid from './Grid/Grid';
 import  { Redirect } from 'react-router-dom';
-import ContainerNewForm from '../Container/ContainerNewForm';
-import PhysicalNewForm from '../Physical/PhysicalNewForm';
-import Api from '../../modules/Api';
-import { getChildren, getLocations } from './LabHelpers';
+import ContainerNewForm from './Container/ContainerNewForm';
+import PhysicalNewForm from './Physical/PhysicalNewForm';
+import Api from '../modules/Api';
+import { getChildren, getLocations } from './Lab/LabHelpers';
 
-class LabAdd extends React.Component {
+class Add extends React.Component {
 
   constructor(props) {
     super(props);
@@ -22,11 +22,22 @@ class LabAdd extends React.Component {
   async getData() {
     try {
       const labId = this.props.match.params.labId;
-      const labRes = await Api.get(`labs/${labId}`);
-      const lab = labRes.data;      
-      const { containers, physicals } = getChildren(lab);
-      const locations = getLocations(lab, containers, physicals);      
-      return { lab, containers, physicals, locations }; 
+      const containerId = this.props.match.params.containerId;
+      if (labId) {
+        const labRes = await Api.get(`labs/${labId}`);
+        const lab = labRes.data;      
+        const { containers, physicals } = getChildren(lab);
+        const locations = getLocations(lab, containers, physicals);      
+        return { lab, containers, physicals, locations };
+      } 
+      if (containerId) {
+        const containerRes = await Api.get(`containers/${containerId}`);
+        const container = containerRes.data;      
+        const lab = container.lab;
+        const { containers, physicals } = getChildren(container);
+        const locations = getLocations(container, containers, physicals);      
+        return { lab, container, containers, physicals, locations }; 
+      }
     } catch (error) {
       throw error;
     }
@@ -35,8 +46,14 @@ class LabAdd extends React.Component {
   getDataSync() {
     this.getData()
     .then(res => {
-      const { lab, containers, physicals, locations } = res;
-      this.setState({ lab, containers, physicals, locations });
+      const labId = this.props.match.params.labId;
+      if (labId) {
+        const { lab, containers, physicals, locations } = res;
+        this.setState({ lab, containers, physicals, locations });
+      } else {
+        const { lab, container, containers, physicals, locations } = res;
+        this.setState({ lab, containers, container, physicals, locations });        
+      }  
     })
     .catch(error => {
       throw error;
@@ -125,11 +142,14 @@ class LabAdd extends React.Component {
     const isLoggedIn = this.props.isLoggedIn;
     const currentUser = this.props.currentUser;
     const lab = this.state.lab;
+    const container = this.state.container;
     const itemType = this.props.match.params.itemType || "container";
     const itemIconClasses = itemType === "container" ? "mdi mdi-grid mr-2" : "mdi mdi-flask mr-2";
+    const labId = this.props.match.params.labId;
+    const recordIsLab = labId ? true : false;
 
     let userIsMember = false;
-    if (isLoggedIn) {
+    if (isLoggedIn && lab) {
       for (let i = 0; i < currentUser.labs.length; i++) {
         let userLab = currentUser.labs[i];
         if (userLab._id === lab._id) { userIsMember = true; }
@@ -141,7 +161,7 @@ class LabAdd extends React.Component {
     }
 
     return (
-      <div className="LabProfile container-fluid">
+      <div className="Add container-fluid">
         <div className="row">
           {(isLoggedIn && userIsMember) ? (
             <>
@@ -156,11 +176,11 @@ class LabAdd extends React.Component {
                     <div className="card-body">
                       {(itemType === 'container') ? (
                         <p className="card-text">
-                          Select which cell the Container will occupy within {lab.name}.
+                          Select which cell the Container will occupy within {recordIsLab ? lab.name : container.name}.
                         </p>
                       ) : (
                         <p className="card-text">
-                          Select which cell the Physical Sample will occupy within {lab.name}.
+                          Select which cell the Physical Sample will occupy within {recordIsLab ? lab.name : container.name}.
                         </p>
                       )}    
                     </div>
@@ -216,12 +236,13 @@ class LabAdd extends React.Component {
   }
 }
 
-export default LabAdd;
+export default Add;
 
 const initialState = {
   redirect: false,
   redirectTo: "",
   lab: {},
+  container: {},
   containers: [],
   physicals: [],
   locations: {
