@@ -14,16 +14,15 @@ import About from './components/About';
 import Download from './components/Download';
 import Profile from './components/Profile';
 import Add from './components/Add';
+import Edit from './components/Edit';
 
 const Landing = lazy(() => import('./components/Landing'));
 
 const LabNew = lazy(() => import('./components/Lab/LabNew'));
-//const LabAdd = lazy(() => import('./components/Lab/LabAdd'));
-const LabEdit = lazy(() => import('./components/Lab/LabEdit'));
+//const LabEdit = lazy(() => import('./components/Lab/LabEdit'));
 const LabDelete = lazy(() => import('./components/Lab/LabDelete'));
 
-//const ContainerAdd = lazy(() => import('./components/Container/ContainerAdd'));
-const ContainerEdit = lazy(() => import('./components/Container/ContainerEdit'));
+//const ContainerEdit = lazy(() => import('./components/Container/ContainerEdit'));
 const ContainerDelete = lazy(() => import('./components/Container/ContainerDelete'));
 
 function WaitForComponent(Component, state, refreshMethod) {
@@ -119,7 +118,15 @@ class App extends React.Component {
                 refresh={this.setCurrentUser}
               />
             )}/> 
-            <Route path='/labs/:labId/edit' component={WaitForComponent(LabEdit, this.state, this.getCurrentUserLabs)}/>
+            <Route path="/labs/:labId/edit" render={(props) => (
+              <Edit 
+                {...props}
+                {...this.state}
+                {...this.props}
+                refresh={this.setCurrentUser}
+              />
+            )}/> 
+            {/* <Route path='/labs/:labId/edit' component={WaitForComponent(LabEdit, this.state, this.getCurrentUserLabs)}/> */}
             <Route path='/labs/:labId/delete' component={WaitForComponent(LabDelete, this.state, this.getCurrentUserLabs)}/>
             <Route path="/labs/:labId" render={(props) => (
               <Profile 
@@ -141,7 +148,15 @@ class App extends React.Component {
                 refresh={this.setCurrentUser}
               />
             )}/> 
-            <Route path="/containers/:containerId/edit" exact component={WaitForComponent(ContainerEdit, this.state, this.getCurrentUserLabs)}/>
+            <Route path="/containers/:containerId/edit" render={(props) => (
+              <Edit 
+                {...props}
+                {...this.state}
+                {...this.props}
+                refresh={this.setCurrentUser}
+              />
+            )}/> 
+            {/* <Route path="/containers/:containerId/edit" exact component={WaitForComponent(ContainerEdit, this.state, this.getCurrentUserLabs)}/> */}
             <Route path='/containers/:containerId/delete' component={WaitForComponent(ContainerDelete, this.state, this.getCurrentUserLabs)}/>
             <Route path="/containers/:containerId" render={(props) => (
               <Profile 
