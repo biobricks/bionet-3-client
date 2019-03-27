@@ -190,8 +190,8 @@ class Add extends React.Component {
                         <ContainerNewForm 
                           {...this.props} 
                           {...this.state}
-                          parentType="Lab"
-                          parentRecord={lab}
+                          parentType={recordIsLab ? "Lab" : "Container"}
+                          parentRecord={recordIsLab ? lab : container}
                           formData={this.state.containerForm}
                           updateFormData={this.updateFormData}
                           removeLocation={this.removeLocation}
@@ -202,8 +202,8 @@ class Add extends React.Component {
                         <PhysicalNewForm 
                           {...this.props} 
                           {...this.state}
-                          parentType="Lab"
-                          parentRecord={lab}
+                          parentType={recordIsLab ? "Lab" : "Container"}
+                          parentRecord={recordIsLab ? lab : container}
                           formData={this.state.physicalForm}
                           updateFormData={this.updateFormData}
                           removeLocation={this.removeLocation}
@@ -215,8 +215,8 @@ class Add extends React.Component {
               </div>
               <div className="col-12 col-lg-5">
                 <Grid 
-                  record={this.state.lab}
-                  recordType="Lab"
+                  record={recordIsLab ? lab : container}
+                  recordType={recordIsLab ? "Lab" : "Container"}
                   addFormActive={true}
                   addFormType={itemType}
                   addForm={itemType === 'container' ? this.state.containerForm : this.state.physicalForm}
