@@ -388,11 +388,14 @@ class Profile extends React.Component {
             <div className="card rounded-0 mt-3">
               <div className="card-header rounded-0 bg-dark-green text-light">
                 <div className="card-title mb-0 text-capitalize">
-                  <span><i className="mdi mdi-xl mdi-teach" /> {lab ? lab.name : 'Error'}</span>
+                  <span>
+                    <i className={recordIsLab ? "mdi mdi-xl mdi-teach" : "mdi mdi-xl mdi-grid"} />
+                    {recordIsLab ? lab ? lab.name : 'Error' : container ? container.name : 'Error'}
+                  </span>
                   {isLoggedIn && ( 
                     <LabToolbar 
                       {...this.props}
-                      type="Lab"
+                      type={recordIsLab ? "Lab" : "Container"}
                       lab={this.state.lab}
                       onRevokeLabMembership={this.onRevokeLabMembership}
                       onRequestLabMembership={this.onRequestLabMembership}
