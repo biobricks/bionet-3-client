@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Auth from '../modules/Auth';
+import Api from '../modules/Api';
 import { Redirect, Link } from 'react-router-dom';
-import appConfig from '../configuration.js';
+import appConfig from '../config.js';
 
 class Login extends Component {
 
@@ -40,8 +40,8 @@ class Login extends Component {
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
         //this.props.setAlert("success", "You have been succesfully logged in");
-        Auth.authenticateUser(xhr.response.token);       
-        this.props.setCurrentUser()
+        Api.authenticateUser(xhr.response.token);       
+        this.props.getCurrentUser()
         this.setState({
           redirect: true,
           errors: {}
@@ -78,7 +78,7 @@ class Login extends Component {
         <div className="row">
           <div className="col col-md-7 col-lg-5 ml-md-auto mr-md-auto text-center">
             <div className="card rounded-0 mt-3">
-              <div className="card-header bg-dark-green text-light rounded-0">
+              <div className="card-header bg-dark text-light rounded-0">
                 <h4 className="card-title mb-0">Login</h4>
               </div>
               <div className="card-body">

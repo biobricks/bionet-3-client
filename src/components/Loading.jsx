@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Loader from './images/DNA_dblHelix.svg';
-import "./Loading.css"
+import Loader from '../images/DNA_dblHelix.svg';
+import "./Loading.scss"
 
 class Loading extends Component {
   render() { 
@@ -10,7 +10,7 @@ class Loading extends Component {
           <div className="loading-container row justify-content-center align-items-center">      
             <div className="Loader">
               <img src={Loader} className="preLoader" alt="Loading" />
-              <h3 className="loader-title">Loading BioNet</h3>
+              <h3 className="loader-title text-light">Loading Bionet</h3>
             </div>
           </div>
         </div> 

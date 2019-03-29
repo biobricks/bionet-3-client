@@ -1,0 +1,44 @@
+.App {
+  .page-container {
+    width:100%;
+    background: linear-gradient( rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.0) ), url('./images/biobricks-bkg.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    min-height: calc(100vh - 60px - 60px - 5px);
+    padding: 16px 0;
+  }
+}
+
+.bg-dark{
+	background-color: rgb(23,43,47) !important;
+}
+
+.card {
+  border-color: rgb(4, 32, 13);
+  border-radius: 0px;
+  .card-header {
+    border-radius: 0px;
+  }
+  p.card-text {
+    font-size: 1.2em;
+  }
+}
+
+
+button.dropdown-item:hover {
+	cursor: pointer;
+}
+
+.join-request span {
+	font-size: 1.3em;
+}
+
+.rbt-input,
+.rbt-menu.dropdown-menu {
+	border-radius: 0px;
+}
+
+ol.breadcrumb {
+	margin-bottom: 0;
+}

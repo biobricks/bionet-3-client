@@ -3,8 +3,8 @@ import { Link, Redirect } from 'react-router-dom';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead-bs4.css';
-import Api from '../../modules/Api';
-import { getSpanMax, locationExistsInArray, getLocationRange } from '../Helpers';
+import Api from '../modules/Api';
+import { getSpanMax, locationExistsInArray, getLocationRange } from './Helpers';
 
 class PhysicalNewForm extends Component {
   

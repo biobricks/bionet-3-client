@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import Grid from './Grid/Grid';
+import Grid from './Grid';
 import Api from '../modules/Api';
-import { getChildren, getLocations } from './Lab/LabHelpers';
+import { getChildren, getLocations } from './LabHelpers';
 
 class Edit extends React.Component {
 

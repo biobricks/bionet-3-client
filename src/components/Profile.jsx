@@ -1,13 +1,13 @@
 import React from 'react';
 import shortid from 'shortid';
-import Grid from './Grid/Grid';
+import Grid from './Grid';
 //import Tree from './Tree';
-import Containers from './Container/Containers';
-import Physicals from './Physical/Physicals';
-import LabToolbar from './Lab/LabToolbar';
+import Containers from './Containers';
+import Physicals from './Physicals';
+import LabToolbar from './LabToolbar';
 import Api from '../modules/Api';
-import Breadcrumbs from './Breadcrumbs/Breadcrumbs';
-import { getItemById, getChildren, getLocations } from './Lab/LabHelpers';
+import Breadcrumbs from './Breadcrumbs';
+import { getItemById, getChildren, getLocations } from './LabHelpers';
 
 class Profile extends React.Component {
 
@@ -380,13 +380,13 @@ class Profile extends React.Component {
     }) : [];
 
     return (
-      <div className="LabProfile container-fluid">
+      <div className="Profile container-fluid">
         
         <div className="row">
           <div className="col-12 col-lg-7">
 
             <div className="card rounded-0 mt-3">
-              <div className="card-header rounded-0 bg-dark-green text-light">
+              <div className="card-header rounded-0 bg-dark text-light">
                 <div className="card-title mb-0 text-capitalize">
                   <span>
                     <i className={recordIsLab ? "mdi mdi-xl mdi-teach" : "mdi mdi-xl mdi-grid"} />

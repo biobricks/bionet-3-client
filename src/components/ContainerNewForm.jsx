@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { generateRandomName } from '../../modules/Wu';
-import GridSmall from '../Grid/GridSmall';
-import { getSpanMax, locationExistsInArray, getLocationRange } from '../Helpers';
+import { generateRandomName } from '../modules/Wu';
+import GridSmall from './GridSmall';
+import { getSpanMax, locationExistsInArray, getLocationRange } from './Helpers';
 
 class ContainerNewForm extends Component {
   
@@ -104,9 +104,9 @@ class ContainerNewForm extends Component {
         <div className="col-12 col-lg-6">
           <form onSubmit={this.onFormSubmit}>
             
-            {(this.props.parentType && this.props.parentType === "Container") ? (
+            {/* {(this.props.parentType && this.props.parentType === "Container") ? (
               <input type="hidden" name="parent" value={this.props.container._id}/>
-            ) : null }  
+            ) : null }   */}
             
             <div className="form-group">
               <label htmlFor="name">Name</label>
@@ -223,7 +223,7 @@ class ContainerNewForm extends Component {
             </div>
             <div className="form-group text-center">
               <div className="btn-group">
-                {(this.props.parentType && this.props.parentType === "Container") ? (
+                {(this.props.recordType && this.props.recordType === "Container") ? (
                   <Link to={`/containers/${this.props.container._id}`} className="btn btn-secondary mt-5">Cancel</Link>
                 ) : (
                   <Link to={`/labs/${this.props.lab._id}`} className="btn btn-secondary mt-5">Cancel</Link>

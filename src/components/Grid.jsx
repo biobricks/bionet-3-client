@@ -9,7 +9,7 @@ class AddGrid extends React.Component {
     const recordType = this.props.recordType;
     return (
       <div className="AddGrid card rounded-0 mt-3 mb-3">
-        <div className="card-header bg-dark-green text-light rounded-0">
+        <div className="card-header bg-dark text-light rounded-0">
           <h4 className="card-title mb-0 text-capitalize">
             <i className={recordType === 'Lab' ? 'mdi mdi-teach mr-2' : 'mdi mdi-grid mr-2'} />{record ? record.name : 'Error'}
           </h4>

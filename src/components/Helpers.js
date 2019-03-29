@@ -1,4 +1,4 @@
-export const getSpanMax = (form, newItemLocations, locations, parentRecord) => {
+export const getSpanMax = (form, newItemLocations, locations={empty: [], full: []}, parentRecord) => {
   try {
     // get new location
     const newItemLocation = newItemLocations && newItemLocations.length > 0 ? newItemLocations[0] : null;

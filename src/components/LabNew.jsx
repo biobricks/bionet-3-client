@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import Auth from "../../modules/Auth";
-import appConfig from '../../configuration.js';
-import Grid from '../Grid/Grid';
+import Api from "../modules/Api";
+import appConfig from '../config.js';
+import GridSmall from './GridSmall';
 
 class LabNew extends React.Component {
 
@@ -17,7 +17,11 @@ class LabNew extends React.Component {
         description: "",
         rows: 1, 
         columns: 1
-      }
+      },
+      locations: {
+        empty: [],
+        full: []
+      },
     };
     this.postNewLab = this.postNewLab.bind(this);
     this.updateField = this.updateField.bind(this);
@@ -33,7 +37,7 @@ class LabNew extends React.Component {
         headers: new Headers({
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
+          'Authorization': `Bearer ${Api.getToken()}`
         })
       });
       let labRes = await fetch(labRequest);
@@ -90,13 +94,19 @@ class LabNew extends React.Component {
     if (this.state.redirect === true) {
       return ( <Redirect to={`/`}/> )
     }
+    let emptyCellArray = [];
+    for(let row = 1; row <= form.rows; row++){
+      for(let column = 1; column <= form.columns; column++){
+        emptyCellArray.push([row, column]);
+      }
+    }
     return (
       <div className="LabNew container-fluid">
         
         <div className="row">
           <div className="col-12 col-lg-7">
             <div className="card rounded-0 mt-3">
-              <div className="card-header rounded-0 bg-dark-green text-light">
+              <div className="card-header rounded-0 bg-dark text-light">
                 <div className="card-title mb-0 text-capitalize">
                   <h4 className="card-title mb-0 text-capitalize">
                     <i className="mdi mdi-teach mr-2"/ >New Lab
@@ -188,13 +198,12 @@ class LabNew extends React.Component {
           </div>
           {(isLoggedIn) ? (
             <div className="col-12 col-lg-5">
-              <Grid 
-                demo={true}
+              <GridSmall
+                {...this.props}
+                demo={false}
                 selectLocations={false}
                 recordType="Lab"
                 record={this.state.form}
-                containers={[]}
-                physicals={[]}
               />
             </div>
           ) : null }

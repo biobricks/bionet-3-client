@@ -1,6 +1,21 @@
 import Crypto from 'crypto-js';
-import Auth from "./Auth";
-import Config from '../configuration.js';
+import Config from '../config.js';
+
+function authenticateUser(token) {
+  localStorage.setItem('token', token);
+}
+
+function isUserAuthenticated() {
+  return localStorage.getItem('token') !== null;
+}
+
+function deauthenticateUser() {
+  localStorage.removeItem('token');
+}
+
+function getToken() {
+  return localStorage.getItem('token');
+}
 
 async function get(endpoint) {
   try {  
@@ -21,7 +36,7 @@ async function post(endpoint, form) {
       headers: new Headers({
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${Auth.getToken()}`
+        'Authorization': `Bearer ${getToken()}`
       })
     });
     let response = await fetch(request);
@@ -40,7 +55,7 @@ async function postPublic(endpoint, form) {
       headers: new Headers({
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${Auth.getToken()}`
+        'Authorization': `Bearer ${getToken()}`
       })
     });
     let response = await fetch(request);
@@ -59,7 +74,7 @@ async function signup(form) {
       headers: new Headers({
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${Auth.getToken()}`
+        'Authorization': `Bearer ${getToken()}`
       })
     });
     let response = await fetch(request);
@@ -75,7 +90,7 @@ async function loginCurrentUser() {
     let request = new Request(`${Config.apiBaseUrl}/dashboard`, {
       method: 'GET',
       headers: new Headers({
-        'Authorization': `Bearer ${Auth.getToken()}`
+        'Authorization': `Bearer ${getToken()}`
       })
     });
     let response = await fetch(request);
@@ -87,75 +102,76 @@ async function loginCurrentUser() {
 }
 
 function logoutCurrentUser() {
-  Auth.deauthenticateUser();
+  deauthenticateUser();
 }
 
 async function getCurrentUserLabs(currentUser) {
   try {
     const getLabsRes = await Api.get('labs');
     const labs = getLabsRes.data;
-    const getVirtualsRes = await Api.get('virtuals');
-    const virtuals = getVirtualsRes.data;
-    const getPhysicalsRes = await Api.get('physicals');
-    const physicals = getPhysicalsRes.data;        
-    currentUser['labs'] = [];
-    currentUser['labsRequested'] = [];
-    currentUser['labsToJoin'] = [];
+    let currentUserLabs = [];
+    let currentUserLabRequests = [];
+    let currentUserLabsToJoin = [];
     for(let i = 0; i < labs.length; i++) {
       let lab = labs[i];
       let labIsJoined = false;
       let labIsRequested = false;
       for(let j = 0; j < lab.users.length; j++) {
         let labUser = lab.users[j];
+        //console.log(labUser._id, currentUser._id);
         if (labUser._id === currentUser._id){
+          //console.log('matched');
           labIsJoined = true;
-          currentUser.labs.push(lab);
+          currentUserLabs.push(lab);
         } 
       }
       for(let j = 0; j < lab.joinRequests.length; j++) {
         let joinRequest = lab.joinRequests[j];
         if (joinRequest._id === currentUser._id){
           labIsRequested = true;
-          currentUser.labsRequested.push(lab);
+          currentUserLabRequests.push(lab);
         }
       }
       if (!labIsJoined && !labIsRequested) {
-        currentUser.labsToJoin.push(lab);
+        currentUserLabsToJoin.push(lab);
       }
     }
+    //console.log('userlabs result', currentUserLabs);
     return {
-      isLoggedIn: true,
-      currentUser,
-      labs,
-      virtuals,
-      physicals
-    }
+      currentUserLabs,
+      currentUserLabRequests,
+      currentUserLabsToJoin
+    };
   } catch (error) {
     throw error;
   }        
 }
 
-async function setCurrentUser() {
+async function getCurrentUser() {
   try {
-    if (Auth.isUserAuthenticated()) {
-      const loginCurrentUserRes = await Api.loginCurrentUser();
+    if (isUserAuthenticated()) {
+      const loginCurrentUserRes = await loginCurrentUser();
       if (loginCurrentUserRes.user) {
         let currentUser = loginCurrentUserRes.user;
         currentUser['gravatarUrl'] = `https://www.gravatar.com/avatar/${Crypto.MD5(currentUser.email).toString()}?s=100`;
-        this.getCurrentUserLabs(currentUser);
-        return {};
+        let userLabData = await getCurrentUserLabs(currentUser);
+        //console.log(currentUserLabs)
+        return {
+          isLoggedIn: true,
+          currentUser,
+          currentUserLabs: userLabData.currentUserLabs,
+          currentUserLabRequests: userLabData.currentUserLabRequests,
+          currentUserLabsToJoin: userLabData.currentUserLabsToJoin
+        };
       } else {
-        this.logoutCurrentUser();
-        return {};
-      }
-    } else {
-      const getVirtualsRes = await Api.get('virtuals');
-      const virtuals = getVirtualsRes.data || [];
-      const getPhysicalsRes = await Api.get('physicals');
-      const physicals = getPhysicalsRes.data || [];
-      return {
-        virtuals,
-        physicals
+        logoutCurrentUser();
+        return {
+          isLoggedIn: false,
+          currentUser: {},
+          currentUserLabs: [],
+          currentUserLabRequests: [],
+          currentUserLabsToJoin: []
+        };
       }
     }
   } catch (error) {
@@ -163,6 +179,6 @@ async function setCurrentUser() {
   }
 }
 
-let Api = { get, post, loginCurrentUser, logoutCurrentUser, getCurrentUserLabs, setCurrentUser, postPublic, signup };
+let Api = { get, post, loginCurrentUser, logoutCurrentUser, getCurrentUserLabs, getCurrentUser, postPublic, signup, authenticateUser, deauthenticateUser, isUserAuthenticated, getToken };
 
 export default Api;

@@ -3,8 +3,8 @@ import shortid from 'shortid';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead-bs4.css';
-import Grid from '../Grid/Grid';
-import Api from '../../modules/Api';
+import Grid from './Grid';
+import Api from '../modules/Api';
 
 class Physicals extends Component {
 
@@ -306,7 +306,7 @@ class Physicals extends Component {
 
     return (
       <div className="card rounded-0 mt-3 mb-3">
-        <div className="card-header bg-dark-green text-light rounded-0">
+        <div className="card-header bg-dark text-light rounded-0">
           <h5 className="card-title mb-0 text-capitalize">
             <i className={titleClasses}/>{title}
           </h5>

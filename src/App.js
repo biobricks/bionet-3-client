@@ -1,183 +1,129 @@
-import React, { Suspense, lazy } from 'react';
-import { Route, Switch } from "react-router-dom";
-import ErrorBoundary from './components/ErrorBoundary';
-import './App.css';
-import Loading from './components/Loading/Loading';
-import Navigation from './components/Navigation/Navigation';
-import Footer from './components/Footer/Footer';
-import Login from './components/Login';
-import Signup from './components/Signup';
+import React, { Component } from 'react';
 import Api from './modules/Api';
-import PasswordReset from './components/PasswordReset';
-import PasswordResetVerify from './components/PasswordResetVerify';
-import About from './components/About';
-import Download from './components/Download';
-import Profile from './components/Profile';
-import Add from './components/Add';
-import Edit from './components/Edit';
+import './App.scss';
+import Loading from './components/Loading';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Router from './components/Router';
 
-const Landing = lazy(() => import('./components/Landing'));
-
-const LabNew = lazy(() => import('./components/Lab/LabNew'));
-//const LabEdit = lazy(() => import('./components/Lab/LabEdit'));
-const LabDelete = lazy(() => import('./components/Lab/LabDelete'));
-
-//const ContainerEdit = lazy(() => import('./components/Container/ContainerEdit'));
-const ContainerDelete = lazy(() => import('./components/Container/ContainerDelete'));
-
-function WaitForComponent(Component, state, refreshMethod) {
-  return props => (
-    <ErrorBoundary>
-      <Suspense fallback={<Loading />}>
-        <Component {...state} {...props} refresh={refreshMethod}/>
-      </Suspense>
-    </ErrorBoundary>
-  );
-}
-
-class App extends React.Component {
-
+class App extends Component {
+  
   constructor(props) {
     super(props);
     this.state = {
-      debugging: true,
+      isReady: false,
       isLoggedIn: false,
       currentUser: {},
+      currentUserLabs: [],
+      currentUserLabRequests: [],
+      currentUserLabsToJoin: [],
       labs: [],
+      containers: [],
       virtuals: [],
       physicals: []
     };
+    this.getDataSync = this.getDataSync.bind(this);
+    this.getCurrentUser = this.getCurrentUser.bind(this);
     this.logoutCurrentUser = this.logoutCurrentUser.bind(this);
-    this.setCurrentUser = this.setCurrentUser.bind(this);
-    this.getCurrentUserLabs = this.getCurrentUserLabs.bind(this);
-    Api.setCurrentUser = Api.setCurrentUser.bind(this);
   }
-
-  getCurrentUserLabs(currentUser) {
-    Api.getCurrentUserLabs(currentUser)
-    .then((res) => {
-      console.log('getCurrentUserLabs.res', res);
-      this.setState(res);
-    });
-  }
-
-  setCurrentUser() {
-    Api.setCurrentUser()
-    .then((res) => {
-      if (res.user) {
-        let currentUser = res.user;
-        this.getCurrentUserLabs(currentUser);
-      } else {
-        if (res.virtuals && res.physicals) {
-          this.setState(res);
-        }
+  
+  async getData() {
+    try {
+      const getLabsRes = await Api.get('labs');
+      const labs = getLabsRes.data || [];
+      const getContainersRes = await Api.get('containers');
+      const containers = getContainersRes.data || [];
+      const getVirtualsRes = await Api.get('virtuals');
+      const virtuals = getVirtualsRes.data || [];
+      const getPhysicalsRes = await Api.get('physicals');
+      const physicals = getPhysicalsRes.data || [];
+      return {
+        labs,
+        containers,
+        virtuals,
+        physicals
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  getDataSync() {
+    this.getData()
+    .then((res) => {
+      this.getCurrentUser();
+      this.setState(res);
     })
     .catch((error) => {
       throw error;
     });
   }
 
+  getCurrentUser() {
+    if (Api.isUserAuthenticated() === true) {
+      Api.getCurrentUser()
+      .then((res) => {
+        if (res.currentUser) {
+          this.setState({
+            isReady: true,
+            isLoggedIn: true,
+            currentUser: res.currentUser,
+            currentUserLabs: res.currentUserLabs,
+            currentUserLabRequests: res.currentUserLabRequests,
+            currentUserLabsToJoin: res.currentUserLabsToJoin
+          });
+        } else {
+          this.setState({
+            isReady: true,
+            isLoggedIn: false,
+            currentUser: {},
+            currentUserLabs: [],
+            currentUserLabRequests: [],
+            currentUserLabsToJoin: []
+          });        
+        }
+      })
+      .catch((error) => {
+        throw error;
+      });
+    } else {
+      this.setState({
+        isReady: true,
+        isLoggedIn: false,
+        currentUser: {},
+        currentUserLabs: [],
+        currentUserLabRequests: [],
+        currentUserLabsToJoin: []
+      });       
+    }
+  }
+
   logoutCurrentUser() {
     Api.logoutCurrentUser();
     this.setState({
-      redirectHome: true,
       isLoggedIn: false,
-      currentUser: {}
+      currentUser: {},
+      currentUserLabs: [],
+      currentUserLabRequests: [],
+      currentUserLabsToJoin: []
     });
   }
 
   componentDidMount() {
-    this.setCurrentUser();
+    this.getDataSync();
   }
 
   render() {
     return (
       <div className="App">
-        <Navigation {...this.state} logoutCurrentUser={this.logoutCurrentUser}/>
-        <main className="viewport-container">
-
-          <Switch>
-            <Route path="/download" render={(props) => (
-              <Download 
-                {...props}
-                {...this.props}
-                {...this.state}
-              />
-            )}/>
-          </Switch>
-
-          <Switch>
-            <Route path="/labs/new" exact component={WaitForComponent(LabNew, this.state, this.getCurrentUserLabs)}/>
-            {/* <Route path='/labs/:labId/add/:itemType' component={WaitForComponent(LabAdd, this.state, this.getCurrentUserLabs)}/> */}
-            <Route path="/labs/:labId/add/:itemType" render={(props) => (
-              <Add 
-                {...props}
-                {...this.state}
-                {...this.props}
-                refresh={this.setCurrentUser}
-              />
-            )}/> 
-            <Route path="/labs/:labId/edit" render={(props) => (
-              <Edit 
-                {...props}
-                {...this.state}
-                {...this.props}
-                refresh={this.setCurrentUser}
-              />
-            )}/> 
-            {/* <Route path='/labs/:labId/edit' component={WaitForComponent(LabEdit, this.state, this.getCurrentUserLabs)}/> */}
-            <Route path='/labs/:labId/delete' component={WaitForComponent(LabDelete, this.state, this.getCurrentUserLabs)}/>
-            <Route path="/labs/:labId" render={(props) => (
-              <Profile 
-                {...props}
-                {...this.state}
-                {...this.props}
-                refresh={this.setCurrentUser}
-              />
-            )}/>            
-          </Switch>  
-
-          <Switch>
-            {/* <Route path='/containers/:containerId/add/:itemType' component={WaitForComponent(ContainerAdd, this.state, this.getCurrentUserLabs)}/> */}
-            <Route path="/containers/:containerId/add/:itemType" render={(props) => (
-              <Add 
-                {...props}
-                {...this.state}
-                {...this.props}
-                refresh={this.setCurrentUser}
-              />
-            )}/> 
-            <Route path="/containers/:containerId/edit" render={(props) => (
-              <Edit 
-                {...props}
-                {...this.state}
-                {...this.props}
-                refresh={this.setCurrentUser}
-              />
-            )}/> 
-            {/* <Route path="/containers/:containerId/edit" exact component={WaitForComponent(ContainerEdit, this.state, this.getCurrentUserLabs)}/> */}
-            <Route path='/containers/:containerId/delete' component={WaitForComponent(ContainerDelete, this.state, this.getCurrentUserLabs)}/>
-            <Route path="/containers/:containerId" render={(props) => (
-              <Profile 
-                {...props}
-                {...this.state}
-                {...this.props}
-                refresh={this.setCurrentUser}
-              />
-            )}/> 
-          </Switch>  
-
-          <Switch>
-            <Route path="/password-reset/verify" exact render={(props) => (<PasswordResetVerify {...props} {...this.state}/>)}/>
-            <Route path="/password-reset" render={(props) => ( <PasswordReset {...props} {...this.state}/> )}/>
-            <Route path="/about" exact render={(props) => (<About {...props} {...this.state}/>)}/>
-            <Route path="/signup" exact render={(props) => (<Signup {...props} {...this.state}/>)}/>
-            <Route path="/login" exact render={(props) => (<Login {...props} {...this.state} setCurrentUser={this.setCurrentUser}/>)}/>
-            <Route path="/" exact component={WaitForComponent(Landing, this.state)}/>
-          </Switch>
-
-        </main>
+        <Navbar 
+          {...this.props} 
+          {...this.state}
+          logoutCurrentUser={this.logoutCurrentUser} 
+        />
+        <div className="page-container">
+          { this.state.isReady ? <Router {...this.props} {...this.state} getCurrentUser={this.getCurrentUser}/> : <Loading /> }
+        </div>
         <Footer />
       </div>
     );

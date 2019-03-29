@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import { Link } from 'react-router-dom';
 import shortid from 'shortid';
-import './Grid2.css';
+import './Grid.scss';
 
 
 class Grid extends Component {

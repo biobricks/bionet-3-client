@@ -1,75 +1,68 @@
-import React from 'react';
-import Search from './Search/Search';
-import { ContainerFluid, Row, Column } from './Bootstrap/layout';
-import { Button, ButtonGroup, Card, CardHeader, CardTitle, CardBody, CardText } from './Bootstrap/components';
-import LabsJoined from './Lab/LabsJoined';
-import LabsPending from './Lab/LabsPending';
-import LabsToJoin from './Lab/LabsToJoin';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import LabsJoined from './LabsJoined';
+import LabsPending from './LabsPending';
+import LabsToJoin from './LabsToJoin';
+import Search from './Search';
 
-class Landing extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
+class Landing extends Component {
   render() {
     const isLoggedIn = this.props.isLoggedIn;
     const currentUser = this.props.currentUser;
-   
+    const welcomeMessage = isLoggedIn ? `Welcome Back To Bionet ${currentUser.username}` : `Bionet`;
+    const currentUserLabs = this.props.currentUserLabs;
     return (
-      <ContainerFluid className="Landing">  
-        <Row>
-          <div className="col-12 col-lg-7">
-            {(isLoggedIn) ? (
-              <Card className="mt-3 mb-3">
-                <CardHeader dark className="bg-dark-green">
-                  <CardTitle>Welcome Back To Bionet {currentUser.username}</CardTitle>
-                </CardHeader>
-            
-                <CardBody>
-                  <img 
-                    src={currentUser.gravatarUrl} 
-                    className="user-img rounded d-block float-left" 
-                    alt={`${currentUser.username}`}
-                  />
-                  <div className="d-block float-left ml-3">
-                    <CardText>
-                      You currently belong to {currentUser.labs.length} {currentUser.labs.length === 1 ? "Lab" : "Labs"}.
-                    </CardText>  
+      <div className="Landing">
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-12 col-lg-7">
+
+              <div className="card mt-3">
+                <div className="card-header bg-dark text-light">
+                  <h4 className="card-title mb-0">{welcomeMessage}</h4>
+                </div>
+                {isLoggedIn ? (
+                  <>
+                    <div className="card-body">
+                      <img 
+                        src={currentUser.gravatarUrl} 
+                        className="user-img rounded d-block float-left" 
+                        alt={`${currentUser.username}`}
+                      />
+                      <div className="d-block float-left ml-3">
+                        <div className="card-text">
+                          You currently belong to {currentUserLabs.length} {currentUserLabs.length === 1 ? "Lab" : "Labs"}.
+                        </div>  
+                      </div>
+                    </div>
+                    <LabsJoined {...this.props} />
+                    <LabsPending {...this.props} />
+                    <LabsToJoin {...this.props} />
+                  </>
+                ) : (
+                  <div className="card-body">
+                    <h5 className="card-title mb-2">
+                      <strong>Open Source Biological Inventory Management</strong>
+                    </h5>
+                    <p className="card-text">
+                      Welcome to Bionet. Keep track of your stuff, find what you need, and share as you like. The Bionet supports searching for biological material across multiple labs — all your inventory information is controlled locally by you. You decide if others can see what you wish to share. All Bionet software and associated materials are open source and free to use.
+                    </p>
+                    <div className="btn-group" role="group" aria-label="Login Or Sign Up">
+                      <Link to="/login" className="btn btn-success">Login</Link>
+                      <Link to="/signup" className="btn btn-primary">Sign Up</Link>
+                    </div>
                   </div>
-                </CardBody>
+                )}  
+              </div>  
+            </div>
 
-                <LabsJoined {...this.props} />
+            <div className="col-12 col-lg-5">
+              <Search {...this.props}/>
+            </div>
 
-                <LabsPending {...this.props} />        
-
-                <LabsToJoin {...this.props} />                 
-              
-              </Card>
-            ) : (
-              <Card className="mt-3 mb-3 text-center text-lg-left">
-                <CardHeader dark className="bg-dark-green">
-                  <CardTitle>Bionet</CardTitle>
-                </CardHeader>
-                <CardBody>
-                  <CardTitle className="mb-2"><strong>Open Source Biological Inventory Management</strong></CardTitle>
-                  <CardText>Welcome to BioNet. Keep track of your stuff, find what you need, and share as you like. The BioNet supports searching for biological material across multiple labs — all your inventory information is controlled locally by you. You decide if others can see what you wish to share. All BioNet software and associated materials are open source and free to use.</CardText>
-                  <Column className="text-center">
-                    <ButtonGroup className="mb-3">
-                      <Button type="success" link to="/login">Login</Button>
-                      <Button type="primary" link to="/signup">Sign Up</Button>
-                    </ButtonGroup>
-                  </Column>
-                </CardBody>
-              </Card>
-            )}
           </div>
-          <div className="col-12 col-lg-5">
-            <Search {...this.props}/>
-          </div>
-        </Row>
-      </ContainerFluid>
+        </div>      
+      </div>
     );
   }
 }

@@ -1,7 +1,6 @@
 import React from 'react';
-//import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import shortid from 'shortid';
-import { Card, CardHeader, CardTitle, CardBody, CardText, CardList, CardListLink } from '../Bootstrap/components';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead-bs4.css';
@@ -22,8 +21,6 @@ class Search extends React.Component {
   handleChange(selectedArray) {
     let allPhysicals = this.props.physicals;
     let selected = selectedArray[0];
-    console.log('selected', selected);
-    //console.log('allPhysicals', allPhysicals);
     let physicals = [];
     for(let i = 0; i < allPhysicals.length; i++){
       let physical = allPhysicals[i];
@@ -31,7 +28,6 @@ class Search extends React.Component {
         physicals.push(physical);
       }
     }
-    console.log('physicals', physicals);
     this.setState({
       selected,
       physicals
@@ -45,8 +41,6 @@ class Search extends React.Component {
   }
 
   render() {
-    //const isLoggedIn = this.props.isLoggedIn;
-    //const currentUser = this.props.currentUser;
     const virtuals = this.props.virtuals;
     const virtualIsSelected = this.state.selected && Object.keys(this.state.selected).length > 0;
     const virtualSelected = this.state.selected;
@@ -59,14 +53,13 @@ class Search extends React.Component {
       const parentRoute = hasLabParent ? `/labs/${physical.lab._id}` : `/containers/${physical.parent._id}`;
       if (parentIsValid) {
         return (
-          <CardListLink 
+          <Link 
             key={shortid.generate()}
-            dark
-            type="info"
+            className="list-group-item list-group-item-action rounded-0 bg-info text-light"
             to={parentRoute}
           >
             <i className="mdi mdi-flask mr-2"/>{physical.name}
-          </CardListLink>
+          </Link>
         );
       } else {
         return null;
@@ -75,13 +68,14 @@ class Search extends React.Component {
 
     return (
       <>
-        <Card className="Search mt-3">
-          <CardHeader dark className="bg-dark-green">
-            <CardTitle>Search BioNet</CardTitle>
-          </CardHeader>
+        <div className="Search card mt-3">
+          <div className="card-header bg-dark text-light">
+            <h4 className="card-title mb-0">Search BioNet</h4>
+          </div>
           <form className="form">
             <div className="input-group rounded-0 ">
               <Typeahead
+                id="search-bar"
                 labelKey="name"
                 name="search"
                 onChange={(selected) => {this.handleChange(selected)}}
@@ -98,48 +92,48 @@ class Search extends React.Component {
             </div>
           </form>
           {(!virtualIsSelected) ? (
-            <CardBody>
-              <CardText>Search from {virtuals.length} Virtual Samples</CardText>
-            </CardBody>
+            <div className="card-body">
+              <p className="card-text">Search from {virtuals.length} Virtual Samples</p>
+            </div>
           ) : null}  
-        </Card>
+        </div>
         
         {(virtualIsSelected) ? (
-          <Card className="search-result mt-3 mb-3">
-            <CardHeader dark className="bg-dark-green">
+          <div className="card search-result mt-3 mb-3">
+            <div className="card-header bg-dark text-light">
               <h4 className="card-title mb-0 text-capitalize">
                 <i className="mdi mdi-dna mr-2"/>{virtualSelected.name}
               </h4>
-            </CardHeader>
-            <CardBody>
-              <CardText>{virtualSelected.description}</CardText>
-              <CardText>
+            </div>
+            <div className="card-body">
+              <p className="card-text">{virtualSelected.description}</p>
+              <p className="card-text">
                 Available: {virtualSelected.isAvailable ? "Yes" : "No"}<br/>
                 Provenance: {virtualSelected.provenance}<br/>
                 Genotype: {virtualSelected.genotype}<br/>
                 Sequence: {virtualSelected.sequence}
-              </CardText>
+              </p>
               {/* <Sequence 
                 fullSequence={this.state.fullSequence} 
                 virtual={virtualSelected}
                 toggleFullSequence={this.toggleFullSequence}
               /> */}
-            </CardBody>
-            <CardHeader dark className="bg-dark-green">
+            </div>
+            <div className="card-header bg-dark text-light">
               <h4 className="card-title mb-0 text-capitalize">
                 <i className="mdi mdi-flask mr-2"/>Instances Of {virtualSelected.name}
               </h4>
-            </CardHeader>
+            </div>
             {(physicals.length > 0) ? (
-              <CardList>
+              <ul className="list-group list-group-flush">
                 {physicals}
-              </CardList>
+              </ul>
             ) : (
-              <CardBody>
-                <CardText>There are currently no physical instances of {virtualSelected.name}</CardText>
-              </CardBody>
+              <div className="card-body">
+                <p className="card-text">There are currently no physical instances of {virtualSelected.name}</p>
+              </div>
             )}  
-          </Card>
+          </div>
         ) : null }  
       </>
     );

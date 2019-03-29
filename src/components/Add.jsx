@@ -1,10 +1,10 @@
 import React from 'react';
-import Grid from './Grid/Grid';
+import Grid from './Grid';
 import  { Redirect } from 'react-router-dom';
-import ContainerNewForm from './Container/ContainerNewForm';
-import PhysicalNewForm from './Physical/PhysicalNewForm';
+import ContainerNewForm from './ContainerNewForm';
+import PhysicalNewForm from './PhysicalNewForm';
 import Api from '../modules/Api';
-import { getChildren, getLocations } from './Lab/LabHelpers';
+import { getChildren, getLocations } from './LabHelpers';
 
 class Add extends React.Component {
 
@@ -140,7 +140,7 @@ class Add extends React.Component {
 
   render() {
     const isLoggedIn = this.props.isLoggedIn;
-    const currentUser = this.props.currentUser;
+    const currentUserLabs = this.props.currentUserLabs;
     const lab = this.state.lab;
     const container = this.state.container;
     const itemType = this.props.match.params.itemType || "container";
@@ -150,8 +150,8 @@ class Add extends React.Component {
 
     let userIsMember = false;
     if (isLoggedIn && lab) {
-      for (let i = 0; i < currentUser.labs.length; i++) {
-        let userLab = currentUser.labs[i];
+      for (let i = 0; i < currentUserLabs.length; i++) {
+        let userLab = currentUserLabs[i];
         if (userLab._id === lab._id) { userIsMember = true; }
       }
     }
@@ -167,7 +167,7 @@ class Add extends React.Component {
             <>
               <div className="col-12 col-lg-7">
                 <div className="card rounded-0 mt-3">
-                  <div className="card-header rounded-0 bg-dark-green text-light">
+                  <div className="card-header rounded-0 bg-dark text-light">
                     <h4 className="card-title mb-0 text-capitalize">
                       <i className={itemIconClasses}/>Add {itemType}
                     </h4>
@@ -220,10 +220,10 @@ class Add extends React.Component {
                   addFormActive={true}
                   addFormType={itemType}
                   addForm={itemType === 'container' ? this.state.containerForm : this.state.physicalForm}
-                  containers={this.state.containers}
-                  physicals={this.state.physicals}
+                  containers={recordIsLab ? lab.children.containers : container.children.containers}
+                  physicals={recordIsLab ? lab.children.physicals : container.children.physicals}
                   locations={this.state.locations}
-                  newItemLocations={this.state.newItemLocations}
+                  newItemLocations={this.state.newItemLocations || []}
                   addLocation={this.addLocation}
                   removeLocation={this.removeLocation}
                 />

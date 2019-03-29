@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 //import Grid from '../Grid/Grid';
-import Api from '../../modules/Api';
+import Api from '../modules/Api';
 
 class ContainerDelete extends React.Component {
 
