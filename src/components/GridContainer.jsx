@@ -24,6 +24,8 @@ class GridContainer extends React.Component {
           column={column} 
           locations={this.props.locations}
           newItemLocations={this.props.newItemLocations}
+          spanLocation={this.props.spanLocation}
+          setSpanLocation={this.props.setSpanLocation}
           addLocation={this.props.addLocation}
           removeLocation={this.props.removeLocation}
           addFormActive={this.props.addFormActive}
@@ -54,6 +56,8 @@ class GridContainer extends React.Component {
           isDragging={this.props.isDragging}
           draggingOver={this.props.draggingOver}
           draggedRecord={this.props.draggedRecord}
+          spanLocation={this.props.spanLocation}
+          setSpanLocation={this.props.setSpanLocation}
         />     
       );
     });
@@ -72,6 +76,8 @@ class GridContainer extends React.Component {
           isDragging={this.props.isDragging}
           draggingOver={this.props.draggingOver}
           draggedRecord={this.props.draggedRecord}
+          spanLocation={this.props.spanLocation}
+          setSpanLocation={this.props.setSpanLocation}
         /> 
       );      
     });

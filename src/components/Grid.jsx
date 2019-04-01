@@ -26,6 +26,8 @@ class AddGrid extends React.Component {
               physicals={this.props.physicals}
               locations={this.props.locations}
               newItemLocations={this.props.newItemLocations}
+              spanLocation={this.props.spanLocation}
+              setSpanLocation={this.props.setSpanLocation}
               addLocation={this.props.addLocation}
               removeLocation={this.props.removeLocation}
               isDragging={this.props.isDragging}

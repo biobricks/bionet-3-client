@@ -17,6 +17,7 @@ class Add extends React.Component {
     this.addLocation = this.addLocation.bind(this);
     this.removeLocation = this.removeLocation.bind(this);
     this.updateFormData = this.updateFormData.bind(this);
+    this.setSpanLocation = this.setSpanLocation.bind(this);
   }
 
   async getData() {
@@ -134,6 +135,39 @@ class Add extends React.Component {
     }
   }
 
+  setSpanLocation(location) {
+    const newItemLocation = this.state.newItemLocations[0] || [];
+    const newRow = newItemLocation[0];
+    const newColumn = newItemLocation[1];
+    const spanRow = location[0];
+    const spanColumn = location[1];
+    const itemType = this.props.match.params.itemType;
+    const isContainer = itemType === 'container';
+    const isPhysical = itemType === 'physical';
+    //console.log(`set span called on ${itemType}`, location);
+    //console.log(`Height: ${spanRow} - ${newRow} = ${spanRow - newRow + 1}`);
+    //console.log(`Width: ${spanColumn} - ${newColumn} = ${spanColumn - newColumn + 1}`);
+    const newRowSpan = Number(spanRow - newRow + 1);
+    const newColumnSpan = Number(spanColumn - newColumn + 1);
+    if (isContainer) {
+      let containerForm = this.state.containerForm;
+      containerForm.rowSpan = newRowSpan > 0 ? newRowSpan : 1;
+      containerForm.columnSpan = newColumnSpan > 0 ? newColumnSpan : 1;
+      this.setState({
+        spanLocation: location,
+        containerForm
+      });
+    } else if (isPhysical) {
+      let physicalForm = this.state.physicalForm;
+      physicalForm.rowSpan = newRowSpan > 0 ? newRowSpan : 1;
+      physicalForm.columnSpan = newColumnSpan > 0 ? newColumnSpan : 1;
+      this.setState({
+        spanLocation: location,
+        physicalForm
+      });      
+    }  
+  }
+
   componentDidMount() {
     this.getDataSync();
   }
@@ -186,6 +220,9 @@ class Add extends React.Component {
                     </div>
                   ) : (
                     <div className="card-body">
+                        <p className="card-text">
+                          Click your selected location to deselect, or click another empty cell to set the {itemType}s width and height.
+                        </p>
                       {(itemType === 'container') ? (
                         <ContainerNewForm 
                           {...this.props} 
@@ -224,6 +261,8 @@ class Add extends React.Component {
                   physicals={recordIsLab ? lab.children.physicals : container.children.physicals}
                   locations={this.state.locations}
                   newItemLocations={this.state.newItemLocations || []}
+                  spanLocation={this.state.spanLocation}
+                  setSpanLocation={this.setSpanLocation}
                   addLocation={this.addLocation}
                   removeLocation={this.removeLocation}
                 />
@@ -250,6 +289,7 @@ const initialState = {
     full: []
   },
   newItemLocations: [],
+  spanLocation: [],
   containerForm: {
     createdBy: "",
     lab: "",
