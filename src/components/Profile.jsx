@@ -388,8 +388,8 @@ class Profile extends React.Component {
             <div className="card rounded-0 mt-3">
               <div className="card-header rounded-0 bg-dark text-light">
                 <div className="card-title mb-0 text-capitalize">
-                  <span>
-                    <i className={recordIsLab ? "mdi mdi-xl mdi-teach" : "mdi mdi-xl mdi-grid"} />
+                  <span style={{'fontSize': '1.4em'}}>
+                    <i className={recordIsLab ? "mdi mdi-xl mdi-teach mr-2" : "mdi mdi-xl mdi-grid mr-2"} />
                     {recordIsLab ? lab ? lab.name : 'Error' : container ? container.name : 'Error'}
                   </span>
                   {isLoggedIn && ( 
