@@ -176,8 +176,20 @@ class GridEmptyCell extends React.Component {
         onDragOver={this.props.onCellDragOver}
         onDragEnd={this.props.onCellDragEnd}
       >
-        {cellIsNewLocation && (
-          <div style={{'alignSelf': 'center', 'textAlign': 'center'}}>{row},{column}</div>
+        {cellIsSelected && cellIsNewLocation && (
+          <div 
+            style={{'alignSelf': 'stretch', 'justifySelf': 'stretch', 'backgroundColor': 'rgba(0,0,0,0.1)'}}
+            row={row}
+            column={column}
+            data-toggle="tooltip"
+            data-placement="top"
+            title={`Row ${row}, Column ${column}\nEmpty`}
+            onClick={this.onCellClick}
+            onDrop={this.props.onCellDrop}
+            onDragOver={this.props.onCellDragOver}
+            onDragEnd={this.props.onCellDragEnd}
+          >
+          </div>
         )}
       </div>     
     );  
