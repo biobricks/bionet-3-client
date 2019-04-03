@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import { Link } from 'react-router-dom';
 import shortid from 'shortid';
-import './Grid.scss';
+import './GridSmall.scss';
 
 
 class Grid extends Component {
@@ -118,8 +118,9 @@ class Grid extends Component {
         }  
       }      
     }
+    console.log('small grid children', gridContainerChildren);
     return (
-      <div className="grid-container dropdown" style={gridContainerStyles}>
+      <div className="GridSmall" style={gridContainerStyles}>
         {gridContainerChildren}
       </div>
     );
