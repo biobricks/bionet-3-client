@@ -12,32 +12,34 @@ class GridEmptyCell extends React.Component {
   }
 
   onCellClick(e) {
-    const newLocations = this.props.newItemLocations;
-    const newLocation = newLocations[0] || [];
-    const spanLocation = this.props.spanLocation || []; 
-    const row = Number(e.target.getAttribute('row'));
-    const column = Number(e.target.getAttribute('column'));
-    const location = [row, column];
-    let cellIsSelected = false;
-    const cellIsSpanLocation = Number(spanLocation[0]) === row && Number(spanLocation[1]) === column;
-    const cellIsNewLocation = Number(newLocation[0]) === row && Number(newLocation[1]) === column;
-    for(let i = 0; i < newLocations.length; i++) {
-      const newItemLocation = newLocations[i];
-      const rowMatches = newItemLocation[0] === row;
-      const columnMatches = newItemLocation[1] === column;
-      if (rowMatches && columnMatches) { cellIsSelected = true }
-    }
-    if (cellIsSelected && newLocations.length === 1) {
-      this.props.removeLocation(location)
-    } else if (newLocations.length === 0) {
-      this.props.addLocation(location);
-    }
-    if (!cellIsSelected && !cellIsNewLocation && cellIsSpanLocation) {
-      console.log('selected span location', [row, column]);
-      this.props.setSpanLocation([]);
-    } else if (!cellIsSelected && !cellIsNewLocation) {
-      //console.log('newLocations', newLocations)
-      this.props.setSpanLocation([row, column]);
+    if (this.props.addFormActive) {
+      const newLocations = this.props.newItemLocations;
+      const newLocation = newLocations[0] || [];
+      const spanLocation = this.props.spanLocation || []; 
+      const row = Number(e.target.getAttribute('row'));
+      const column = Number(e.target.getAttribute('column'));
+      const location = [row, column];
+      let cellIsSelected = false;
+      const cellIsSpanLocation = Number(spanLocation[0]) === row && Number(spanLocation[1]) === column;
+      const cellIsNewLocation = Number(newLocation[0]) === row && Number(newLocation[1]) === column;
+      for(let i = 0; i < newLocations.length; i++) {
+        const newItemLocation = newLocations[i];
+        const rowMatches = newItemLocation[0] === row;
+        const columnMatches = newItemLocation[1] === column;
+        if (rowMatches && columnMatches) { cellIsSelected = true }
+      }
+      if (cellIsSelected && newLocations.length === 1) {
+        this.props.removeLocation(location)
+      } else if (newLocations.length === 0) {
+        this.props.addLocation(location);
+      }
+      if (!cellIsSelected && !cellIsNewLocation && cellIsSpanLocation) {
+        console.log('selected span location', [row, column]);
+        this.props.setSpanLocation([]);
+      } else if (!cellIsSelected && !cellIsNewLocation) {
+        //console.log('newLocations', newLocations)
+        this.props.setSpanLocation([row, column]);
+      }
     }
   } 
 
