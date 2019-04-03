@@ -141,13 +141,21 @@ class Edit extends React.Component {
   render() {
     const isLoggedIn = this.props.isLoggedIn;
     let form = this.state.form;
-    let formValid = form.name.length > 0 && form.rows > 1 && form.columns > 1;
+    //let formValid = form.name.length > 0 && form.rows > 1 && form.columns > 1;
     const labId = this.props.match.params.labId;
+    const containerId = this.props.match.params.containerId;
+    const isLab = labId && labId.length > 0;
+    const isContainer = containerId && containerId.length > 0;
+    let formValid = this.state.form && this.state.form.name.length > 0;
     const recordIsLab = labId ? true : false;
 
-    if (this.state.redirect === true) {
-      return ( <Redirect to={`/labs/${this.props.match.params.labId}`}/> )
+    if (isLab && this.state.redirect === true) {
+      return ( <Redirect to={`/labs/${labId}`}/> )
     }
+    if (isContainer && this.state.redirect === true) {
+      return ( <Redirect to={`/containers/${containerId}`}/> )
+    }
+
     return (
       <div className="Edit container-fluid">
         
