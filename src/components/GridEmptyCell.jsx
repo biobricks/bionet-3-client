@@ -41,6 +41,19 @@ class GridEmptyCell extends React.Component {
     }
   } 
 
+  componentDidMount() {
+    window.$('[data-toggle="tooltip"]').tooltip('hide');
+    window.$('[data-toggle="tooltip"]').tooltip();
+  }  
+  
+  componentDidUpdate() {
+    window.$('[data-toggle="tooltip"]').tooltip('hide');
+    window.$('[data-toggle="tooltip"]').tooltip();
+  }
+
+  componentWillUnmount() {
+    window.$('[data-toggle="tooltip"]').tooltip('hide');
+  }
   // componentDidMount() {
   //   //console.log('mounted empty cell', this.props.row, this.props.column)
   //   //console.log(this.props);

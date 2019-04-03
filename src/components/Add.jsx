@@ -210,18 +210,18 @@ class Add extends React.Component {
                     <div className="card-body">
                       {(itemType === 'container') ? (
                         <p className="card-text">
-                          Select which cell the Container will occupy within {recordIsLab ? lab.name : container.name}.
+                          Select which cell will be the upper left corner of the Container.
                         </p>
                       ) : (
                         <p className="card-text">
-                          Select which cell the Physical Sample will occupy within {recordIsLab ? lab.name : container.name}.
+                          Select which cell will be the upper left corner of the Physical.
                         </p>
                       )}    
                     </div>
                   ) : (
                     <div className="card-body">
                         <p className="card-text">
-                          Click your selected location to deselect, or click another empty cell to set the {itemType}s width and height.
+                          Click on an empty cell to adjust the item's height and width.
                         </p>
                       {(itemType === 'container') ? (
                         <ContainerNewForm 
