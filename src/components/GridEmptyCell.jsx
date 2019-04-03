@@ -89,6 +89,7 @@ class GridEmptyCell extends React.Component {
     const moveActive = this.props.moveActive;
     const form = this.props.addForm;
     let cellIsSelected = false;
+    let cellIsNewLocation = false;
     const isDragging = this.props.isDragging;
     const isSelected = this.state.isSelected;
     if (isSelected){
@@ -131,6 +132,7 @@ class GridEmptyCell extends React.Component {
         const columnMatches = newColumn === column;
         if (rowMatches && columnMatches) { 
           cellIsSelected = true
+          cellIsNewLocation = true;
           //selectionArray.push([row, column]);   
         }
         if (formActive) {
@@ -146,9 +148,9 @@ class GridEmptyCell extends React.Component {
     }
     let bgColor;
     if (formActive) {
-      bgColor = cellIsSelected ? form.bgColor !== '#00D1FD' ? form.bgColor : "#42f483" : "white";
+      bgColor = cellIsSelected ? form.bgColor !== '#00D1FD' ? form.bgColor : "#42f483" : "#FFFFFF";
     } else if (moveActive) {
-      bgColor = cellIsSelected ? "#42f483" : "white";
+      bgColor = cellIsSelected ? "#42f483" : "#FFFFFF";
     }
     const emptyChildStyles = {
       'display': 'grid',
@@ -173,7 +175,11 @@ class GridEmptyCell extends React.Component {
         onDrop={this.props.onCellDrop}
         onDragOver={this.props.onCellDragOver}
         onDragEnd={this.props.onCellDragEnd}
-      ></div>     
+      >
+        {cellIsNewLocation && (
+          <div style={{'alignSelf': 'center', 'textAlign': 'center'}}>{row},{column}</div>
+        )}
+      </div>     
     );  
   }
 }

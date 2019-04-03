@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { generateRandomName } from '../modules/Wu';
-import GridSmall from './GridSmall';
+//import GridSmall from './GridSmall';
 import { getSpanMax, locationExistsInArray, getLocationRange } from './Helpers';
 
 class ContainerNewForm extends Component {
