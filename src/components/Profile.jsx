@@ -438,12 +438,12 @@ class Profile extends React.Component {
                 
                 {lab && (
                   <>
-                    {(recordIsLab && lab.description.length > 0) && (
+                    {(recordIsLab && lab.description && lab.description.length > 0) && (
                       <p className="card-text">
                         {lab.description}
                       </p>
                     )}
-                    {(!recordIsLab && container.description.length > 0) && (
+                    {(!recordIsLab && container.description && container.description.length > 0) && (
                       <p className="card-text">
                         {container.description}
                       </p>
