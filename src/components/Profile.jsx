@@ -438,15 +438,16 @@ class Profile extends React.Component {
                 
                 {lab && (
                   <>
-                  {(lab.description && lab.description.length > 0) ? (
-                    <p className="card-text">
-                      {lab.description}
-                    </p>
-                  ) : (
-                    <p className="card-text">
-                      No description provided.
-                    </p>
-                  )}
+                    {(recordIsLab && lab.description.length > 0) && (
+                      <p className="card-text">
+                        {lab.description}
+                      </p>
+                    )}
+                    {(!recordIsLab && container.description.length > 0) && (
+                      <p className="card-text">
+                        {container.description}
+                      </p>
+                    )}
                   </>
                 )}  
                 {(isLoggedIn && userIsMember && lab && lab.joinRequests && lab.joinRequests.length > 0) ? (
