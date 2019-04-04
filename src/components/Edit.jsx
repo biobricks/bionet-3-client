@@ -3,6 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 import Grid from './Grid';
 import Api from '../modules/Api';
 import { getChildren, getLocations } from './LabHelpers';
+import Loading from './Loading';
 
 class Edit extends React.Component {
 
@@ -10,6 +11,7 @@ class Edit extends React.Component {
     super(props);
     this.state = {
       redirect: false,
+      recordLoaded: false,
       error: "",
       lab: {},
       container: {},
@@ -87,7 +89,7 @@ class Edit extends React.Component {
         const { containers, physicals } = getChildren(lab);
         const locations = getLocations(lab, containers, physicals); 
         const form = lab; 
-        return { lab, allContainers, virtuals, containers, physicals, locations, form };
+        return { lab, allContainers, virtuals, containers, physicals, locations, form, recordLoaded: true };
       }
       if (containerId) {
         const getContainerRes = await Api.get(`containers/${containerId}`);
@@ -116,7 +118,8 @@ class Edit extends React.Component {
           physicals,
           allContainers,
           locations,
-          form
+          form, 
+          recordLoaded: true
         };        
       }  
     } catch (error) {
@@ -125,6 +128,7 @@ class Edit extends React.Component {
   }
 
   getData() {
+    this.setState({recordLoaded: false});
     this.getDataAsync()
     .then((res) => {
       this.setState(res);      
@@ -154,6 +158,10 @@ class Edit extends React.Component {
     }
     if (isContainer && this.state.redirect === true) {
       return ( <Redirect to={`/containers/${containerId}`}/> )
+    }
+
+    if (!this.state.recordLoaded) {
+      return <Loading />
     }
 
     return (
