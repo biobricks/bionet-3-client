@@ -7,6 +7,7 @@ import Physicals from './Physicals';
 import LabToolbar from './LabToolbar';
 import Api from '../modules/Api';
 import Breadcrumbs from './Breadcrumbs';
+import Loading from './Loading';
 import { getItemById, getChildren, getLocations } from './LabHelpers';
 
 class Profile extends React.Component {
@@ -14,6 +15,7 @@ class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      recordLoaded: false,
       error: "",
       path: [],
       lab: {},
@@ -139,7 +141,7 @@ class Profile extends React.Component {
         const virtuals = getVirtualsRes.data || [];
         const { containers, physicals } = getChildren(lab);
         const locations = getLocations(lab, containers, physicals); 
-        return { lab, allContainers, virtuals, containers, physicals, locations };
+        return { lab, allContainers, virtuals, containers, physicals, locations, recordLoaded: true };
       }
       if (containerId) {
         const getContainerRes = await Api.get(`containers/${containerId}`);
@@ -166,7 +168,8 @@ class Profile extends React.Component {
           containers,
           physicals,
           allContainers,
-          locations
+          locations,
+          recordLoaded: true
         };        
       }
     } catch (error) {
@@ -175,6 +178,7 @@ class Profile extends React.Component {
   }
 
   getData() {
+    this.setState({recordLoaded: false});
     this.getDataAsync()
     .then((res) => {
       const labId = this.props.match.params.labId;
@@ -307,7 +311,9 @@ class Profile extends React.Component {
     const prevLabId = prevProps.match.params.labId;
     //console.log('Previous Lab ID', prevLabId);
     const labIdHasChanged = String(labId) !== String(prevLabId);
-    if (labIdHasChanged) { this.getData() }
+    if (labIdHasChanged) { 
+      this.getData() 
+    }
   }
 
   componentDidMount() {
@@ -378,6 +384,10 @@ class Profile extends React.Component {
         </div>
       )
     }) : [];
+
+    if (!this.state.recordLoaded) {
+      return <Loading />
+    }
 
     return (
       <div className="Profile container-fluid">
