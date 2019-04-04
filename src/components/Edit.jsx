@@ -237,7 +237,12 @@ class Edit extends React.Component {
 
                       <div className="form-group text-center">
                         <div className="btn-group" role="group" aria-label="Basic example">
-                          <Link to={`/labs/${this.props.match.params.labId}`} className="btn btn-secondary mt-3">Back</Link>
+                          {isLab && (
+                            <Link to={`/labs/${this.props.match.params.labId}`} className="btn btn-secondary mt-3">Back</Link>  
+                          )}
+                          {isContainer && (
+                            <Link to={`/containers/${this.props.match.params.containerId}`} className="btn btn-secondary mt-3">Back</Link>  
+                          )}
                           <button 
                             type="submit" 
                             className="btn btn-success mt-3"
