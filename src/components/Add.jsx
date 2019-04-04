@@ -5,6 +5,7 @@ import ContainerNewForm from './ContainerNewForm';
 import PhysicalNewForm from './PhysicalNewForm';
 import Api from '../modules/Api';
 import { getChildren, getLocations } from './LabHelpers';
+import Loading from './Loading';
 
 class Add extends React.Component {
 
@@ -29,7 +30,7 @@ class Add extends React.Component {
         const lab = labRes.data;      
         const { containers, physicals } = getChildren(lab);
         const locations = getLocations(lab, containers, physicals);      
-        return { lab, containers, physicals, locations };
+        return { lab, containers, physicals, locations, recordLoaded: true };
       } 
       if (containerId) {
         const containerRes = await Api.get(`containers/${containerId}`);
@@ -37,7 +38,7 @@ class Add extends React.Component {
         const lab = container.lab;
         const { containers, physicals } = getChildren(container);
         const locations = getLocations(container, containers, physicals);      
-        return { lab, container, containers, physicals, locations }; 
+        return { lab, container, containers, physicals, locations, recordLoaded: true }; 
       }
     } catch (error) {
       throw error;
@@ -45,15 +46,16 @@ class Add extends React.Component {
   }
 
   getDataSync() {
+    this.setState({recordLoaded: false});
     this.getData()
     .then(res => {
       const labId = this.props.match.params.labId;
       if (labId) {
-        const { lab, containers, physicals, locations } = res;
-        this.setState({ lab, containers, physicals, locations });
+        const { lab, containers, physicals, locations, recordLoaded } = res;
+        this.setState({ lab, containers, physicals, locations, recordLoaded });
       } else {
-        const { lab, container, containers, physicals, locations } = res;
-        this.setState({ lab, containers, container, physicals, locations });        
+        const { lab, container, containers, physicals, locations, recordLoaded } = res;
+        this.setState({ lab, containers, container, physicals, locations, recordLoaded });        
       }  
     })
     .catch(error => {
@@ -206,6 +208,10 @@ class Add extends React.Component {
       return ( <Redirect to={this.state.redirectTo}/> )
     }
 
+    if (!this.state.recordLoaded) {
+      return <Loading />
+    }
+
     return (
       <div className="Add container-fluid">
         <div className="row">
@@ -292,6 +298,7 @@ export default Add;
 const initialState = {
   redirect: false,
   redirectTo: "",
+  recordLoaded: false,
   lab: {},
   container: {},
   containers: [],
