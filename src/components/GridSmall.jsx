@@ -98,7 +98,7 @@ class Grid extends Component {
         }  
       }      
     }
-    console.log('small grid children', gridContainerChildren);
+    //console.log('small grid children', gridContainerChildren);
     return (
       <div className="GridSmall" style={gridContainerStyles}>
         {gridContainerChildren}

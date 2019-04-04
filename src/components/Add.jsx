@@ -138,48 +138,42 @@ class Add extends React.Component {
   }
 
   setSpanLocation(location) {
-    const newItemLocation = this.state.newItemLocations[0] || [];
+    let newItemLocations = this.state.newItemLocations;
+    const newItemLocation = newItemLocations[0] || [];
     const newRow = newItemLocation[0];
     const newColumn = newItemLocation[1];
     const spanRow = location[0];
     const spanColumn = location[1];
-    //console.log('new row', newRow, 'span row', spanRow);
-    //console.log('row difference', newRow - spanRow)
     const changeNewItemLocation = (spanRow - newRow) < 0 || (spanColumn - newColumn) < 0;
-    console.log('change loc ? ', changeNewItemLocation);
     const itemType = this.props.match.params.itemType;
     const isContainer = itemType === 'container';
     const isPhysical = itemType === 'physical';
-    //console.log(`set span called on ${itemType}`, location);
-    //console.log(`Height: ${spanRow} - ${newRow} = ${spanRow - newRow + 1}`);
-    //console.log(`Width: ${spanColumn} - ${newColumn} = ${spanColumn - newColumn + 1}`);
-    const newRowSpan = Number(spanRow - newRow + 1);
-    const newColumnSpan = Number(spanColumn - newColumn + 1);
+    let containerForm = this.state.containerForm;
+    let physicalForm = this.state.physicalForm;
+    let newRowSpan = Number(spanRow - newRow + 1);
+    let newColumnSpan = Number(spanColumn - newColumn + 1);
     if (changeNewItemLocation) {
-      let newOriginLoc = [location[0], location[1]];
-      console.log('change origin loc to', newOriginLoc);
-      this.setState({
-        newItemLocations: [newOriginLoc]
-      });
-    } else {
-      if (isContainer) {
-        let containerForm = this.state.containerForm;
-        containerForm.rowSpan = newRowSpan > 0 ? newRowSpan : 1;
-        containerForm.columnSpan = newColumnSpan > 0 ? newColumnSpan : 1;
-        this.setState({
-          spanLocation: location,
-          containerForm
-        });
-      } else if (isPhysical) {
-        let physicalForm = this.state.physicalForm;
-        physicalForm.rowSpan = newRowSpan > 0 ? newRowSpan : 1;
-        physicalForm.columnSpan = newColumnSpan > 0 ? newColumnSpan : 1;
-        this.setState({
-          spanLocation: location,
-          physicalForm
-        });      
-      }
+      const prevOriginLoc = newItemLocation;
+      const newOriginLoc = [location[0], location[1]];
+      newItemLocations = [newOriginLoc];
+      newRowSpan = Number(prevOriginLoc[0] - newOriginLoc[0] + 1);
+      newColumnSpan = Number(prevOriginLoc[1] - newOriginLoc[1] + 1);
     }  
+    if (isContainer){
+      containerForm.rowSpan = newRowSpan > 0 ? newRowSpan : 1;
+      containerForm.columnSpan = newColumnSpan > 0 ? newColumnSpan : 1;
+      this.setState({
+        newItemLocations,
+        containerForm
+      });
+    } else if (isPhysical) {
+      physicalForm.rowSpan = newRowSpan > 0 ? newRowSpan : 1;
+      physicalForm.columnSpan = newColumnSpan > 0 ? newColumnSpan : 1;
+      this.setState({
+        newItemLocations,
+        physicalForm
+      });        
+    } 
   }
 
   componentDidMount() {

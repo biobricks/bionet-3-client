@@ -83,7 +83,7 @@ export const getLocations = function getLocations(record, containers, physicals)
     }
     fullCellArray = physicalPositions.concat(fullCellArray);
   }
-  console.log('full cell array after physicals', fullCellArray);
+  //console.log('full cell array after physicals', fullCellArray);
 
   // empty cells
   let emptyCellArray = [];
