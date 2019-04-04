@@ -307,11 +307,17 @@ class Profile extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const labId = this.props.match.params.labId;
+    const containerId = this.props.match.params.containerId;
     //console.log('Lab ID', labId);
     const prevLabId = prevProps.match.params.labId;
+    const prevContainerId = prevProps.match.params.containerId;
     //console.log('Previous Lab ID', prevLabId);
     const labIdHasChanged = String(labId) !== String(prevLabId);
     if (labIdHasChanged) { 
+      this.getData() 
+    }
+    const containerIdHasChanged = String(containerId) !== String(prevContainerId);
+    if (containerIdHasChanged) { 
       this.getData() 
     }
   }
