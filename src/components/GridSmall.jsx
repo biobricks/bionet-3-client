@@ -9,26 +9,6 @@ class Grid extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-    this.selectCell = this.selectCell.bind(this);
-  }
-
-  selectCell(e) {
-    let row = Number(e.target.getAttribute('row'));
-    let col = Number(e.target.getAttribute('col'));
-    let location = [col,row];
-    //console.log('clicked location', location);
-    let isSelected = e.target.getAttribute('isselected') === 'true';
-    console.log(`${col},${row} isselected`, isSelected);
-    if (isSelected) {
-      this.props.removeLocation(location);
-    } else {
-      this.props.addLocation(location);
-    }
-    // if (isSelected === 'false') {
-    //   this.props.removeLocation(location);
-    // } else {
-    //   this.props.addLocation(location);
-    // }
   }
 
   componentDidMount() {

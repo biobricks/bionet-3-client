@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { generateRandomName } from '../modules/Wu';
-//import GridSmall from './GridSmall';
+import GridSmall from './GridSmall';
 import { getSpanMax, locationExistsInArray, getLocationRange } from './Helpers';
 
 class ContainerNewForm extends Component {
@@ -101,7 +101,7 @@ class ContainerNewForm extends Component {
     }    
     return (
       <div className="row">
-        <div className="col-12">
+        <div className="col-12 col-lg-6">
           <form onSubmit={this.onFormSubmit}>
             
             {/* {(this.props.parentType && this.props.parentType === "Container") ? (
@@ -234,7 +234,7 @@ class ContainerNewForm extends Component {
             </div>
           </form>
         </div>
-        {/* <div className="col-12 col-lg-6">
+        <div className="col-12 col-lg-6">
           <div className="form-group">
             {(form.name.length > 0) ? (
               <label className="text-capitalize">{form.name} Preview</label>
@@ -248,7 +248,7 @@ class ContainerNewForm extends Component {
               record={form}
             />
           </div>
-        </div> */}
+        </div>
       </div>    
     );
   }
